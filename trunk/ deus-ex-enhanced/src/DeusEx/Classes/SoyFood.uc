@@ -1,32 +1,25 @@
 //=============================================================================
 // SoyFood.
 //=============================================================================
-class SoyFood extends DeusExPickup;
+class SoyFood extends Consumable;
 
 state Activated
 {
 	function Activate()
 	{
-		// can't turn it off
+		Super.Activate();
 	}
 
 	function BeginState()
 	{
-		local DeusExPlayer player;
-		
 		Super.BeginState();
-
-		player = DeusExPlayer(Owner);
-		if (player != None)
-			player.HealPlayer(5, False);
-		
-		UseOnce();
 	}
 Begin:
 }
 
 defaultproperties
 {
+     healthEffect=5
      maxCopies=10
      bCanHaveMultipleCopies=True
      bActivatable=True

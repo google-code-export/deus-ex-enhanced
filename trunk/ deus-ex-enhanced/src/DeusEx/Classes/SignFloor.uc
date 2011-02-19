@@ -3,6 +3,44 @@
 //=============================================================================
 class SignFloor extends DeusExDecoration;
 
+var bool bSmartass;
+
+simulated function PreBeginPlay()
+{
+	if(fRand() > 0.82)
+		bSmartass = True;
+
+	Super.PreBeginPlay();
+}
+
+
+function bool Facelift(bool bOn)
+{
+	local Texture lSkin;
+
+	if(!Super.Facelift(bOn))
+		return false;
+
+	Skin = None;
+
+	if(bOn)
+		Mesh = mesh(DynamicLoadObject("HDTPDecos.HDTPSignfloor", class'mesh', True));
+
+	if(Mesh == None || !bOn)
+	{
+		Mesh = Default.Mesh;
+		if(bSmartass && bOn)
+			lSkin = Texture(DynamicLoadObject("ShifterEX.Decos.SignFloorS", class'Texture', True));
+	}
+	else if(bSmartass)
+		lSkin = Texture(DynamicLoadObject("ShifterEX.Decos.HDTPSignFloorS", class'Texture', True));
+
+	if(lSkin != None)
+		Skin = lSkin;
+
+	return true;
+}
+
 defaultproperties
 {
      FragType=Class'DeusEx.PlasticFragment'

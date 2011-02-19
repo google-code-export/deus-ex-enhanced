@@ -41,15 +41,16 @@ simulated function bool UpdateInfo(Object winObject)
 	winInfo.AppendText(winInfo.CR() $ winInfo.CR() $ AugsAvailable);
 	winInfo.AppendText(winInfo.CR() $ winInfo.CR());
 
-	for(canIndex=0; canIndex<ArrayCount(AddAugs); canIndex++)
+	for(canIndex=0; canIndex<ArrayCount(AddAugs); canIndex++) //
 	{
-		if (AddAugs[canIndex] != '')
-		{
+		//== GetAugmentation() will now assign an augmentation if one hasn't been already
+		//if (AddAugs[canIndex] != '')
+		//{
 			aug = GetAugmentation(canIndex);
 
 			if (aug != None)
 				winInfo.AppendText(aug.default.AugmentationName $ winInfo.CR());
-		}
+		//}
 	}	
 	
 	winInfo.AppendText(winInfo.CR() $ MustBeUsedOn);
@@ -65,22 +66,42 @@ simulated function Augmentation GetAugmentation(int augIndex)
 {
 	local Augmentation anAug;
 	local DeusExPlayer player;
+	local int i;
 
 	// First make sure we have a valid value
-	if ((augIndex < 0) || (augIndex > (ArrayCount(AddAugs) - 1)))
+	if ((augIndex < 0) || (augIndex > (ArrayCount(AddAugs) - 1))) //
 		return None;
 
-	if (AddAugs[augIndex] == '')
-		return None;
+	player = DeusExPlayer(Owner);
 
 	// Loop through all the augmentation objects and look 
 	// for the augName that matches the one stored in 
 	// this object
 
-	player = DeusExPlayer(Owner);
-
 	if (player != None)
 	{
+		//== Instead of returning none, just generate a random augmentation
+		if (AddAugs[augIndex] == '')
+		{
+			//== Don't stop if we somehow do the random thing and get None
+			while(anAug == None)
+			{
+				for(i = Int(Frand() * (ArrayCount(player.AugmentationSystem.AugClasses) - 3)); i >= 0; i--)
+				{
+					if(anAug == None)
+						anAug = player.AugmentationSystem.FirstAug;
+					else
+						anAug = anAug.next;
+	
+					//== No default augmentations
+					while(anAug.Class.Name == 'AugIFF' || anAug.Class.Name == 'AugLight' || anAug.Class.Name == 'AugDatalink')
+						anAug = None;
+				}
+			}
+			AddAugs[augIndex] = anAug.Class.Name;
+			return anAug;
+		}
+
 		anAug = player.AugmentationSystem.FirstAug;
 		while(anAug != None)
 		{

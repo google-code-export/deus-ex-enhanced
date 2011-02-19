@@ -1,6 +1,16 @@
 //=============================================================================
 // DeusExPlayer.
 //=============================================================================
+
+//Note from Y|yukichigai: FYI, adding any new variables to DeusExPlayer tends to
+//make the game crash when you attempt to save.  If you're trying to add a new
+//player modifier see if you can do it by another means, e.g. create an activated
+//inventory item that will basically act as a player modifier, or modify the
+//manner in which an existing modifier works. (See Zyme for an example) At the
+//very least, adding a new variable will screw up the savegame info, and can lead
+//to errors like starting/restarting music whenever you save or load, and bad
+//information showing up in the saveinfo fields
+
 class DeusExPlayer extends PlayerPawnExt
 	native;
 
@@ -116,7 +126,7 @@ var name WallMaterial;
 var Vector WallNormal;
 
 // drug effects on the player
-var float drugEffectTimer;
+var travel float drugEffectTimer;
 
 // shake variables
 var float JoltMagnitude;  // magnitude of bounce imposed by heavy footsteps
@@ -449,6 +459,12 @@ function PostBeginPlay()
 	// Safeguard so no cheats in multiplayer
 	if ( Level.NetMode != NM_Standalone )
 		bCheatsEnabled = False;
+
+	if(Caps(info.mapName) == "DX" && FlagBase.GetBool('ViewIntro'))
+	{
+		FlagBase.DeleteFlag('ViewIntro', FLAG_Bool);
+		StartNewGame(strStartMap);
+	}
 }
 
 function ServerSetAutoReload( bool bAuto )
@@ -568,6 +584,7 @@ function PostPostBeginPlay()
 
 	if ((Level.NetMode != NM_Standalone) && ( killProfile == None ))
 		killProfile = Spawn(class'KillerProfile', Self);
+
 }
 
 // ----------------------------------------------------------------------
@@ -602,6 +619,7 @@ event TravelPostAccept()
 	local MissionScript scr;
 	local bool bScriptRunning;
 	local InterpolationPoint I;
+	local string misstr;
 
 	Super.TravelPostAccept();
 
@@ -615,6 +633,16 @@ event TravelPostAccept()
 		// hack for the DX.dx logo/splash level
 		if (info.MissionNumber == -2)
 		{
+			//== Deus Ex Demo compatibility, MK II
+			//==  The only way we'll have a PlayerTraveling flag on the intro map is if the level we
+			//==  tried to load isn't present, which 99% of the time means this is the demo version
+			if(flagBase.GetBool('PlayerTraveling'))
+			{
+				flagBase.DeleteFlag('PlayerTraveling', FLAG_Bool);
+				if(!flagBase.GetBool('ViewIntro'))
+					ShowDemoSplash();
+			}
+
 			foreach AllActors(class 'InterpolationPoint', I, 'IntroCam')
 			{
 				if (I.Position == 1)
@@ -633,6 +661,7 @@ event TravelPostAccept()
 					break;
 				}
 			}
+
 			return;
 		}
 
@@ -644,6 +673,8 @@ event TravelPostAccept()
 			return;
 		}
 	}
+	else
+		FlagBase.DeleteFlag('PlayerTraveling', FLAG_Bool);
 
 	// Restore colors
 	if (ThemeManager != None)
@@ -706,11 +737,58 @@ event TravelPostAccept()
 			bScriptRunning = True;
 
 		if (!bScriptRunning)
-			info.SpawnScript();
+		{
+			if(info.Script != None)
+			{
+				info.SpawnScript();
+
+				foreach AllActors(class'MissionScript', scr)
+					bScriptRunning = True;
+
+				//== Clearly, something was coded badly here
+				if(!bScriptRunning)
+				{
+					log("Mission Script reference " $ info.Script $ " is incorrect or invalid, removing...");
+					info.Script = None;
+				}
+			}
+
+			if(info.Script == None)
+			{
+				if(info.missionNumber < 10)
+					misstr = "0"$info.missionNumber;
+				else
+					misstr = String(info.missionNumber);
+
+				log("No Mission Script specified, attempting to load default");
+
+				info.Script = class<MissionScript>(DynamicLoadObject("DeusEx.Mission"$misstr,class'Class', True));
+
+				if(info.Script == None)
+				{
+					log("No existing Mission Script found for DeusEx.Mission" $ misstr $", loading parent Mission Script class.");
+					info.Script = class<MissionScript>(DynamicLoadObject("DeusEx.MissionScript",class'Class'));
+				}
+			}
+
+			if(!bScriptRunning)
+			{
+				if(info.Script != None)
+					info.SpawnScript();
+				else
+				{
+					log("EPIC FAIL!  Something is REALLY f%$#ed here because we can't load the base MissionScript class.  Manually removing the PlayerTraveling flag so controls work.");
+					FlagBase.DeleteFlag('PlayerTraveling', FLAG_Bool);
+				}
+			}
+		}
 	}
 
 	// make sure the player's eye height is correct
 	BaseEyeHeight = CollisionHeight - (GetDefaultCollisionHeight() - Default.BaseEyeHeight);
+
+	//== Apply the HDTP facelift
+	GlobalFacelift(True);
 }
 
 // ----------------------------------------------------------------------
@@ -829,6 +907,106 @@ exec function DualmapF9() { if ( AugmentationSystem != None) AugmentationSystem.
 exec function DualmapF10() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(7); }
 exec function DualmapF11() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(8); }
 exec function DualmapF12() { if ( AugmentationSystem != None) AugmentationSystem.ActivateAugByKey(9); }
+
+exec function GlobalFacelift(bool bOn)
+{
+	local Actor generic;
+
+	//== HDTP might break multiplayer compatibility
+	//==  Also, we want to make sure there's something to (un)load before we go running through all this game-slowing madness
+	if(Level.NetMode != NM_StandAlone && bOn || mesh(DynamicLoadObject("HDTPItems.HDTPsodacan", class'mesh', True)) == None)
+		return;
+
+	Facelift(bOn); // Make the player's model look all fancy-like
+
+	foreach AllActors(class'Actor', generic)
+	{
+		if(DeusExDecoration(generic) != None)
+			DeusExDecoration(generic).Facelift(bOn);
+
+		if(DeusExWeapon(generic) != None)
+			DeusExWeapon(generic).Facelift(bOn);
+
+		if(DeusExPickup(generic) != None)
+			DeusExPickup(generic).Facelift(bOn);
+
+		if(DeusExAmmo(generic) != None)
+			DeusExAmmo(generic).Facelift(bOn);
+
+		if(ScriptedPawn(generic) != None)
+			ScriptedPawn(generic).Facelift(bOn);
+
+		if(DeusExCarcass(generic) != None)
+			DeusExCarcass(generic).Facelift(bOn);
+
+		if(DeusExProjectile(generic) != None)
+			DeusExProjectile(generic).Facelift(bOn);
+
+		//== Annoyingly specific, we must be
+		if(BeamTrigger(generic) != None)
+			BeamTrigger(generic).Facelift(bOn);
+	}
+}
+
+function bool Facelift(bool bOn)
+{
+	//== Only do this for DeusEx classes
+	if(instr(String(Class.Name), ".") > -1 && bOn)
+		if(instr(String(Class.Name), "DeusEx.") <= -1)
+			return false;
+	else
+		if((Class != Class(DynamicLoadObject("DeusEx."$ String(Class.Name), class'Class', True))) && bOn)
+			return false;
+
+	return true;
+}
+
+exec function KillAll(class<actor> aClass) //== Overridden for unrealistic fun time
+{
+	local Actor A;
+
+	if( !bCheatsEnabled )
+		return;
+	if ( !bAdmin && (Level.Netmode != NM_Standalone) )
+		return;
+	ForEach AllActors(class 'Actor', A)
+		if ( ClassIsChildOf(A.class, aClass) )
+		{
+			if(combatDifficulty > 4.0 && !A.bNoDelete && !A.bStatic) //Don't bother with the undeletable items
+			{
+				if(ScriptedPawn(A) != None)
+					ScriptedPawn(A).Explode();
+				else if(DeusExDecoration(A) != None)
+					DeusExDecoration(A).Explode(A.Location);
+				else if(DeusExProjectile(A) != None && A.IsInState('Flying'))
+					DeusExProjectile(A).Explode(A.Location, vect(0,0,1));
+				else if(DeusExCarcass(A) != None)
+					DeusExCarcass(A).ChunkUp(100);
+			}
+			A.Destroy();
+		}
+}
+
+//== Takes a "clean" screenshot, with no HUD, GUI, etc.
+exec function CleanShot()
+{
+	rootWindow.Hide();
+	SShot();
+	rootWindow.Show();
+}
+
+exec function AltFire( optional float F )
+{
+	if(DeusExWeapon(Weapon) != None)
+	{
+		if(!DeusExWeapon(Weapon).bHasAltFire && !Weapon.IsA('TnagWeapon')) //That wacky Hejhujka and his alt-fire mutator
+		{
+			DeusExWeapon(Weapon).ScopeToggle();
+			return;
+		}
+	}
+	Super.AltFire(F);
+}
 
 //
 // Team Say
@@ -970,12 +1148,22 @@ function BuySkillSound( int code )
 
 exec function StartNewGame(String startMap)
 {
+	local Inventory item, nextItem;
 	if (DeusExRootWindow(rootWindow) != None)
 		DeusExRootWindow(rootWindow).ClearWindowStack();
 
 	// Set a flag designating that we're traveling,
 	// so MissionScript can check and not call FirstFrame() for this map.
 	flagBase.SetBool('PlayerTraveling', True, True, 0);
+
+	if(KeyRing != None)
+		KeyRing.RemoveAllKeys();
+
+	for(item = Inventory; item != None; item = nextItem)
+	{
+		nextItem = item.Inventory;
+		item.Destroy();
+	}
 
 	SaveSkillPoints();
 	ResetPlayer();
@@ -985,9 +1173,9 @@ exec function StartNewGame(String startMap)
 
 	// Send the player to the specified map!
 	if (startMap == "")
-		Level.Game.SendPlayer(Self, "01_NYC_UNATCOIsland");		// TODO: Must be stored somewhere!
+		Level.Game.SendPlayer(Self, "01_NYC_UNATCOIsland?Difficulty="$combatDifficulty);		// TODO: Must be stored somewhere!
 	else
-		Level.Game.SendPlayer(Self, startMap);
+		Level.Game.SendPlayer(Self, startMap$"?Difficulty="$combatDifficulty);
 }
 
 // ----------------------------------------------------------------------
@@ -1011,7 +1199,7 @@ function StartTrainingMission()
 	ResetPlayer(True);
 	DeleteSaveGameFiles();
 	bStartingNewGame = True;
-	Level.Game.SendPlayer(Self, "00_Training");
+	Level.Game.SendPlayer(Self, "00_Training?Difficulty="$combatDifficulty);
 }
 
 // ----------------------------------------------------------------------
@@ -1020,16 +1208,29 @@ function StartTrainingMission()
 
 function ShowIntro(optional bool bStartNewGame)
 {
+	local Inventory item, nextItem;
+	local GameDirectory mapDir;
+	local int mapIndex;
+	local bool bFoundAnyMaps;
+
 	if (DeusExRootWindow(rootWindow) != None)
 		DeusExRootWindow(rootWindow).ClearWindowStack();
 
 	bStartNewGameAfterIntro = bStartNewGame;
 
+	for(item = Inventory; item != None; item = nextItem)
+	{
+		nextItem = item.Inventory;
+		item.Destroy();
+	}
+
 	// Make sure all augmentations are OFF before going into the intro
 	AugmentationSystem.DeactivateAll();
 
-	// Reset the player
-	Level.Game.SendPlayer(Self, "00_Intro");
+	if(bStartNewGame)
+		FlagBase.SetBool('ViewIntro', True, True, 0);
+
+	Level.Game.SendPlayer(Self, "00_Intro?Difficulty="$combatDifficulty);
 }
 
 // ----------------------------------------------------------------------
@@ -1271,14 +1472,14 @@ function CreateKeyRing()
 
 simulated function DrugEffects(float deltaTime)
 {
-	local float mult, fov;
+	local float mult, fov, augLevel;
 	local Rotator rot;
 	local DeusExRootWindow root;
 
 	root = DeusExRootWindow(rootWindow);
 
 	// random wandering and swaying when drugged
-	if (drugEffectTimer > 0)
+	if (drugEffectTimer > 0.0)
 	{
 		if ((root != None) && (root.hud != None))
 		{
@@ -1310,7 +1511,12 @@ simulated function DrugEffects(float deltaTime)
 		else
 			DesiredFOV = Default.DesiredFOV;
 
-		drugEffectTimer -= deltaTime;
+		//Aug Environment will help with drug effects
+		augLevel = AugmentationSystem.GetAugLevelValue(class'AugEnviro');
+		if(augLevel > 0.0)
+			drugEffectTimer -= deltaTime / augLevel;
+		else
+			drugEffectTimer -= deltaTime;
 		if (drugEffectTimer < 0)
 			drugEffectTimer = 0;
 	}
@@ -1324,6 +1530,30 @@ simulated function DrugEffects(float deltaTime)
 				root.hud.SetBackgroundStyle(DSTY_Normal);
 				DesiredFOV = Default.DesiredFOV;
 			}
+		}
+	}
+}
+
+function ZymeEffects(float deltaTime)
+{
+	//Zyme effect
+	// This function just manages the time and resets it when applicable.  The fact
+	// that the value is negative is what other functions look for.
+	if(drugEffectTimer < 0.0)
+	{
+		drugEffectTimer += deltaTime;
+
+		if(drugEffectTimer >= 0.0)
+		{
+			if(Level.NetMode == NM_Standalone)
+			{
+				flagBase.DeleteFlag('Travel_GameSpeed', FLAG_Float); //Just in case it hasn't been set yet
+				Level.Game.SetGameSpeed(Level.Game.GameSpeed * 2.000);
+			}
+			else
+				log("DeusExPlayer: Somehow the zyme effect was activated in a non-singleplayer map.  WTF?");
+			drugEffectTimer = 60.0;
+			ClientMessage("Zyme effect wears off");
 		}
 	}
 }
@@ -1388,11 +1618,46 @@ function UpdateDynamicMusic(float deltaTime)
 {
 	local bool bCombat;
 	local ScriptedPawn npc;
-   local Pawn CurPawn;
+	local Pawn CurPawn;
 	local DeusExLevelInfo info;
+	local Music LevelSong;
+	local String SongString;
+	local byte LevelSongSection;
+	local EMusicMode newMusicMode;
 
+	//== In case any of the mission song info gets all f%$#ed up (like NYC in mission 8)
 	if (Level.Song == None)
-		return;
+	{
+		//== If we have music playing we may as well just stick with that
+		LevelSong = Song;
+
+		if(LevelSong == None || LevelSong.Class.Name == '')
+		{
+			SongString = FlagBase.GetName('Song_Name1') $"."$ FlagBase.GetName('Song_Name2');
+
+			if(SongString != "None.None")
+			{
+				log("UpdateDynamicMusic()============> No music specified in map, loading from flags.  Attempted load name is "$ SongString);
+
+				LevelSong = Music(DynamicLoadObject(SongString, class'Music'));
+
+				//== We'll just assume this is the appropriate song type.  Later updates will catch us if we're wrong
+				newMusicMode = MUS_Ambient;
+
+				//== Instant transition
+				ClientSetMusic(LevelSong, newMusicMode, 255, MTRAN_Instant);
+				return;
+			}
+		}
+
+		if(LevelSong == None)
+			return;
+	}
+	else
+	{
+		LevelSongSection = Level.SongSection;
+		LevelSong = Level.Song;
+	}
 
    // DEUS_EX AMSD In singleplayer, do the old thing.
    // In multiplayer, we can come out of dying.
@@ -1423,7 +1688,7 @@ function UpdateDynamicMusic(float deltaTime)
 
 		if (musicMode != MUS_Outro)
 		{
-			ClientSetMusic(Level.Song, 5, 255, MTRAN_FastFade);
+			ClientSetMusic(LevelSong, 5, 255, MTRAN_FastFade);
 			musicMode = MUS_Outro;
 		}
 	}
@@ -1437,7 +1702,7 @@ function UpdateDynamicMusic(float deltaTime)
 			else
 				savedSection = 255;
 
-			ClientSetMusic(Level.Song, 4, 255, MTRAN_Fade);
+			ClientSetMusic(LevelSong, 4, 255, MTRAN_Fade);
 			musicMode = MUS_Conversation;
 		}
 	}
@@ -1445,7 +1710,7 @@ function UpdateDynamicMusic(float deltaTime)
 	{
 		if (musicMode != MUS_Dying)
 		{
-			ClientSetMusic(Level.Song, 1, 255, MTRAN_Fade);
+			ClientSetMusic(LevelSong, 1, 255, MTRAN_Fade);
 			musicMode = MUS_Dying;
 		}
 	}
@@ -1475,8 +1740,6 @@ function UpdateDynamicMusic(float deltaTime)
 
 			if (bCombat)
 			{
-				musicChangeTimer = 0.0;
-
 				if (musicMode != MUS_Combat)
 				{
 					// save our place in the ambient track
@@ -1485,9 +1748,14 @@ function UpdateDynamicMusic(float deltaTime)
 					else
 						savedSection = 255;
 
-					ClientSetMusic(Level.Song, 3, 255, MTRAN_FastFade);
+					if(musicChangeTimer >= 20.0)
+						ClientSetMusic(LevelSong, 3, 255, MTRAN_Instant);
+					else
+						ClientSetMusic(LevelSong, 3, 255, MTRAN_FastFade);
 					musicMode = MUS_Combat;
 				}
+
+				musicChangeTimer = 0.0;
 			}
 			else if (musicMode != MUS_Ambient)
 			{
@@ -1496,13 +1764,15 @@ function UpdateDynamicMusic(float deltaTime)
 				{
 					// use the default ambient section for this map
 					if (savedSection == 255)
-						savedSection = Level.SongSection;
+						savedSection = LevelSongSection;
 
+					if(musicChangeTimer >= 20.0)
+						ClientSetMusic(LevelSong, savedSection, 255, MTRAN_Instant);
 					// fade slower for combat transitions
-					if (musicMode == MUS_Combat)
-						ClientSetMusic(Level.Song, savedSection, 255, MTRAN_SlowFade);
+					else if (musicMode == MUS_Combat)
+						ClientSetMusic(LevelSong, savedSection, 255, MTRAN_SlowFade);
 					else
-						ClientSetMusic(Level.Song, savedSection, 255, MTRAN_Fade);
+						ClientSetMusic(LevelSong, savedSection, 255, MTRAN_Fade);
 
 					savedSection = 255;
 					musicMode = MUS_Ambient;
@@ -1510,6 +1780,29 @@ function UpdateDynamicMusic(float deltaTime)
 				}
 			}
 		}
+	}
+}
+
+function SetMusicMode(string TMusicMode)
+{
+	switch(TMusicMode)
+	{
+		case "1":
+			MusicMode = MUS_Combat;
+			break;
+		case "2":
+			MusicMode = MUS_Conversation;
+			break;
+		case "3":
+			MusicMode = MUS_Outro;
+			break;
+		case "4":
+			MusicMode = MUS_Dying;
+			break;
+		case "0":
+		default:
+			MusicMode = MUS_Ambient;
+			break;
 	}
 }
 
@@ -1640,6 +1933,7 @@ function RepairInventory()
       for (curInv = Inventory; curInv != None; curInv = curInv.Inventory)
       {
          // Make sure this item is located in a valid position
+	 // Exclude for special slot items, e.g. inventory for equipped NPCs
          if (( curInv.invPosX != -1 ) && ( curInv.invPosY != -1 ))
          {
             // fill inventory slots
@@ -1760,7 +2054,10 @@ function StartPoison( Pawn poisoner, int Damage )
 	if (poisonDamage < Damage)  // set damage amount
 		poisonDamage = Damage;
 
-	drugEffectTimer += 4;  // make the player vomit for the next four seconds
+	if(drugEffectTimer >= 0.0 || drugEffectTimer <= -4.1)
+		drugEffectTimer += 4;  // make the player vomit for the next four seconds
+	else
+		drugEffectTimer = -0.1;
 
 	// In multiplayer, don't let the effect last longer than 30 seconds
 	if ( Level.NetMode != NM_Standalone )
@@ -1846,7 +2143,7 @@ function UpdateWarrenEMPField(float deltaTime)
 					if ((curRobot.LastRendered() < 2.0) && (curRobot.CrazedTimer <= 0) &&
 					    (curRobot.EMPHitPoints > 0))
 					{
-						if (curRobot.GetPawnAllianceType(self) == ALLIANCE_Hostile)
+						if (curRobot.CheckPawnAllianceType(self) == ALLIANCE_Hostile)
 							option = Rand(2);
 						else
 							option = 0;
@@ -2134,8 +2431,10 @@ exec function DeactivateAllAugs()
 
 exec function SwitchAmmo()
 {
-	if (inHand.IsA('DeusExWeapon'))
-		DeusExWeapon(inHand).CycleAmmo();	
+	if (DeusExWeapon(inHand) != None)
+		DeusExWeapon(inHand).CycleAmmo();
+	else if(inHand.IsA('DeusExPickup'))
+		DeusExPickup(inHand).SwitchItem();
 }
 
 // ----------------------------------------------------------------------
@@ -2638,6 +2937,8 @@ simulated function PlayFootStep()
 	volume      = FClamp(volume, 0, 1.0) * 0.5;		// Hack to compensate for increased footstep volume.											
 	range       = FClamp(range, 0.01, radius*4);
 	pitch       = FClamp(pitch, 1.0, 1.5);
+	if(DrugEffectTimer < 0)
+		pitch *= 0.5;
 
 	// AugStealth decreases our footstep volume
 	volume *= RunSilentValue;
@@ -2786,6 +3087,31 @@ function HighlightCenterObject()
 		}
 		FrobTarget = smallestTarget;
 
+		if(ScriptedPawn(FrobTarget) != None)
+		{
+			if(ScriptedPawn(FrobTarget).bCanGiveWeapon && ScriptedPawn(FrobTarget).CheckPawnAllianceType(Self) != ALLIANCE_Hostile)
+			{
+				if(VSize(FrobTarget.Location - Location) <= 64 && root != None && DeusExWeapon(inHand) != None)
+				{
+					if(!root.hud.startDisplay.bTickEnabled)
+					{
+						root.hud.startDisplay.message = "";
+						root.hud.startDisplay.charIndex = 0;
+						root.hud.startDisplay.winText.SetText("");
+						root.hud.startDisplay.winTextShadow.SetText("");
+
+						if(DeusExWeapon(inHand) != None)
+							root.hud.startDisplay.AddMessage("Press 'Drop Item' to give "$ ScriptedPawn(FrobTarget).FamiliarName $" the "$ inHand.ItemName);
+
+						if(root.hud.startDisplay.message != "")
+							root.hud.startDisplay.StartMessage();
+					}
+
+					root.hud.startDisplay.DisplayTime = 0.15;
+				}
+			}
+		}
+
 		// reset our frob timer
 		FrobTime = 0;
 	}
@@ -2824,6 +3150,10 @@ function Landed(vector HitNormal)
 					if (augLevel >= 0)
 						augReduce = 15 * (augLevel+1);
 				}
+
+				//Calculate the zyme effect
+				if(drugEffectTimer < 0) //(FindInventoryType(Class'DeusEx.ZymeCharged') != None)
+					augReduce += 10;
 
 				dmg = Max((-0.16 * (Velocity.Z + 700)) - augReduce, 0);
 				legLocation = Location + vect(-1,0,-1);			// damage left leg
@@ -3132,29 +3462,38 @@ function HandleWalking()
 function DoJump( optional float F )
 {
 	local DeusExWeapon w;
-	local float scaleFactor, augLevel;
+	local float scaleFactor, augLevel, pitch;
 
 	if ((CarriedDecoration != None) && (CarriedDecoration.Mass > 20))
 		return;
 	else if (bForceDuck || IsLeaning())
 		return;
 
-	if (Physics == PHYS_Walking)
+	pitch = 1.0;
+	if(drugEffectTimer < 0)
+		pitch = 0.5;
+
+	//== Temporary; replace with proper rotation and all that jazz
+	if (Physics == PHYS_Walking || Physics == PHYS_Spider)
 	{
 		if ( Role == ROLE_Authority )
-			PlaySound(JumpSound, SLOT_None, 1.5, true, 1200, 1.0 - 0.2*FRand() );
+			PlaySound(JumpSound, SLOT_None, 1.5, true, 1200, (1.0 - 0.2*FRand()) * pitch );
 		if ( (Level.Game != None) && (Level.Game.Difficulty > 0) )
 			MakeNoise(0.1 * Level.Game.Difficulty);
 		PlayInAir();
 
 		Velocity.Z = JumpZ;
 
+		//Zyme effect
+		if(drugEffectTimer < 0) //(FindInventoryType(Class'DeusEx.ZymeCharged') != None)
+			Velocity.Z += Default.JumpZ * 0.2;
+
 		if ( Level.NetMode != NM_Standalone )
 		{
-         if (AugmentationSystem == None)
-            augLevel = -1.0;
-         else			
-            augLevel = AugmentationSystem.GetAugLevelValue(class'AugSpeed');
+		         if (AugmentationSystem == None)
+		            augLevel = -1.0;
+		         else			
+		            augLevel = AugmentationSystem.GetAugLevelValue(class'AugSpeed');
 			w = DeusExWeapon(InHand);
 			if ((augLevel != -1.0) && ( w != None ) && ( w.Mass > 30.0))
 			{
@@ -3307,6 +3646,9 @@ function float GetCurrentGroundSpeed()
 	else
 		speed = Default.GroundSpeed * augValue;
 
+	if(drugEffectTimer < 0) //(FindInventoryType(Class'DeusEx.ZymeCharged') != None)
+		speed += Default.GroundSpeed * 0.2;
+
 	return speed;
 }
 
@@ -3377,12 +3719,147 @@ function ServerUpdateLean( Vector desiredLoc )
 //	SetRotation( rot );
 }
 
+//== Overloaded so spider stuff works
+function UpdateRotation(float DeltaTime, float maxPitch)
+{
+	local rotator newRotation;
+
+	DesiredRotation = ViewRotation; //save old rotation
+
+	ViewRotation.Pitch += 32.0 * DeltaTime * aLookUp;
+	ViewRotation.Pitch = ViewRotation.Pitch & 65535;
+	If ((ViewRotation.Pitch > 18000) && (ViewRotation.Pitch < 49152))
+	{
+		If (aLookUp > 0) 
+			ViewRotation.Pitch = 18000;
+		else
+			ViewRotation.Pitch = 49152;
+	}
+	ViewRotation.Yaw += 32.0 * DeltaTime * aTurn;
+	ViewShake(deltaTime);
+	ViewFlash(deltaTime);
+		
+	newRotation = Rotation;
+	newRotation.Yaw = ViewRotation.Yaw;
+	if(Physics != PHYS_Spider)
+	{
+		newRotation.Pitch = ViewRotation.Pitch;
+		If ( (newRotation.Pitch > maxPitch * RotationRate.Pitch) && (newRotation.Pitch < 65536 - maxPitch * RotationRate.Pitch) )
+		{
+			If (ViewRotation.Pitch < 32768) 
+				newRotation.Pitch = maxPitch * RotationRate.Pitch;
+			else
+				newRotation.Pitch = 65536 - maxPitch * RotationRate.Pitch;
+		}
+
+    		// added to keep the player's model from pitching or rolling - DEUS_EX CNN
+		newRotation.Pitch = 0;
+		newRotation.Roll = 0;
+	}
+
+	setRotation(newRotation);
+}
+
+
 // ----------------------------------------------------------------------
 // state PlayerWalking
 // ----------------------------------------------------------------------
 
 state PlayerWalking
 {
+	//== Wall walk for Run Silent aug.  Aren't I awesome?
+/*	event BumpWall(vector HitLocation, vector HitNormal)
+	{
+		local Rotator rot;
+		if((Physics == PHYS_Falling || (Physics == PHYS_Spider && HitNormal != Floor)) && RunSilentValue < 1.0 )
+		{
+			SetPhysics(PHYS_Spider);
+			rot = Rotator(Floor);
+			rot.Yaw = Rotation.Yaw;
+			ViewRotation.Roll = rot.Roll;
+
+			SetRotation(rot);
+		}
+		Global.BumpWall(HitLocation, HitNormal);
+	} */
+
+	//== We need to overwrite this so spider animations play
+	function AnimEnd()
+	{
+		local name MyAnimGroup;
+
+		bAnimTransition = false;
+		if (Physics == PHYS_Walking || Physics == PHYS_Spider)
+		{
+			if (bIsCrouching)
+			{
+				if ( !bIsTurning && ((Velocity.X * Velocity.X + Velocity.Y * Velocity.Y) < 1000) )
+					PlayDuck();	
+				else
+					PlayCrawling();
+			}
+			else
+			{
+				MyAnimGroup = GetAnimGroup(AnimSequence);
+				if ((Velocity.X * Velocity.X + Velocity.Y * Velocity.Y) < 1000)
+				{
+					if ( MyAnimGroup == 'Waiting' )
+						PlayWaiting();
+					else
+					{
+						bAnimTransition = true;
+						TweenToWaiting(0.2);
+					}
+				}	
+				else if (bIsWalking)
+				{
+					if ( (MyAnimGroup == 'Waiting') || (MyAnimGroup == 'Landing') || (MyAnimGroup == 'Gesture') || (MyAnimGroup == 'TakeHit')  )
+					{
+						TweenToWalking(0.1);
+						bAnimTransition = true;
+					}
+					else 
+						PlayWalking();
+				}
+				else
+				{
+					if ( (MyAnimGroup == 'Waiting') || (MyAnimGroup == 'Landing') || (MyAnimGroup == 'Gesture') || (MyAnimGroup == 'TakeHit')  )
+					{
+						bAnimTransition = true;
+						TweenToRunning(0.1);
+					}
+					else
+						PlayRunning();
+				}
+			}
+		}
+		else
+			PlayInAir();
+	}
+
+	function PlayerMove ( float DeltaTime )
+	{
+		local float alpha;
+
+		alpha = DodgeClickTime;
+
+		//== Selectively enable/disable player dodge
+		if(Level.NetMode == NM_Standalone)
+		{
+			//== Unrealistic, make sure dodging is enabled
+			if(combatDifficulty > 4.0 && alpha <= 0.0)
+				DodgeClickTime = 0.3;
+			//== All other modes, dodging is not allowed
+			else if(combatDifficulty <= 4.0)
+				DodgeClickTime = 0.0;
+		}
+
+		Super.PlayerMove(DeltaTime);
+
+		//== Whatever we did, reset the dodge interval when we're done
+		DodgeClickTime = alpha;
+	}
+
 	// lets us affect the player's movement
 	function ProcessMove ( float DeltaTime, vector newAccel, eDodgeDir DodgeMove, rotator DeltaRot)
 	{
@@ -3394,6 +3871,7 @@ state PlayerWalking
 		local Vector loc, traceSize;
 		local float alpha, maxLeanDist;
 		local float legTotal, weapSkill;
+		local vector OldAccel;
 
 		// if the spy drone augmentation is active
 		if (bSpyDroneActive)
@@ -3561,6 +4039,10 @@ state PlayerWalking
 		if ((aForward < 0) && (Level.NetMode == NM_Standalone))
 			newSpeed *= 0.65;
 
+		//Zyme effect
+		if(drugEffectTimer < 0) //(FindInventoryType(Class'DeusEx.ZymeCharged') != None)
+			newSpeed *= 1.2;
+
 		GroundSpeed = FMax(newSpeed, 100);
 
 		// if we are moving or crouching, we can't lean
@@ -3658,8 +4140,78 @@ state PlayerWalking
 					}
 				}
 			}
-		
-		Super.ProcessMove(DeltaTime, newAccel, DodgeMove, DeltaRot);
+
+
+		//== Overwritten, so spider stuff works		
+		//Super.ProcessMove(DeltaTime, newAccel, DodgeMove, DeltaRot);
+		      
+		OldAccel = Acceleration;
+		Acceleration = NewAccel;
+		bIsTurning = ( Abs(DeltaRot.Yaw/DeltaTime) > 5000 );
+		if ( (DodgeMove == DODGE_Active) && (Physics == PHYS_Falling) )
+			DodgeDir = DODGE_Active;	
+		else if ( (DodgeMove != DODGE_None) && (DodgeMove < DODGE_Active) )
+			Dodge(DodgeMove);
+
+		if ( bPressedJump )
+			DoJump();
+
+		if ( (Physics == PHYS_Walking || Physics == PHYS_Spider) && (GetAnimGroup(AnimSequence) != 'Dodge') )
+		{
+			if (!bIsCrouching)
+			{
+				if (bDuck != 0)
+				{
+					bIsCrouching = true;
+					PlayDuck();
+				}
+			}
+			else if (bDuck == 0)
+			{
+				OldAccel = vect(0,0,0);
+				bIsCrouching = false;
+				TweenToRunning(0.1);
+			}
+
+			if ( !bIsCrouching )
+			{
+				if ( (!bAnimTransition || (AnimFrame > 0)) && (GetAnimGroup(AnimSequence) != 'Landing') )
+				{
+					if ( Acceleration != vect(0,0,0) )
+					{
+						if ( (GetAnimGroup(AnimSequence) == 'Waiting') || (GetAnimGroup(AnimSequence) == 'Gesture') || (GetAnimGroup(AnimSequence) == 'TakeHit') )
+						{
+							bAnimTransition = true;
+							TweenToRunning(0.1);
+						}
+					}
+			 		else if ( (Velocity.X * Velocity.X + Velocity.Y * Velocity.Y < 1000) 
+						&& (GetAnimGroup(AnimSequence) != 'Gesture') ) 
+			 		{
+			 			if ( GetAnimGroup(AnimSequence) == 'Waiting' )
+			 			{
+							if ( bIsTurning && (AnimFrame >= 0) ) 
+							{
+								bAnimTransition = true;
+								PlayTurning();
+							}
+						}
+			 			else if ( !bIsTurning ) 
+						{
+							bAnimTransition = true;
+							TweenToWaiting(0.2);
+						}
+					}
+				}
+			}
+			else
+			{
+				if ( (OldAccel == vect(0,0,0)) && (Acceleration != vect(0,0,0)) )
+					PlayCrawling();
+			 	else if ( !bIsTurning && (Acceleration == vect(0,0,0)) && (AnimFrame > 0.1) )
+					PlayDuck();
+			}
+		}
 	}
 
 	function ZoneChange(ZoneInfo NewZone)
@@ -3681,6 +4233,8 @@ state PlayerWalking
 		DrugEffects(deltaTime);
 		Bleed(deltaTime);
 		HighlightCenterObject();
+
+		ZymeEffects(deltaTime);
 
 
 		UpdateDynamicMusic(deltaTime);
@@ -3739,6 +4293,8 @@ state PlayerFlying
 		DrugEffects(deltaTime);
 		HighlightCenterObject();
 		UpdateDynamicMusic(deltaTime);
+		ZymeEffects(deltaTime);
+
       // DEUS_EX AMSD For multiplayer...
       MultiplayerTick(deltaTime);
 		FrobTime += deltaTime;
@@ -3836,6 +4392,8 @@ state PlayerSwimming
 		DrugEffects(deltaTime);
 		HighlightCenterObject();
 		UpdateDynamicMusic(deltaTime);
+		ZymeEffects(deltaTime);
+
       // DEUS_EX AMSD For multiplayer...
       MultiplayerTick(deltaTime);
 		FrobTime += deltaTime;
@@ -4141,6 +4699,10 @@ state Interpolating
 	// check to see if we are done interpolating, if so, then travel to the next map
 	event InterpolateEnd(Actor Other)
 	{
+		local GameDirectory mapDir;
+		local int mapIndex;
+		local bool bFoundAnyMaps;
+
 		if (InterpolationPoint(Other).bEndOfPath)
 			if (NextMap != "")
 			{
@@ -4148,10 +4710,36 @@ state Interpolating
 				//
 				// If this is the demo, show the demo splash screen, which
 				// will exit the game after the player presses a key/mouseclick
-//				if (NextMap == "02_NYC_BatteryPark")
-//					ShowDemoSplash();
-//				else
-					Level.Game.SendPlayer(Self, NextMap);
+				//== ...but ONLY for these maps, and only if they aren't available
+
+//				if(NextMap == "02_NYC_BatteryPark" || NextMap == "03_NYC_UNATCOIsland" || NextMap == "06_HONGKONG_HELIBASE")
+//				{
+//					//== Okay, because I care ENTIRELY TOO MUCH we need to have some code that makes
+//					//==  sure the next level is there, and if not that it shows the demo splash.
+//					mapDir = new(None) Class'GameDirectory';
+//					mapDir.SetDirType(mapDir.EGameDirectoryTypes.GD_Maps);
+//					mapDir.GetGameDirectory();
+//	
+//					for( mapIndex=0; mapIndex<mapDir.GetDirCount(); mapIndex++)
+//					{
+//						if(Caps(mapDir.GetDirFilename(mapIndex)) == Caps(NextMap))
+//						{
+//							Level.Game.SendPlayer(Self, NextMap$"?Difficulty="$combatDifficulty);
+//							return;
+//						}
+//						//== Make sure we can even detect any maps at all (e.g. the Steam version)
+//						else if(Caps(mapDir.GetDirFilename(mapIndex)) == "DX" || Caps(mapDir.GetDirFilename(mapIndex)) == "ENTRY" || Caps(mapDir.GetDirFilename(mapIndex)) == "DXONLY")
+//							bFoundAnyMaps = True;
+//					}
+//
+//					if(bFoundAnyMaps)
+//					{
+//						ShowDemoSplash();
+//						return;
+//					}
+//				}
+
+				Level.Game.SendPlayer(Self, NextMap$"?Difficulty="$combatDifficulty);
 			}
 	}
 
@@ -4294,7 +4882,8 @@ simulated event RenderOverlays( canvas Canvas )
 
 function bool RestrictInput()
 {
-	if (IsInState('Interpolating') || IsInState('Dying') || IsInState('Paralyzed'))
+	//== Adding a check for the Traveling flag makes sure players can't drop items in the Mission 5 capture sequence
+	if (IsInState('Interpolating') || IsInState('Dying') || IsInState('Paralyzed') || (FlagBase.GetBool('PlayerTraveling') && !bCheatsEnabled))
 		return True;
 
 	return False;
@@ -4418,6 +5007,8 @@ exec function ParseLeftClick()
 			}
 		}
 	}
+	else if(IsA('trestkon') && inHand == None && !bInHandTransition)
+		ConsoleCommand("selectfists");
 }
 
 // ----------------------------------------------------------------------
@@ -4476,22 +5067,28 @@ exec function ParseRightClick()
 			// TODO: This logic may have to get more involved if/when 
 			// we start allowing other types of objects to get stacked.
 
-			if (HandleItemPickup(FrobTarget, True) == False)
+			//== Special code for DXMP, so consumables are instantly used
+			if(Level.NetMode != NM_Standalone && Consumable(FrobTarget) != None)
+			{
+				FrobTarget.Frob(Self, inHand);
+				return;
+			}
+			else if (HandleItemPickup(FrobTarget, True) == False)
 				return;
 
 			// if the frob succeeded, put it in the player's inventory
-         //DEUS_EX AMSD ARGH! Because of the way respawning works, the item I pick up
-         //is NOT the same as the frobtarget if I do a pickup.  So how do I tell that
-         //I've successfully picked it up?  Well, if the first item in my inventory 
-         //changed, I picked up a new item.
+		         //DEUS_EX AMSD ARGH! Because of the way respawning works, the item I pick up
+		         //is NOT the same as the frobtarget if I do a pickup.  So how do I tell that
+		         //I've successfully picked it up?  Well, if the first item in my inventory 
+		         //changed, I picked up a new item.
 			if ( ((Level.NetMode == NM_Standalone) && (Inventory(FrobTarget).Owner == Self)) ||
-              ((Level.NetMode != NM_Standalone) && (oldFirstItem != Inventory)) )
+		              ((Level.NetMode != NM_Standalone) && (oldFirstItem != Inventory)) )
 			{
-            if (Level.NetMode == NM_Standalone)
-               FindInventorySlot(Inventory(FrobTarget));
-            else
-               FindInventorySlot(Inventory);
-				FrobTarget = None;
+		            if (Level.NetMode == NM_Standalone)
+		               FindInventorySlot(Inventory(FrobTarget));
+		            else
+		               FindInventorySlot(Inventory);
+			    FrobTarget = None;
 			}
 		}
 		else if (FrobTarget.IsA('Decoration') && Decoration(FrobTarget).bPushable)
@@ -4548,7 +5145,7 @@ exec function ParseRightClick()
 	{
 		// if there's no FrobTarget, put away an inventory item or drop a decoration
 		// or drop the corpse
-		if ((inHand != None) && inHand.IsA('POVCorpse'))
+		if (( (inHand != None) && inHand.IsA('POVCorpse') ) )// || (inHand.IsA('Flare') && Flare(inHand).AmbientSound != None))
 			DropItem();
 		else
 			PutInHand(None);
@@ -4628,10 +5225,7 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
 
 			// If this is a grenade or LAM (what a pain in the ass) then also check
 			// to make sure we don't have too many grenades already
-			else if ((foundItem.IsA('WeaponEMPGrenade')) || 
-			    (foundItem.IsA('WeaponGasGrenade')) || 
-				(foundItem.IsA('WeaponNanoVirusGrenade')) || 
-				(foundItem.IsA('WeaponLAM')))
+			else if (foundItem.IsA('WeaponGrenade'))
 			{
 				if (DeusExWeapon(foundItem).AmmoType.AmmoAmount >= DeusExWeapon(foundItem).AmmoType.MaxAmmo)
 				{
@@ -4650,14 +5244,13 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
 				// single use weapon, and if we already have one in our 
 				// inventory another cannot be picked up (puke). 
 
-				bCanPickup = ! ( (Weapon(foundItem).ReloadCount == 0) && 
+				bSlotSearchNeeded = ( (Weapon(foundItem).ReloadCount == 0) &&  //was bCanPickup = !
 				                 (Weapon(foundItem).PickupAmmoCount == 0) && 
 				                 (Weapon(foundItem).AmmoName != None) );
 
-				if (!bCanPickup)
-					ClientMessage(Sprintf(CanCarryOnlyOne, foundItem.itemName));
-
-			}
+//				if (!bCanPickup)
+//					ClientMessage(Sprintf(CanCarryOnlyOne, foundItem.itemName));
+			} 
 		}
 	}
 	
@@ -4813,7 +5406,7 @@ exec function PutInHand(optional Inventory inv)
 		return;
 
 	// can't do anything if you're carrying a corpse
-	if ((inHand != None) && inHand.IsA('POVCorpse'))
+	if (( (inHand != None) && inHand.IsA('POVCorpse') ) )//|| (inHand.IsA('Flare') && Flare(inHand).AmbientSound != None))
 		return;
 
 	if (inv != None)
@@ -4859,14 +5452,7 @@ function UpdateAmmoBeltText(Ammo ammo)
 {
 	local Inventory inv;
 
-	inv = Inventory;
-	while(inv != None)
-	{
-		if ((inv.IsA('DeusExWeapon')) && (DeusExWeapon(inv).AmmoType == ammo))
-			UpdateBeltText(inv);
 
-		inv = inv.Inventory;
-	}
 }
 
 // ----------------------------------------------------------------------
@@ -4933,19 +5519,19 @@ function UpdateInHand()
 		if (inHand != None)
 		{
 			// turn it off if it is on
-			if (inHand.bActive)
+			if (inHand.bActive && !inHand.IsA('ChargedPickup'))
 				inHand.Activate();
 
 			if (inHand.IsA('SkilledTool'))
 			{
 				if (inHand.IsInState('Idle'))
-            {
+				{
 					SkilledTool(inHand).PutDown();
-            }
+				}
 				else if (inHand.IsInState('Idle2'))
-            {
+				{
 					bSwitch = True;
-            }
+				}
 			}
 			else if (inHand.IsA('DeusExWeapon'))
 			{
@@ -4975,7 +5561,22 @@ function UpdateInHand()
 				if (inHand.IsA('SkilledTool'))
 					SkilledTool(inHand).BringUp();
 				else if (inHand.IsA('DeusExWeapon'))
-					SwitchWeapon(DeusExWeapon(inHand).InventoryGroup);
+				{
+					if ( Weapon == None )
+					{
+						PendingWeapon = Weapon(inHand);
+						ChangedWeapon();
+					}
+					else if ( Weapon != Weapon(inHand) )
+					{
+						PendingWeapon = Weapon(inHand);
+						if ( !Weapon.PutDown() )
+							PendingWeapon = None;
+					}
+
+					//== Bad, bad code.  Doesn't let us use multiple copies of the same weapon
+//					SwitchWeapon(DeusExWeapon(inHand).InventoryGroup);
+				}
 			}
 		}
 	}
@@ -4997,7 +5598,22 @@ function UpdateInHand()
 			else if (inHand.IsA('DeusExWeapon'))
 			{
 				if (inHand.IsInState('DownWeapon') && (Weapon == None))
-					SwitchWeapon(DeusExWeapon(inHand).InventoryGroup);
+				{
+					if ( Weapon == None )
+					{
+						PendingWeapon = Weapon(inHand);
+						ChangedWeapon();
+					}
+					else if ( Weapon != Weapon(inHand) )
+					{
+						PendingWeapon = Weapon(inHand);
+						if ( !Weapon.PutDown() )
+							PendingWeapon = None;
+					}
+
+					//== Bad, bad code.  Doesn't let us use multiple copies of the same weapon
+//					SwitchWeapon(DeusExWeapon(inHand).InventoryGroup);
+				}
 			}
 		}
 
@@ -5031,9 +5647,25 @@ function Bool IsEmptyItemSlot( Inventory anItem, int col, int row )
 	local int slotsCol;
 	local int slotsRow;
 	local Bool bEmpty;
+	local Inventory inv;
+	local DeusExRootWindow root;
+	local PersonaScreenInventory winInv;
 
 	if ( anItem == None )
 		return False;
+
+   //=== If cheats are off, then don't let us do the "overlap" trick
+   root = DeusExRootWindow(rootWindow);   
+   winInv = PersonaScreenInventory(root.GetTopWindow());
+   if(!bCheatsEnabled && (winInv == None || !winInv.bDragging))
+   {
+	inv = Inventory;
+	while(inv != None)
+	{
+		SetInvSlots(inv, 1);
+		inv = inv.Inventory;
+	}	
+   }
 
 	// First make sure the item can fit horizontally
 	// and vertically
@@ -5154,9 +5786,12 @@ function RemoveItemFromSlot(Inventory anItem)
 {
 	if (anItem != None)
 	{
-		SetInvSlots(anItem, 0);
-		anItem.invPosX = -1;
-		anItem.invPosY = -1;
+		if(anItem.invPosX != -2 && anItem.invPosY != -2)
+		{
+			SetInvSlots(anItem, 0);
+			anItem.invPosX = -1;
+			anItem.invPosY = -1;
+		}
 	}
 }
 
@@ -5189,7 +5824,9 @@ function Bool FindInventorySlot(Inventory anItem, optional Bool bSearchOnly)
 	local int col;
 	local int newSlotX;
 	local int newSlotY;
-   local int beltpos;
+	local int i;
+	local int counter;
+        local int beltpos;
 	local ammo foundAmmo;
 
 	if (anItem == None)
@@ -5206,16 +5843,16 @@ function Bool FindInventorySlot(Inventory anItem, optional Bool bSearchOnly)
 	if ((anItem.IsA('DataVaultImage')) || (anItem.IsA('NanoKey')) || (anItem.IsA('Credits')) || (anItem.IsA('Ammo')))
 		return True;
 
-   bPositionFound = False;
-   // DEUS_EX AMSD In multiplayer, due to propagation delays, the inventory refreshers in the
-   // personascreeninventory can keep bouncing items back and forth.  So just return true and
-   // place the item where it already was.
-   if ((anItem.invPosX != -1) && (anItem.invPosY != -1) && (Level.NetMode != NM_Standalone) && (!bSearchOnly))
-   {
-      SetInvSlots(anItem,1);
-      log("Trying to place item "$anItem$" when already placed at "$anItem.invPosX$", "$anItem.invPosY$".");
-      return True;
-   }
+	   bPositionFound = False;
+	   // DEUS_EX AMSD In multiplayer, due to propagation delays, the inventory refreshers in the
+	   // personascreeninventory can keep bouncing items back and forth.  So just return true and
+	   // place the item where it already was.
+	   if ((anItem.invPosX != -1) && (anItem.invPosY != -1) && (Level.NetMode != NM_Standalone) && (!bSearchOnly))
+	   {
+	      SetInvSlots(anItem,1);
+	      log("Trying to place item "$anItem$" when already placed at "$anItem.invPosX$", "$anItem.invPosY$".");
+	      return True;
+	   }
 
 	// Loop through all slots, looking for a fit
 	for (row=0; row<maxInvRows; row++)
@@ -5247,8 +5884,32 @@ function Bool FindInventorySlot(Inventory anItem, optional Bool bSearchOnly)
          {
             if ( (DeusExRootWindow(rootWindow).hud.belt.objects[beltpos].item == None) && (anItem.TestMPBeltSpot(beltpos)) )
             {
+		//For multi-slot weapons, make sure there's enough slots for them to occupy
+		if(MPBeltSizer(anItem) > 1)
+		{
+			counter = 0;
+			//Check slots 1 through 6
+			for(i = 1; i <= 6; i++)
+			{
+				//If the slot is empty...
+				if(DeusExRootWindow(rootWindow).hud.belt.objects[i].item == None)
+					counter++; //... add to the counter
+			}
+
+			//If the counter is less than the number of slots it needs to take up,
+			// end the function and return false
+			if(counter < MPBeltSizer(anItem))
+				return False;
+
+			//Otherwise we continue
+		}
                bPositionFound = True;
             }
+	    //=== For the new way Deus Ex MP will work.  The Change Ammo button will be very important -- Y|yukichigai
+	    else if(DeusExWeapon(anItem).TestCycleable() || anItem.IsA('Multitool') || anItem.IsA('Lockpick') || anItem.IsA('BioelectricCell') || anItem.IsA('MedKit'))
+	    {
+		bPositionFound = True;
+	    }
          }
       }
       else
@@ -5305,6 +5966,22 @@ function Bool FindInventorySlotXY(int invSlotsX, int invSlotsY, out int newSlotX
 
 	return bPositionFound;
 }
+
+function Inventory FindInventoryType( class DesiredClass )
+{
+	local Inventory Inv;
+
+	Inv = Super.FindInventoryType(DesiredClass);
+
+
+	if(Inv != None)
+	{
+		//== Don't mess up the special carry items
+		if(Inv.invPosX == -2 || Inv.invPosY == -2)
+			return None;
+	}
+	return Inv;
+} 
 
 // ----------------------------------------------------------------------
 // DumpInventoryGrid()
@@ -5683,7 +6360,8 @@ function DropDecoration()
 					mult = 1.0;
 			}
 
-			if (IsLeaning())
+			//== We shouldn't throw items due to being dropped whilst in a conversation, because that tends to kill or PO who we're conversing with
+			if (IsLeaning() || IsInState('Conversation'))
 				CarriedDecoration.Velocity = vect(0,0,0);
 			else
 				CarriedDecoration.Velocity = Vector(ViewRotation) * mult * 500 + vect(0,0,220) + 40 * VRand();
@@ -5748,6 +6426,8 @@ function DropDecoration()
 // throws an item where you are currently looking
 // or places it on your currently highlighted object
 // if None is passed in, it drops what's inHand
+// Y|yukichigai -- in MP it will prevent you from dropping grenades,
+// since that causes all manner of glitchiness
 // ----------------------------------------------------------------------
 
 exec function bool DropItem(optional Inventory inv, optional bool bDrop)
@@ -5775,6 +6455,17 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 	else
 	{
 		item = inv;
+	}
+
+	//Since we have a new invo system for MP let's not let people screw
+	// themselves by dropping grenades.
+	if(DeusExWeapon(item) != None)
+	{
+		if(Level.NetMode != NM_Standalone && DeusExWeapon(item).IsA('WeaponGrenade') && DeusExWeapon(item).TestCycleable())
+		{
+			ClientMessage("You cannot drop grenades in Shifter MP.  Use the Change Ammo button to switch grenades");
+			return False;
+		}
 	}
 
 	if (item != None)
@@ -5807,15 +6498,15 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 
 		// Don't allow active ChargedPickups to be dropped
 		if ((item.IsA('ChargedPickup')) && (ChargedPickup(item).IsActive()))
-        {
+        	{
 			return False;
-        }
+        	}
 
 		// don't let us throw away the nanokeyring
 		if (item.IsA('NanoKeyRing'))
-        {
+        	{
 			return False;
-        }
+        	}
 
 		// take it out of our hand
 		if (item == inHand)
@@ -5838,7 +6529,9 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 				if (previousItemInHand == item)
 					PutInHand(previousItemInHand);
 
+				inv = item;
 				item = Spawn(item.Class, Owner);
+				DeusExPickup(item).TransferSkin(inv);
 			}
 			else
 			{
@@ -5870,6 +6563,58 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 		// if we are highlighting something, try to place the object on the target
 		if ((FrobTarget != None) && !item.IsA('POVCorpse'))
 		{
+			if(ScriptedPawn(FrobTarget) != None && DeusExWeapon(item) != None)
+			{
+				//== See if we can give this weapon to the NPC
+				if(ScriptedPawn(FrobTarget).bCanGiveWeapon && VSize(FrobTarget.Location - Location) <= 64 && ScriptedPawn(FrobTarget).CheckPawnAllianceType(Self) != ALLIANCE_Hostile)
+				{
+					//== Since we're actually paying attention to what the NPC has, it'd be a bit weird if NPC Random Inventory suddenly went off.
+					ScriptedPawn(FrobTarget).bNPCRandomGiven = True;
+
+					//== Give them the weapon
+					DeleteInventory(item);
+
+					item.InitialState='Idle2';
+					item.GiveTo(ScriptedPawn(FrobTarget));
+					item.SetBase(FrobTarget);
+					//== Give them ammo for the weapon if they don't have it
+					if(DeusExWeapon(item).AmmoType != None)
+					{
+			     			if ((Weapon(item).AmmoType == None) && (Weapon(item).AmmoName != None) && (Weapon(item).AmmoName != Class'AmmoNone'))
+			     			{
+			     				Weapon(item).AmmoType = Ammo(ScriptedPawn(FrobTarget).FindInventoryType(Weapon(item).AmmoName));
+			      				if ((Weapon(item).AmmoType == None) && (Weapon(item).AmmoName != None) && (Weapon(item).AmmoName != Class'AmmoNone'))
+			      				{
+			      					Weapon(item).AmmoType = Ammo(ScriptedPawn(FrobTarget).FindInventoryType(Weapon(item).AmmoName));
+			      					if (Weapon(item).AmmoType == None)
+			      					{
+									Weapon(item).AmmoType = spawn(Weapon(item).AmmoName,FrobTarget);
+			      					}
+			      				}
+							if(Weapon(item).AmmoType != None)
+							{
+								//== Just to be sure, make sure the NPC has a little extra ammo
+								Weapon(item).AmmoType.AmmoAmount += (DeusExWeapon(item).AmmoName).default.AmmoAmount;
+								Weapon(item).AmmoType.InitialState='Idle2';
+								Weapon(item).AmmoType.GiveTo(ScriptedPawn(FrobTarget));
+								Weapon(item).AmmoType.SetBase(FrobTarget);
+							}
+			     			}
+						else if(Weapon(item).AmmoType != None)
+							Weapon(item).AmmoType.AmmoAmount += (DeusExWeapon(item).AmmoName).default.AmmoAmount;
+					}
+
+					//== Make them use the weapon
+					ScriptedPawn(FrobTarget).SetWeapon(Weapon(item));
+
+					if(ScriptedPawn(FrobTarget).bImportant)
+						flagBase.setBool(DeusExRootWindow(rootWindow).StringToName(FrobTarget.BindName $"_Equipped"),True);
+
+					ClientMessage("Gave "$ item.ItemName $" to "$ FrobTarget.FamiliarName);
+					return True;
+				}
+			}
+
 			item.Velocity = vect(0,0,0);
 
 			// play the correct anim
@@ -5940,6 +6685,7 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 							carc.MaxDamage = POVCorpse(item).MaxDamage;
 							carc.itemName = POVCorpse(item).CorpseItemName;
 							carc.CarcassName = POVCorpse(item).CarcassName;
+							carc.FamiliarName = POVCorpse(item).FamiliarName; //And track the Familiar Name too
 							carc.Velocity = item.Velocity * 0.5;
 							item.Velocity = vect(0,0,0);
 							carc.bHidden = False;
@@ -6001,7 +6747,7 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 	if ((bRemovedFromSlots) && (item != None) && (!bDropped))
 	{
         //DEUS_EX AMSD Use the function call for this, helps multiplayer
-        PlaceItemInSlot(item, itemPosX, itemPosY);
+	        PlaceItemInSlot(item, itemPosX, itemPosY);
 	}
 
 	return bDropped;
@@ -6864,7 +7610,7 @@ exec function NextBeltItem()
 				if (++slot >= 10)
 					slot = 0;
 			}
-			until (root.ActivateObjectInBelt(slot) || (startSlot == slot));
+			until ((root.ActivateObjectInBelt(slot)) || (startSlot == slot));
 
 			clientInHandPending = root.hud.belt.GetObjectFromBelt(slot);
 		}
@@ -6902,7 +7648,7 @@ exec function PrevBeltItem()
 				if (--slot <= -1)
 					slot = 9;
 			}
-			until (root.ActivateObjectInBelt(slot) || (startSlot == slot));
+			until ((root.ActivateObjectInBelt(slot)) || (startSlot == slot));
 
 			clientInHandPending = root.hud.belt.GetObjectFromBelt(slot);
 		}
@@ -6968,6 +7714,7 @@ exec function ShowMainMenu()
 
 function PostIntro()
 {
+	FlagBase.DeleteFlag('ViewIntro', FLAG_Bool);
 	if (bStartNewGameAfterIntro)
 	{
 		bStartNewGameAfterIntro = False;
@@ -7066,6 +7813,9 @@ exec function Fire(optional float F)
 			ShowMainMenu();
 		return;
 	}
+
+	//if(IsA('trestkon') && inHand == None && !bInHandTransition)
+	//	ConsoleCommand("selectfists");
 
 	Super.Fire(F);
 }
@@ -7228,7 +7978,7 @@ function bool AddInventory(inventory item)
 	//
 	// Don't add Ammo and don't add Images!
 
-	if ((item != None) && !item.IsA('Ammo') && (!item.IsA('DataVaultImage')) && (!item.IsA('Credits')))
+	if ((item != None) && !item.IsA('Ammo') && (!item.IsA('DataVaultImage')) && (!item.IsA('Credits')) && item.invPosX != -2 && item.invPosY != -2)
 	{
 		root = DeusExRootWindow(rootWindow);
 
@@ -7581,8 +8331,9 @@ function String GetDisplayName(Actor actor, optional Bool bUseFamiliar)
 
 	if (displayName == "")
 	{
+		//== Modified so we can have dynamic name binds on Decorations
 		if (actor.IsA('DeusExDecoration'))
-			displayName = DeusExDecoration(actor).itemName;
+			displayName = DeusExDecoration(actor).GetDecoName(); //itemName;
 		else
 			displayName = actor.BindName;
 	}
@@ -7666,7 +8417,8 @@ function bool StartConversationByName(
 	Name conName, 
 	Actor conOwner, 
 	optional bool bAvoidState, 
-	optional bool bForcePlay
+	optional bool bForcePlay,
+	optional string startSection
 	)
 {
 	local ConListItem conListItem;
@@ -7703,7 +8455,7 @@ function bool StartConversationByName(
 		// to play!
 
 		if ((dist <= 800) || (bForcePlay))
-			bConversationStarted = StartConversation(conOwner, IM_Named, con, bAvoidState, bForcePlay);
+			bConversationStarted = StartConversation(conOwner, IM_Named, con, bAvoidState, bForcePlay, startSection);
 	}
 
 	return bConversationStarted;
@@ -7741,7 +8493,8 @@ function bool StartConversation(
 	EInvokeMethod invokeMethod, 
 	optional Conversation con,
 	optional bool bAvoidState,
-	optional bool bForcePlay
+	optional bool bForcePlay,
+	optional string startSection
 	)
 {
 	local DeusExRootWindow root;
@@ -7791,7 +8544,7 @@ function bool StartConversation(
 		// Check if the person we're trying to start the conversation 
 		// with is a Foe and this is a Third-Person conversation.  
 		// If so, ABORT!
-		if ((!bForcePlay) && ((!con.bFirstPerson) && (ScriptedPawn(invokeActor) != None) && (ScriptedPawn(invokeActor).GetPawnAllianceType(Self) == ALLIANCE_Hostile)))
+		if ((!bForcePlay) && ((!con.bFirstPerson) && (ScriptedPawn(invokeActor) != None) && (ScriptedPawn(invokeActor).CheckPawnAllianceType(Self) == ALLIANCE_Hostile)))
 			return False;
 
 		// If the player is involved in this conversation, make sure the 
@@ -7847,6 +8600,7 @@ function bool StartConversation(
 		conPlay.SetStartActor(invokeActor);
 		conPlay.SetConversation(con);
 		conPlay.SetForcePlay(bForcePlay);
+		conPlay.SetStartLabel(startSection);
 		conPlay.SetInitialRadius(VSize(Location - invokeActor.Location));
 
 		// If this conversation was invoked with IM_Named, then save away
@@ -9194,6 +9948,7 @@ function CreateKillerProfile( Pawn killer, int damage, name damageType, String b
 			killProfile.activeSkillLevel = 0;
 			break;
 		case 'Burned':
+		case 'Flared':
 		case 'Flamed':
 			if (( WeaponPlasmaRifle(w) != None ) || ( WeaponFlamethrower(w) != None ))
 			{
@@ -9286,9 +10041,14 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 	// Y is side to side, and Z is top to bottom
 	offset = (hitLocation - Location) << Rotation;
 
+	if(damageType == 'Flared')
+		damageType = 'Flamed';
+
 	// add a HUD icon for this damage type
 	if ((damageType == 'Poison') || (damageType == 'PoisonEffect'))  // hack
 		AddDamageDisplay('PoisonGas', offset);
+	else if (damageType == 'ExplodeShot') //hackish
+		AddDamageDisplay('Exploded', offset);
 	else
 		AddDamageDisplay(damageType, offset);
 
@@ -9312,6 +10072,9 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 
 	// check for augs or inventory items
 	bDamageGotReduced = DXReduceDamage(Damage, damageType, hitLocation, actualDamage, False);
+
+	if(damageType == 'ExplodeShot')
+		damageType = 'Exploded';
 
    // DEUS_EX AMSD Multiplayer shield
    if (Level.NetMode != NM_Standalone)
@@ -9692,6 +10455,9 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 	bReduced = False;
 	newDamage = Float(Damage);
 
+	if(damageType == 'Flared')
+		damageType = 'Flamed';
+
 	if ((damageType == 'TearGas') || (damageType == 'PoisonGas') || (damageType == 'Radiation') ||
 		(damageType == 'HalonGas')  || (damageType == 'PoisonEffect') || (damageType == 'Poison'))
 	{
@@ -9713,21 +10479,18 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 		// go through the actor list looking for owned HazMatSuits
 		// since they aren't in the inventory anymore after they are used
 
-
-      //foreach AllActors(class'HazMatSuit', suit)
-//			if ((suit.Owner == Self) && suit.bActive)
-      if (UsingChargedPickup(class'HazMatSuit'))
-			{
-				skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-				newDamage *= 0.75 * skillLevel;
-			}
+		if (UsingChargedPickup(class'HazMatSuit'))
+		{
+			skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
+			newDamage *= 0.75 * skillLevel;
+		}
 	}
 
-	if ((damageType == 'Shot') || (damageType == 'Sabot') || (damageType == 'Exploded') || (damageType == 'AutoShot'))
+	if ((damageType == 'Shot') || (damageType == 'Sabot') || (damageType == 'Exploded') || (damageType == 'AutoShot') || (damageType == 'Shell') || (damageType == 'ExplodeShot'))
 	{
 		// go through the actor list looking for owned BallisticArmor
 		// since they aren't in the inventory anymore after they are used
-      if (UsingChargedPickup(class'BallisticArmor'))
+			if (UsingChargedPickup(class'BallisticArmor'))
 			{
 				skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
 				newDamage *= 0.5 * skillLevel;
@@ -9740,7 +10503,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 			ExtinguishFire();
 	}
 
-	if ((damageType == 'Shot') || (damageType == 'AutoShot'))
+	if ((damageType == 'Shot') || (damageType == 'AutoShot') || (damageType == 'Shell') || (damageType == 'ExplodeShot'))
 	{
 		if (AugmentationSystem != None)
 			augLevel = AugmentationSystem.GetAugLevelValue(class'AugBallistic');
@@ -9756,6 +10519,13 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
 		if (augLevel >= 0.0)
 			newDamage *= augLevel;
+
+		//== New stuff.  HazMat suit also resists EMP
+		if (UsingChargedPickup(class'HazMatSuit'))
+		{
+			skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
+			newDamage *= 0.75 * skillLevel;
+		}
 	}
 
 	if ((damageType == 'Burned') || (damageType == 'Flamed') ||
@@ -9766,6 +10536,13 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
 		if (augLevel >= 0.0)
 			newDamage *= augLevel;
+
+		//== New stuff.  Make the HazMat Suit actually resist Fire/Shock damage like it says it does
+		if (UsingChargedPickup(class'HazMatSuit'))
+		{
+			skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
+			newDamage *= 0.75 * skillLevel;
+		}
 	}
 
 	if (newDamage < Damage)
@@ -9788,7 +10565,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 	//
 	// Reduce or increase the damage based on the combat difficulty setting
 	//
-	if ((damageType == 'Shot') || (damageType == 'AutoShot'))
+	if ((damageType == 'Shot') || (damageType == 'AutoShot') || (damageType == 'Shell'))
 	{
 		newDamage *= CombatDifficulty;
 
@@ -10055,7 +10832,7 @@ function PlayDXTakeDamageHit(float Damage, vector HitLocation, name damageType, 
 
 function PlayHit(float Damage, vector HitLocation, name damageType, vector Momentum)
 {
-	if ((Damage > 0) && (damageType == 'Shot') || (damageType == 'Exploded') || (damageType == 'AutoShot'))
+	if ((Damage > 0) && (damageType == 'Shot') || (damageType == 'Exploded') || (damageType == 'AutoShot') || (damageType == 'Shell'))
 		SpawnBlood(HitLocation, Damage);
 
 	PlayTakeHitSound(Damage, damageType, 1);
@@ -10070,13 +10847,49 @@ function PlayDeathHit(float Damage, vector HitLocation, name damageType, vector 
 	PlayDying(damageType, HitLocation);
 }
 
+function Bool HasTwoHandedWeapon()
+{
+	if ((Weapon != None) && (Weapon.Mass >= 30))
+		return True;
+	else
+		return False;
+}
+
+// ----------------------------------------------------------------------
+// PlayDodge()
+//  In Unrealistic, players can dodge.  Make sure it looks good
+// ----------------------------------------------------------------------
+
+function PlayDodge(eDodgeDir DodgeMove)
+{
+	//== Slow animations make it look like they're waiting to land
+	switch(DodgeMove)
+	{
+		case DODGE_Left:
+		case DODGE_Right:
+				if (HasTwoHandedWeapon())
+					LoopAnim('Strafe2H',0.1,0.1);
+				else
+					LoopAnim('Strafe',0.1,0.1);
+				break;
+		case DODGE_Back:
+		case DODGE_Forward:
+				if (HasTwoHandedWeapon())
+					LoopAnim('RunShoot2H',0.1,0.1);
+				else
+					LoopAnim('Run',0.1,0.1);
+				break;
+	}
+}
+
 // ----------------------------------------------------------------------
 // SkillPointsAdd()
 // ----------------------------------------------------------------------
 
 function SkillPointsAdd(int numPoints)
 {
-	if (numPoints > 0)
+	//Modified so it can take away points as well -- Y|yukichigai
+	if (numPoints != 0) //Was > 0
 	{
 		SkillPointsAvail += numPoints;
 		SkillPointsTotal += numPoints;
@@ -10085,9 +10898,25 @@ function SkillPointsAdd(int numPoints)
 		    (DeusExRootWindow(rootWindow).hud != None) && 
 			(DeusExRootWindow(rootWindow).hud.msgLog != None))
 		{
-			ClientMessage(Sprintf(SkillPointsAward, numPoints));
-			DeusExRootWindow(rootWindow).hud.msgLog.PlayLogSound(Sound'LogSkillPoints');
+			//You were given skill points, hooray!
+			if(numPoints > 0)
+			{
+				ClientMessage(Sprintf(SkillPointsAward, numPoints));
+				DeusExRootWindow(rootWindow).hud.msgLog.PlayLogSound(Sound'LogSkillPoints');
+			}
+			//You lost skill points.  You must have screwed up.  Boo!
+			else
+			{
+				ClientMessage(Sprintf("%d skill points deducted!", -1*(numPoints)));
+				DeusExRootWindow(rootWindow).hud.msgLog.PlayLogSound(Sound'TurretSwitch');
+			}
 		}
+
+		//== Prevent any potential crashes due to skillpoint awards
+		if(SkillPointsAvail > 115900)
+			SkillPointsAvail = 115900;
+		if(SkillPointsTotal > 115900)
+			SkillPointsTotal = 115900;
 	}
 }
 
@@ -10135,6 +10964,10 @@ function float CalculatePlayerVisibility(ScriptedPawn P)
 				vis = 0.0;
 			}
 	}
+
+	//== If you're on fire, sorry buddy, they can see you
+	if(bOnFire && vis <= 0.5)
+		vis += 0.5;
 
 	return vis;
 }
@@ -11777,6 +12610,26 @@ function MultiplayerTick(float DeltaTime)
    lastRefreshTime = 0;
 }
 
+
+// ----------------------------------------------------------------------
+// MPBeltSizer() -- Y|yukichigai
+// Returns the number of belt spots the item will take up in Shifter MP
+// ----------------------------------------------------------------------
+function int MPBeltSizer(Inventory anItem)
+{
+	local int square;
+	local int retval;
+
+	square = anItem.invSlotsX * anItem.invSlotsY;
+	if(square == 8)
+		retval = 3;
+	else if(square >= 4)
+		retval = 2;
+	else
+		retval = 1;
+	return retval;
+}	
+
 // ----------------------------------------------------------------------
 
 function ForceDroneOff()
@@ -12076,18 +12929,17 @@ defaultproperties
      AugPrefs(0)=AugVision
      AugPrefs(1)=AugHealing
      AugPrefs(2)=AugSpeed
-     AugPrefs(3)=AugDefense
-     AugPrefs(4)=AugBallistic
-     AugPrefs(5)=AugShield
-     AugPrefs(6)=AugEMP
-     AugPrefs(7)=AugStealth
+     AugPrefs(3)=AugBallistic
+     AugPrefs(4)=AugShield
+     AugPrefs(5)=AugEMP
+     AugPrefs(6)=AugStealth
+     AugPrefs(7)=AugDrone
      AugPrefs(8)=AugAqualung
-     MenuThemeName="Steel"
+     MenuThemeName="Default"
      HUDThemeName="Default"
      bHUDBordersVisible=True
      bHUDBordersTranslucent=True
      bHUDBackgroundTranslucent=True
-     bMenusTranslucent=True
      InventoryFull="You don't have enough room in your inventory to pick up the %s"
      TooMuchAmmo="You already have enough of that type of ammo"
      TooHeavyToLift="It's too heavy to lift"

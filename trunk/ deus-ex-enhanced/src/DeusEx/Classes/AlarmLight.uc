@@ -13,11 +13,71 @@ enum ESkinColor
 
 var() ESkinColor SkinColor;
 var() bool bIsOn;
+var() Texture onTex;
 
+function bool Facelift(bool bOn)
+{
+	local String texstr1, texstr2;
+
+	if(!Super.Facelift(bOn))
+		return false;
+
+	if(bOn)
+		Skin = Texture(DynamicLoadObject("HDTPDecos.Skins.HDTPAlarmLightTex1", class'Texture'));
+
+	switch (SkinColor)
+	{
+		//default:
+		case SC_Red:
+			texstr1 = "AlarmLightTex2";
+			texstr2 = "AlarmLightTex3";
+			LightHue = 0;
+			break;
+
+		case SC_Green:
+			texstr1 = "AlarmLightTex4";
+			texstr2 = "AlarmLightTex5";
+			LightHue = 64;
+			break;
+
+		case SC_Blue:
+			texstr1 = "AlarmLightTex6";
+			texstr2 = "AlarmLightTex7";
+			LightHue = 160;
+			break;
+
+		case SC_Amber:
+			texstr1 = "AlarmLightTex8";
+			texstr2 = "AlarmLightTex9";
+			LightHue = 36;
+			break;
+	}
+
+	if(Skin == None || !bOn)
+	{
+		Skin = Default.Skin;
+		MultiSkins[1] = Texture(DynamicLoadObject("DeusExDeco." $ texstr1, class'Texture', True));
+		MultiSkins[2] = Texture(DynamicLoadObject("DeusExDeco." $ texstr2, class'Texture', True));
+		Texture = Texture(DynamicLoadObject("DeusExDeco." $ texstr2, class'Texture', True));
+	}
+	else
+	{
+		MultiSkins[1] = Texture(DynamicLoadObject("HDTPDecos.Skins.HDTP" $ texstr1, class'Texture', True));
+		MultiSkins[2] = Texture(DynamicLoadObject("HDTPDecos.Skins.HDTP" $ texstr2, class'Texture', True));
+		Texture = Texture(DynamicLoadObject("HDTPDecos.Skins.HDTP" $ texstr2, class'Texture', True));
+	}
+
+	onTex = MultiSkins[1];
+
+	return true;
+}
+
+//== This function is never used anymore, but I'm leaving it just in case some antequated code decides to call it
 function SetLightColor(ESkinColor color)
 {
 	switch (SkinColor)
 	{
+		//default:
 		case SC_Red:		MultiSkins[1] = Texture'AlarmLightTex2';
 							MultiSkins[2] = Texture'AlarmLightTex3';
 							Texture = Texture'AlarmLightTex3';
@@ -45,7 +105,7 @@ function BeginPlay()
 {
 	Super.BeginPlay();
 
-	SetLightColor(SkinColor);
+	//SetLightColor(SkinColor);
 
 	if (!bIsOn)
 	{
@@ -61,7 +121,8 @@ function Trigger(Actor Other, Pawn Instigator)
 	if (!bIsOn)
 	{
 		bIsOn = True;
-		SetLightColor(SkinColor);
+		//SetLightColor(SkinColor);
+		MultiSkins[1] = onTex;
 		LightType = LT_Steady;
 		bFixedRotationDir = True;
 	}

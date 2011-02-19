@@ -260,6 +260,12 @@ function DrawWindow(GC gc)
 				gc.SetTileColor(colBackground);
 				gc.DrawBox(infoX+1, infoY+1, infoW-2, infoH-2, 0, 0, 1, Texture'Solid');
 
+				if((dxMover != None) && dxMover.bLocked && dxMover.bBreakable)
+				{
+					strInfo = "(" $ dxMover.minDamageThreshold $ " min)";
+					gc.DrawText(infoX+(infoW-barLength-2), infoY+4+2*(infoH-8)/3, barLength, ((infoH-8)/3)-2, strInfo);
+				}
+
 				// draw the absolute number of lockpicks on top of the colored bar
 				if ((dxMover != None) && dxMover.bLocked && dxMover.bPickable)
 				{
@@ -340,7 +346,13 @@ function DrawWindow(GC gc)
 				if (frobTarget.IsA('Pawn'))
 					strInfo = player.GetDisplayName(frobTarget);
 				else if (frobTarget.IsA('DeusExCarcass'))
-					strInfo = DeusExCarcass(frobTarget).itemName;
+				{
+					strInfo = DeusExCarcass(frobTarget).FamiliarName;
+					if(strInfo == "")
+						strInfo = DeusExCarcass(frobTarget).UnfamiliarName;
+					if(strInfo == "")
+						strInfo = DeusExCarcass(frobTarget).itemName;
+				}
 				else if (frobTarget.IsA('Inventory'))
 					strInfo = Inventory(frobTarget).itemName;
 				else if (frobTarget.IsA('DeusExDecoration'))

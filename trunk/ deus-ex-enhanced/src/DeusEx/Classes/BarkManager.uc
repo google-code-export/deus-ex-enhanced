@@ -119,7 +119,10 @@ function bool StartBark(DeusExRootWindow newRoot, ScriptedPawn newBarkPawn, EBar
 			if (speechAudio != None)
 			{
 				bHaveSpeechAudio = True;
-				playingSoundID = newBarkPawn.PlaySound(speechAudio, SLOT_Talk,,,1024.0);
+				if(DeusExPlayer(GetPlayerPawn()).DrugEffectTimer < 0)
+					playingSoundID = newBarkPawn.PlaySound(speechAudio, SLOT_Talk,,,1024.0, 0.5);
+				else
+					playingSoundID = newBarkPawn.PlaySound(speechAudio, SLOT_Talk,,,1024.0);
 				barkDuration = con.GetSpeechLength(conSpeech.soundID);
 			}
 		}

@@ -3,6 +3,48 @@
 //=============================================================================
 class Seagull extends Bird;
 
+function Carcass SpawnCarcass()
+{
+	local Inventory item;
+
+	if (bStunned || DeusExPlayer(GetPlayerPawn()).combatDifficulty <= 4.0)
+		return Super.SpawnCarcass();
+
+	item = Inventory;
+
+	while(item != None)
+	{
+		if(item.Base != Self)
+			break;
+
+		if(item.IsA('DeusExWeapon') && DeusExWeapon(item).bNativeAttack)
+		{}
+		else if(item.IsA('DeusExAmmo') && (!DeusExAmmo(item).bIsNonStandard || item.PickupViewMesh == LodMesh'DeusExItems.TestBox' || item.Description == (class'DeusExAmmo').Default.Description))
+		{}
+		else
+		{
+			if(item.IsA('DeusExWeapon'))
+			{
+				DeusExWeapon(item).AmmoType = None;
+				DeusExWeapon(item).PickupAmmoCount = Rand(DeusExWeapon(item).Default.PickupAmmoCount) + 1;
+			}
+
+			DeleteInventory(item);
+			item.DropFrom(Location + vect(0,0,2));
+		}
+		item = item.Inventory;
+
+		if(item == Inventory) // looping inventory
+			item = None;
+	}
+
+	Explode();
+
+	return None;
+}
+
+//     InitialAlliances(0)=(AllianceName=Pigeon,AllianceLevel=-1.000000)
+
 defaultproperties
 {
      CarcassType=Class'DeusEx.SeagullCarcass'

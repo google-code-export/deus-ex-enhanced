@@ -34,6 +34,8 @@ defaultproperties
      bCanHaveScope=True
      ScopeFOV=25
      bCanHaveLaser=True
+     AmmoNames(0)=Class'DeusEx.Ammo10mm'
+     AmmoNames(1)=Class'DeusEx.Ammo10mmEX'
      recoilStrength=0.300000
      mpReloadTime=2.000000
      mpHitDamage=20
@@ -46,6 +48,7 @@ defaultproperties
      bCanHaveModAccurateRange=True
      bCanHaveModReloadTime=True
      bCanHaveModRecoilStrength=True
+     bCanHaveModShotTime=True
      AmmoName=Class'DeusEx.Ammo10mm'
      ReloadCount=6
      PickupAmmoCount=6

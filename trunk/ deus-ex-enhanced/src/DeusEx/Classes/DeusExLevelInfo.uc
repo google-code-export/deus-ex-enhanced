@@ -14,6 +14,11 @@ var() int					TrueNorth;
 var() localized String		startupMessage[4];		// printed when the level starts
 var() String				ConversationPackage;  // DEUS_EX STM -- added so SDK users will be able to use their own convos
 
+var() String emailSubject[25];
+var() String emailFrom[25];
+var() String emailTo[25];
+var() String emailCC[25];
+var() String emailString[25];
 
 function SpawnScript()
 {

@@ -48,6 +48,29 @@ function GotoDisabledState(name damageType, EHitLocation hitPos)
 		GotoNextState();
 }
 
+//== Paul shouldn't kill anybody in the first mission
+function InitializeInventory()
+{
+	local DeusExLevelInfo info;
+	info = DeusExPlayer(GetPlayerPawn()).GetLevelInfo();
+
+	if(caps(info.mapName) == "01_NYC_UNATCOISLAND")
+	{
+		InitialInventory[0].Inventory = Class'WeaponMiniCrossbow';
+		InitialInventory[1].Inventory = Class'AmmoDartPoison';
+		InitialInventory[1].Count = 20;
+		InitialInventory[2].Inventory = Class'WeaponPepperGun';
+		InitialInventory[3].Inventory = Class'AmmoPepper';
+		InitialInventory[3].Count = 200;
+		InitialInventory[4].Inventory = Class'WeaponProd';
+		InitialInventory[5].Inventory = Class'AmmoBattery';
+		InitialInventory[5].Count = 12;
+		InitialInventory[6].Inventory = Class'WeaponBlackjack';
+	}
+
+	Super.InitializeInventory();
+}
+
 // ----------------------------------------------------------------------
 // SetSkin()
 // ----------------------------------------------------------------------
@@ -80,6 +103,8 @@ function SetSkin(DeusExPlayer player)
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 
+//     InitialInventory(4)=(Inventory=Class'DeusEx.WeaponSword')
+
 defaultproperties
 {
      CarcassType=Class'DeusEx.PaulDentonCarcass'
@@ -91,7 +116,7 @@ defaultproperties
      InitialInventory(1)=(Inventory=Class'DeusEx.Ammo762mm',Count=12)
      InitialInventory(2)=(Inventory=Class'DeusEx.WeaponPlasmaRifle')
      InitialInventory(3)=(Inventory=Class'DeusEx.AmmoPlasma')
-     InitialInventory(4)=(Inventory=Class'DeusEx.WeaponSword')
+     InitialInventory(4)=(Inventory=Class'DeusEx.WeaponPrototypeSwordA')
      BurnPeriod=0.000000
      bHasCloak=True
      CloakThreshold=100

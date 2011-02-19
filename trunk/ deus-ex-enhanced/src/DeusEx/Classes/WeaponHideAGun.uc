@@ -1,7 +1,14 @@
 //=============================================================================
 // WeaponHideAGun.
 //=============================================================================
+
+//Modified -- Y|yukichigai
+
 class WeaponHideAGun extends DeusExWeapon;
+
+//Upped the amount of damage it does from 50 to 75
+//Changed ReloadCount and PickupAmmoCount from 0
+//Added in InventoryGroup=20
 
 defaultproperties
 {
@@ -11,7 +18,8 @@ defaultproperties
      Concealability=CONC_All
      ShotTime=0.300000
      reloadTime=0.000000
-     HitDamage=25
+     HitDamage=75
+     ProjectileDamage=75
      maxRange=24000
      AccurateRange=14400
      BaseAccuracy=0.000000
@@ -34,7 +42,7 @@ defaultproperties
      largeIcon=Texture'DeusExUI.Icons.LargeIconHideAGun'
      largeIconWidth=29
      largeIconHeight=47
-     Description="The PS20 is a disposable, plasma-based weapon developed by an unknown security organization as a next generation stealth pistol.  Unfortunately, the necessity of maintaining a small physical profile restricts the weapon to a single shot.  Despite its limited functionality, the PS20 can be lethal at close range."
+     Description="The PS20 is a disposable, plasma-based weapon developed by an unknown security organization as a next generation stealth pistol.  Unfortunately, the necessity of maintaining a small physical profile restricts the weapon to a single shot.  Despite its limited functionality, the PS20 is lethal under most circumstances."
      beltDescription="PS20"
      Mesh=LodMesh'DeusExItems.HideAGunPickup'
      CollisionRadius=3.300000

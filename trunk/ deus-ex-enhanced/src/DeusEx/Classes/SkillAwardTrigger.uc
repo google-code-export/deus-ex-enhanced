@@ -21,6 +21,9 @@ function Trigger(Actor Other, Pawn Instigator)
 	{
 		player.SkillPointsAdd(skillPointsAdded);
 		player.ClientMessage(awardMessage);
+
+		if(bTriggerOnceOnly)
+			Tag = '';
 	}
 }
 

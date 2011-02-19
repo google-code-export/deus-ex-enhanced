@@ -37,143 +37,121 @@ replication
 }
 
 // WOW! What a mess.  I wish you could convert strings to names!
+//== Well you can.  Silly Deus Ex devs -- Y|yukichigai
 function SetSkin(EButtonType type, bool lit)
 {
+	local String texstr;
+
 	switch (type)
 	{
-		case BT_Up:			if (lit)
-							{
-								Skin = Texture'Button1Tex2';
-								ScaleGlow = 3.0;
-							}
-							else
-							{
-								Skin = Texture'Button1Tex1';
-								ScaleGlow = Default.ScaleGlow;
-							}
+		case BT_Up:			if(lit)		texstr = "Button1Tex2";
+						else		texstr = "Button1Tex1";
 							break;
-		case BT_Down:		if (lit)
-							{
-								Skin = Texture'Button1Tex4';
-								ScaleGlow = 3.0;
-							}
-							else
-							{
-								Skin = Texture'Button1Tex3';
-								ScaleGlow = Default.ScaleGlow;
-							}
+		case BT_Down:			if(lit)		texstr = "Button1Tex4";
+						else		texstr = "Button1Tex3";
 							break;
-		case BT_1:			if (lit)
-							{
-								Skin = Texture'Button1Tex6';
-								ScaleGlow = 3.0;
-							}
-							else
-							{
-								Skin = Texture'Button1Tex5';
-								ScaleGlow = Default.ScaleGlow;
-							}
+		case BT_1:			if(lit)		texstr = "Button1Tex6";
+						else		texstr = "Button1Tex5";
 							break;
-		case BT_2:			if (lit)
-							{
-								Skin = Texture'Button1Tex8';
-								ScaleGlow = 3.0;
-							}
-							else
-							{
-								Skin = Texture'Button1Tex7';
-								ScaleGlow = Default.ScaleGlow;
-							}
+		case BT_2:			if(lit)		texstr = "Button1Tex8";
+						else		texstr = "Button1Tex7";
 							break;
-		case BT_3:			if (lit)
-							{
-								Skin = Texture'Button1Tex10';
-								ScaleGlow = 3.0;
-							}
-							else
-							{
-								Skin = Texture'Button1Tex9';
-								ScaleGlow = Default.ScaleGlow;
-							}
+		case BT_3:			if(lit)		texstr = "Button1Tex10";
+						else		texstr = "Button1Tex9";
 							break;
-		case BT_4:			if (lit)
-							{
-								Skin = Texture'Button1Tex12';
-								ScaleGlow = 3.0;
-							}
-							else
-							{
-								Skin = Texture'Button1Tex11';
-								ScaleGlow = Default.ScaleGlow;
-							}
+		case BT_4:			if(lit)		texstr = "Button1Tex12";
+						else		texstr = "Button1Tex11";
 							break;
-		case BT_5:			if (lit)
-							{
-								Skin = Texture'Button1Tex14';
-								ScaleGlow = 3.0;
-							}
-							else
-							{
-								Skin = Texture'Button1Tex13';
-								ScaleGlow = Default.ScaleGlow;
-							}
+		case BT_5:			if(lit)		texstr = "Button1Tex14";
+						else		texstr = "Button1Tex13";
 							break;
-		case BT_6:			if (lit)
-							{
-								Skin = Texture'Button1Tex16';
-								ScaleGlow = 3.0;
-							}
-							else
-							{
-								Skin = Texture'Button1Tex15';
-								ScaleGlow = Default.ScaleGlow;
-							}
+		case BT_6:			if(lit)		texstr = "Button1Tex16";
+						else		texstr = "Button1Tex15";
 							break;
-		case BT_7:			if (lit)
-							{
-								Skin = Texture'Button1Tex18';
-								ScaleGlow = 3.0;
-							}
-							else
-							{
-								Skin = Texture'Button1Tex17';
-								ScaleGlow = Default.ScaleGlow;
-							}
+		case BT_7:			if(lit)		texstr = "Button1Tex18";
+						else		texstr = "Button1Tex17";
 							break;
-		case BT_8:			if (lit)
-							{
-								Skin = Texture'Button1Tex20';
-								ScaleGlow = 3.0;
-							}
-							else
-							{
-								Skin = Texture'Button1Tex19';
-								ScaleGlow = Default.ScaleGlow;
-							}
+		case BT_8:			if(lit)		texstr = "Button1Tex20";
+						else		texstr = "Button1Tex19";
 							break;
-		case BT_9:			if (lit)
-							{
-								Skin = Texture'Button1Tex22';
-								ScaleGlow = 3.0;
-							}
-							else
-							{
-								Skin = Texture'Button1Tex21';
-								ScaleGlow = Default.ScaleGlow;
-							}
+		case BT_9:			if(lit)		texstr = "Button1Tex22";
+						else		texstr = "Button1Tex21";
 							break;
-		case BT_Blank:		if (lit)
-							{
-								Skin = Texture'Button1Tex24';
-								ScaleGlow = 3.0;
-							}
-							else
-							{
-								Skin = Texture'Button1Tex23';
-								ScaleGlow = Default.ScaleGlow;
-							}
+		case BT_Blank:			if(lit)		texstr = "Button1Tex24";
+						else		texstr = "Button1Tex23";
 							break;
 	}
+
+	if(lit)
+		ScaleGlow = 3.0;
+	else
+		ScaleGlow = Default.ScaleGlow;
+
+
+	Skin = Texture(DynamicLoadObject("HDTPDecos.Skins.HDTP" $ texstr, class'Texture', True));
+
+	if(Skin == None)
+		Skin = Texture(DynamicLoadObject("DeusExDeco.Skins." $ texstr, class'Texture', True));
+}
+
+function bool Facelift(bool bOn)
+{
+	local String texstr;
+
+	if(!Super.Facelift(bOn))
+		return false;
+
+	switch (ButtonType)
+	{
+		case BT_Up:			if(bLit)	texstr = "Button1Tex2";
+						else		texstr = "Button1Tex1";
+							break;
+		case BT_Down:			if(bLit)	texstr = "Button1Tex4";
+						else		texstr = "Button1Tex3";
+							break;
+		case BT_1:			if(bLit)	texstr = "Button1Tex6";
+						else		texstr = "Button1Tex5";
+							break;
+		case BT_2:			if(bLit)	texstr = "Button1Tex8";
+						else		texstr = "Button1Tex7";
+							break;
+		case BT_3:			if(bLit)	texstr = "Button1Tex10";
+						else		texstr = "Button1Tex9";
+							break;
+		case BT_4:			if(bLit)	texstr = "Button1Tex12";
+						else		texstr = "Button1Tex11";
+							break;
+		case BT_5:			if(bLit)	texstr = "Button1Tex14";
+						else		texstr = "Button1Tex13";
+							break;
+		case BT_6:			if(bLit)	texstr = "Button1Tex16";
+						else		texstr = "Button1Tex15";
+							break;
+		case BT_7:			if(bLit)	texstr = "Button1Tex18";
+						else		texstr = "Button1Tex17";
+							break;
+		case BT_8:			if(bLit)	texstr = "Button1Tex20";
+						else		texstr = "Button1Tex19";
+							break;
+		case BT_9:			if(bLit)	texstr = "Button1Tex22";
+						else		texstr = "Button1Tex21";
+							break;
+		case BT_Blank:			if(bLit)	texstr = "Button1Tex24";
+						else		texstr = "Button1Tex23";
+							break;
+	}
+
+	if(bLit)
+		ScaleGlow = 3.0;
+	else
+		ScaleGlow = Default.ScaleGlow;
+
+	if(bOn)
+		Skin = Texture(DynamicLoadObject("HDTPDecos.Skins.HDTP" $ texstr, class'Texture', True));
+	else
+		Skin = Texture(DynamicLoadObject("DeusExDeco." $ texstr, class'Texture', True));
+
+	return true;
 }
 
 function BeginPlay()
@@ -197,6 +175,18 @@ function Timer()
 	PlaySound(buttonSound2, SLOT_None);
 	SetSkin(ButtonType, bLit);
 	isPressed = False;
+	bUnlit = False;
+}
+
+//== If we shoot the button, make it activate
+function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, name DamageType)
+{
+	//log("Event Instigator = " $ EventInstigator $ " and DamageType = " $ DamageType);
+
+	if(DeusExPlayer(EventInstigator) != None && (DamageType == 'Shot' || DamageType == 'Shell'))
+		Frob(EventInstigator, None);
+
+	Super.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType);
 }
 
 function Frob(Actor Frobber, Inventory frobWith)
@@ -206,6 +196,7 @@ function Frob(Actor Frobber, Inventory frobWith)
 		isPressed = True;
 		PlaySound(buttonSound1, SLOT_None);
 		SetSkin(ButtonType, !bLit);
+		bUnlit = True;
 		if (!bWaitForEvent)
 			SetTimer(buttonLitTime, False);
 

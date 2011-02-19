@@ -1,6 +1,9 @@
 //=============================================================================
 // AmmoSabot.
 //=============================================================================
+
+//Modified -- Y|yukichigai
+
 class AmmoSabot extends DeusExAmmo;
 
 function bool UseAmmo(int AmountNeeded)
@@ -36,6 +39,7 @@ function bool UseAmmo(int AmountNeeded)
 defaultproperties
 {
      bShowInfo=True
+     bIsNonStandard=True
      AmmoAmount=12
      MaxAmmo=96
      ItemName="12 Gauge Sabot Shells"

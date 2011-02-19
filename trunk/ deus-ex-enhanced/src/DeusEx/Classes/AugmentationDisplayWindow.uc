@@ -18,6 +18,7 @@ var bool bDroneReferenced;
 									// has no idea about these windows or the drone (needed for multiplayer).
 
 var bool bTargetActive;
+var bool bTargetWindowActive;
 var int targetLevel;
 var Actor lastTarget;
 var float lastTargetTime;
@@ -298,7 +299,7 @@ function Tick(float deltaTime)
 	}
 
 	// check for the target ViewportWindow being constructed
-	if (bTargetActive && (targetLevel > 2) && (winZoom == None) && (lastTarget != None) && (Player.Level.NetMode == NM_Standalone))
+	if (bTargetActive && bTargetWindowActive && (targetLevel > 2) && (winZoom == None) && (lastTarget != None) && (Player.Level.NetMode == NM_Standalone))
 	{
 		winZoom = ViewportWindow(NewChild(class'ViewportWindow'));
 		if (winZoom != None)
@@ -326,7 +327,7 @@ function Tick(float deltaTime)
 
 	if (winZoom != None)
 	{
-		if ((bTargetActive && (lastTarget == None)) || !bTargetActive)
+		if ((bTargetActive && (lastTarget == None)) || !bTargetActive || !bTargetWindowActive)
 		{
 			winZoom.Destroy();
 			winZoom = None;
@@ -687,11 +688,10 @@ function DrawMiscStatusMessages( GC gc )
 	weap = DeusExWeapon(Player.inHand);
 	if (( weap != None ) && ( weap.AmmoLeftInClip() == 0 ) && (weap.NumClips() == 0) )
 	{
-		if ( weap.IsA('WeaponLAM') ||
-			  weap.IsA('WeaponGasGrenade') || 
-			  weap.IsA('WeaponEMPGrenade') ||
+		if ( weap.IsA('WeaponGrenade') ||
 			  weap.IsA('WeaponShuriken') ||
-			  weap.IsA('WeaponLAW') )
+			  weap.IsA('WeaponHideAGun') ||
+			  weap.IsA('WeaponLAW'))
 		{
 		}
 		else
@@ -731,10 +731,16 @@ function GetTargetReticleColor( Actor target, out Color xcolor )
 
 	if ( target.IsA('ScriptedPawn') )
 	{
-		if (ScriptedPawn(target).GetPawnAllianceType(Player) == ALLIANCE_Hostile)
+		if (ScriptedPawn(target).CheckPawnAllianceType(Player) == ALLIANCE_Hostile)
 			xcolor = colRed;
-		else
+		else if(ScriptedPawn(target).CheckPawnAllianceType(Player) == ALLIANCE_Friendly) // || player.AugmentationSystem.GetClassLevel(class'AugIFF') < 1)
 			xcolor = colGreen;
+		else
+		{
+			xcolor.R = 80;
+			xcolor.G = 80;
+			xcolor.B = 255;
+		}
 	}
 	else if ( Player.Level.NetMode != NM_Standalone )	// Only do the rest in multiplayer
 	{
@@ -894,7 +900,8 @@ function DrawTargetAugmentation(GC gc)
 				y = int(h * 0.5)-1;
 
 				// scale based on screen resolution - default is 640x480
-				mult = FClamp(weapon.currentAccuracy * 80.0 * (width/640.0), corner, 80.0);
+				//mult = FClamp(weapon.currentAccuracy * 80.0 * (width/640.0), corner, 80.0);
+				mult = FClamp(weapon.currentAccuracy * 60.0 * (width/640.0), corner, 60.0);
 
 				// make sure it's not too close to the center unless you have a perfect accuracy
 				mult = FMax(mult, corner+4.0);
@@ -1017,7 +1024,7 @@ function DrawTargetAugmentation(GC gc)
 				boxBRX = boxCX + width/8;
 				boxBRY = boxCY + height/8;
 
-				if (targetLevel > 2)
+				if (targetLevel > 2 && bTargetWindowActive)
 				{
 					if (winZoom != None)
 					{
@@ -1037,18 +1044,18 @@ function DrawTargetAugmentation(GC gc)
 					gc.SetTileColorRGB(0,0,0);
 					gc.DrawPattern(boxTLX, boxTLY, w, h, 0, 0, Texture'Solid');
 
-					gc.SetTextColorRGB(255,255,255);
-					gc.GetTextExtent(0, w, h, msgNoImage);
-					x = boxCX - w/2;
-					y = boxCY - h/2;
-					gc.DrawText(x, y, w, h, msgNoImage);
+					//gc.SetTextColorRGB(255,255,255);
+					//gc.GetTextExtent(0, w, h, msgNoImage);
+					//x = boxCX - w/2;
+					//y = boxCY - h/2;
+					//gc.DrawText(x, y, w, h, msgNoImage);
 				}
 
 				// print the name of the target above the box
 				if (target.IsA('Pawn'))
-					str = target.BindName;
+					str = target.FamiliarName; //target.BindName;
 				else if (target.IsA('DeusExDecoration'))
-					str = DeusExDecoration(target).itemName;
+					str = DeusExDecoration(target).GetDecoName(); //itemName;
 				else if (target.IsA('DeusExProjectile'))
 					str = DeusExProjectile(target).itemName;
 				else
@@ -1140,7 +1147,13 @@ function DrawTargetAugmentation(GC gc)
 						str = msgWeapon;
 	
 						if (Pawn(target).Weapon != None)
-							str = str @ target.GetItemName(String(Pawn(target).Weapon.Class));
+						{
+							//== Y|y: Display the proper weapon name.  Per Lork on the OTP forums
+							if(Pawn(target).Weapon.ItemName == class'DeusExWeapon'.Default.ItemName) //Justice: If the weapon has a name...
+								str = str @ target.GetItemName(String(Pawn(target).Weapon.Class));
+							else
+								str = str @ Pawn(target).Weapon.ItemName; //Justice: ...Use it
+						}
 						else
 							str = str @ msgNone;
 
@@ -1188,7 +1201,7 @@ function DrawTargetAugmentation(GC gc)
 
 function DrawVisionAugmentation(GC gc)
 {
-	local Vector loc;
+	local Vector loc; 
 	local float boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
 	local float dist, x, y, w, h;
    local float BrightDot;
@@ -1198,6 +1211,20 @@ function DrawVisionAugmentation(GC gc)
    local float OldFlash, NewFlash;
    local vector OldFog, NewFog;
 	local Texture oldSkins[9];
+
+	local float visLevelValue;
+	local int visLevel; 
+
+	local bool bHidden;
+
+	visLevel = -1;
+	visLevelValue = 0;
+
+	if(visLevel == -1 && visLevelValue == 0)
+	{
+		visLevel = visionLevel;
+		visLevelValue = visionLevelValue;
+	}
 
 	boxW = width/2;
 	boxH = height/2;
@@ -1210,10 +1237,10 @@ function DrawVisionAugmentation(GC gc)
 
 	// at level one and higher, enhance heat sources (FLIR)
 	// use DrawActor to enhance NPC visibility
-	if (visionLevel >= 1)
+	if (visLevel >= 1)
 	{
 		// shift the entire screen to dark red (except for the middle box)
-      if (player.Level.Netmode == NM_Standalone)
+      if (player.Level.Netmode == NM_Standalone && visLevel >= 1)
       {
          gc.SetStyle(DSTY_Modulated);
          gc.DrawPattern(0, 0, width, boxTLY, 0, 0, Texture'ConWindowBackground');
@@ -1228,7 +1255,7 @@ function DrawVisionAugmentation(GC gc)
       }
 
       // DEUS_EX AMSD In multiplayer, draw green here so that we can draw red actors over it
-      if (player.Level.Netmode != NM_Standalone)
+      if ( (player.Level.Netmode != NM_Standalone && visLevel >= 1))
       {
          gc.SetStyle(DSTY_Modulated);
          gc.DrawPattern(0, 0, width, height, 0, 0, Texture'VisionBlue');
@@ -1255,19 +1282,20 @@ function DrawVisionAugmentation(GC gc)
             {
                dist = VSize(A.Location - loc);
                //If within range of vision aug bit
-               if ( ( ((Player.Level.Netmode != NM_Standalone) && (dist <= (visionLevelvalue / 2))) ||
-                      ((Player.Level.Netmode == NM_Standalone) && (dist <= (visionLevelValue)))        ) && (IsHeatSource(A)))
+               if ( ( ((Player.Level.Netmode != NM_Standalone) && (dist <= (visLevelvalue / 2))) ||
+                      ((Player.Level.Netmode == NM_Standalone) && (dist <= (visLevelValue)))        ) && (IsHeatSource(A)))
                {           
                   VisionTargetStatus = GetVisionTargetStatus(A);               
                   SetSkins(A, oldSkins);
                   gc.DrawActor(A, False, False, True, 1.0, 2.0, None);
                   ResetSkins(A, oldSkins);
+
                }
                else if ((Player.Level.Netmode != NM_Standalone) && (GetVisionTargetStatus(A) == VISIONENEMY) && (A.Style == STY_Translucent))
                {
                   //DEUS_EX AMSD In multiplayer, if looking at a cloaked enemy player within range (greater than see through walls)
                   //(If within walls radius he'd already have been seen.               
-                  if ( (dist <= (visionLevelvalue)) && (Player.LineOfSightTo(A,true)) )
+                  if ( (dist <= (visLevelvalue)) && (Player.LineOfSightTo(A,true)) )
                   {
                      VisionTargetStatus = GetVisionTargetStatus(A);               
                      SetSkins(A, oldSkins);
@@ -1280,14 +1308,14 @@ function DrawVisionAugmentation(GC gc)
                   VisionTargetStatus = GetVisionTargetStatus(A);               
                   SetSkins(A, oldSkins);
                   
-                  if ((Player.Level.NetMode == NM_Standalone) || (dist < VisionLevelValue * 1.5) || (VisionTargetStatus != VISIONENEMY))
+                  if ((Player.Level.NetMode == NM_Standalone) || (dist < visLevelValue * 1.5) || (VisionTargetStatus != VISIONENEMY))
                   {
                      DrawGlow = 2.0;
                   }
                   else
                   {
                      // Fadeoff with distance square
-                     DrawGlow = 2.0 / ((dist / (VisionLevelValue * 1.5)) * (dist / (VisionLevelValue * 1.5)));
+                     DrawGlow = 2.0 / ((dist / (visLevelValue * 1.5)) * (dist / (visLevelValue * 1.5)));
                      // Don't make the actor harder to see than without the aug.
                      //DrawGlow = FMax(DrawGlow,A.ScaleGlow);
                      // Set a minimum.
@@ -1388,6 +1416,8 @@ function bool IsHeatSource(Actor A)
 		return True;   
 	else if (A.IsA('FleshFragment'))
 		return True;
+//	else if (A.IsA('LaserEmitter'))
+//		return True;
    else
 		return False;
 }
@@ -1408,6 +1438,9 @@ function Texture GetGridTexture(Texture tex)
 		return Texture'BlackMaskTex';
 	else if (tex == Texture'PinkMaskTex')
 		return Texture'BlackMaskTex';
+	//Added == Y|yukichigai
+	else if (VisionTargetStatus == 3)
+		return Texture(DynamicLoadObject("Extras.Matrix_A00", class'Texture'));
 	else if (VisionTargetStatus == VISIONENEMY)         
       return Texture'Virus_SFX';
    else if (VisionTargetStatus == VISIONALLY)
@@ -1429,16 +1462,32 @@ function SetSkins(Actor actor, out Texture oldSkins[9])
 	local int     i;
 	local texture curSkin;
 
-	for (i=0; i<8; i++)
-		oldSkins[i] = actor.MultiSkins[i];
-	oldSkins[i] = actor.Skin;
-
-	for (i=0; i<8; i++)
+	if(actor.IsA('LaserEmitter'))
 	{
-		curSkin = actor.GetMeshTexture(i);
-		actor.MultiSkins[i] = GetGridTexture(curSkin);
+		if(LaserEmitter(actor).proxy != None)
+		{
+			oldSkins[0] = LaserEmitter(actor).proxy.Skin;
+			if(LaserEmitter(actor).proxy.bHidden)
+				oldSkins[1] = LaserEmitter(actor).proxy.Skin;
+			else
+				oldSkins[1] = Texture'BlackMaskTex';
+			LaserEmitter(actor).proxy.Skin = Texture'Effects.Virus_SFX';
+			LaserEmitter(actor).proxy.bHidden = false;
+		}
 	}
-	actor.Skin = GetGridTexture(oldSkins[i]);
+	else
+	{
+		for (i=0; i<8; i++)
+			oldSkins[i] = actor.MultiSkins[i];
+		oldSkins[i] = actor.Skin;
+	
+		for (i=0; i<8; i++)
+		{
+			curSkin = actor.GetMeshTexture(i);
+			actor.MultiSkins[i] = GetGridTexture(curSkin);
+		}
+		actor.Skin = GetGridTexture(oldSkins[i]);
+	}
 }
 
 // ----------------------------------------------------------------------
@@ -1451,9 +1500,20 @@ function ResetSkins(Actor actor, Texture oldSkins[9])
 {
 	local int i;
 
-	for (i=0; i<8; i++)
-		actor.MultiSkins[i] = oldSkins[i];
-	actor.Skin = oldSkins[i];
+	if(actor.IsA('LaserEmitter'))
+	{
+		if(LaserEmitter(actor).proxy != None)
+		{
+			LaserEmitter(actor).proxy.Skin = oldSkins[0];
+			LaserEmitter(actor).proxy.bHidden = (oldSkins[0] == oldSkins[1]);
+		}
+	}
+	else
+	{
+		for (i=0; i<8; i++)
+			actor.MultiSkins[i] = oldSkins[i];
+		actor.Skin = oldSkins[i];
+	}
 }
 
 // ----------------------------------------------------------------------
@@ -1484,9 +1544,22 @@ function int GetVisionTargetStatus(Actor Target)
 
    if (Target == None)
       return VISIONNEUTRAL;
+
+   //== 3 means it's translucent.  Holograms, cloaked folks, etc.
+   if (Target.Style == STY_Translucent)
+      return 3;
    
    if (player.Level.NetMode == NM_Standalone)
+   {
+/*      if(target.IsA('ScriptedPawn') && player.AugmentationSystem.GetClassLevel(class'AugIFF') >= 1)
+      {
+	if(ScriptedPawn(target).CheckPawnAllianceType(Player) == ALLIANCE_Hostile)
+	   return VISIONENEMY;
+	if(ScriptedPawn(target).CheckPawnAllianceType(Player) == ALLIANCE_Friendly)
+	   return VISIONALLY;
+      } */
       return VISIONNEUTRAL;
+   }
 
    if (target.IsA('DeusExPlayer'))
    {     

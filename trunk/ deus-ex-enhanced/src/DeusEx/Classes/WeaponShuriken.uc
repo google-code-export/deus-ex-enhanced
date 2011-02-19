@@ -1,6 +1,9 @@
 //=============================================================================
 // WeaponShuriken.
 //=============================================================================
+
+//Modified -- Y|yukichigai
+
 class WeaponShuriken extends DeusExWeapon;
 
 simulated function PreBeginPlay()
@@ -19,6 +22,13 @@ simulated function PreBeginPlay()
 	}
 }
 
+function bool TestCycleable()
+{
+	return true;
+}
+
+//Damage increased from 15
+
 defaultproperties
 {
      LowAmmoWaterMark=5
@@ -29,10 +39,10 @@ defaultproperties
      Concealability=CONC_Visual
      ShotTime=0.200000
      reloadTime=0.200000
-     HitDamage=15
+     HitDamage=22
      maxRange=1280
      AccurateRange=640
-     BaseAccuracy=0.900000
+     BaseAccuracy=0.400000
      bHasMuzzleFlash=False
      bHandToHand=True
      mpReloadTime=0.200000

@@ -200,6 +200,8 @@ function SetCompOwner(ElectronicDevices newCompOwner)
 
 	ProcessDeusExText(StringToName(emailName));
 
+	ProcessScriptEmail();
+
 	if (emailIndex != -1)
 	{
 		// Now populate our list
@@ -292,7 +294,10 @@ event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 
 	// Process the body
 	winEmail.SetText("");
-	ProcessDeusExText(emailInfo[emailInfoIndex].emailName, winEmail);
+	if(emailInfo[emailInfoIndex].emailName != '')
+		ProcessDeusExText(emailInfo[emailInfoIndex].emailName, winEmail);
+	else
+		ProcessScriptEmail(emailInfoIndex, winEmail);
 }
 
 // ----------------------------------------------------------------------

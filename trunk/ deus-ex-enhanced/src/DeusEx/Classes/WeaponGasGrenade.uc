@@ -1,57 +1,7 @@
 //=============================================================================
 // WeaponGasGrenade.
 //=============================================================================
-class WeaponGasGrenade extends DeusExWeapon;
-
-simulated function PreBeginPlay()
-{
-	Super.PreBeginPlay();
-
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-	{
-		HitDamage = mpHitDamage;
-		BaseAccuracy = mpBaseAccuracy;
-		ReloadTime = mpReloadTime;
-		AccurateRange = mpAccurateRange;
-		MaxRange = mpMaxRange;
-	}
-}
-
-function PostBeginPlay()
-{
-   Super.PostBeginPlay();
-   bWeaponStay=False;
-}
-
-function Fire(float Value)
-{
-	// if facing a wall, affix the GasGrenade to the wall
-	if (Pawn(Owner) != None)
-	{
-		if (bNearWall)
-		{
-			bReadyToFire = False;
-			GotoState('NormalFire');
-			bPointing = True;
-			PlayAnim('Place',, 0.1);
-			return;
-		}
-	}
-
-	// otherwise, throw as usual
-	Super.Fire(Value);
-}
-
-// Become a pickup
-// Weapons that carry their ammo with them don't vanish when dropped
-function BecomePickup()
-{
-	Super.BecomePickup();
-   if (Level.NetMode != NM_Standalone)
-      if (bTossedOut)
-         Lifespan = 0.0;
-}
+class WeaponGasGrenade extends WeaponGrenade;
 
 // ----------------------------------------------------------------------
 // TestMPBeltSpot()
@@ -60,7 +10,7 @@ function BecomePickup()
 
 simulated function bool TestMPBeltSpot(int BeltSpot)
 {
-   return (BeltSpot == 5);
+   return (BeltSpot == 7);
 }
 
 defaultproperties

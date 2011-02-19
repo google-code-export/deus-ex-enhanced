@@ -1,6 +1,9 @@
 //=============================================================================
 // WeaponStealthPistol.
 //=============================================================================
+
+//Modified -- Y|yukichigai
+
 class WeaponStealthPistol extends DeusExWeapon;
 
 simulated function PreBeginPlay()
@@ -19,21 +22,23 @@ simulated function PreBeginPlay()
 	}
 }
 
+//Reload time is down considerably
+
 defaultproperties
 {
      GoverningSkill=Class'DeusEx.SkillWeaponPistol'
      NoiseLevel=0.010000
      EnviroEffective=ENVEFF_Air
      Concealability=CONC_All
-     ShotTime=0.150000
-     reloadTime=1.500000
-     HitDamage=8
+     ShotTime=0.200000
+     HitDamage=12
      maxRange=4800
      AccurateRange=2400
      BaseAccuracy=0.800000
      bCanHaveScope=True
-     ScopeFOV=25
      bCanHaveLaser=True
+     AmmoNames(0)=Class'DeusEx.Ammo10mm'
+     AmmoNames(1)=Class'DeusEx.Ammo10mmEX'
      recoilStrength=0.100000
      mpReloadTime=1.500000
      mpHitDamage=12

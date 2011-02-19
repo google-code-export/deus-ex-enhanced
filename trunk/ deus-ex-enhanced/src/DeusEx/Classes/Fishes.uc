@@ -298,10 +298,141 @@ function PlayWaiting() {}
 function TweenToSwimming(float tweentime) {}
 function PlaySwimming() {}
 
+function PlayDying(name damageType, vector hitLoc)
+{
+	Buoyancy = Mass * 1.2;
+	DesiredRotation = Rotation;
+	//== Rotate upside-down or onto one side, depending
+	if(FRand() > 0.5)
+	{
+		if(FRand() > 0.5)
+			DesiredRotation.Roll += 32768;
+		else
+			DesiredRotation.Roll -= 32768;
+
+		RotationRate.Roll = 16384;
+	}
+	else
+	{
+		if(FRand() > 0.5)
+			DesiredRotation.Roll += 16384;
+		else
+			DesiredRotation.Roll -= 16384;
+
+		RotationRate.Roll = 8192;
+	}
+	bRotateToDesired = True;
+	//== Give it a name so the carcass isn't named weird
+	UnFamiliarName = "Fish";
+	FamiliarName = "Fish";
+}
+
+function Carcass SpawnCarcass()
+{
+	local Carcass carc;
+	carc = Super.SpawnCarcass();
+	if(carc != None)
+	{
+		carc.SetLocation(Location);
+		carc.SetRotation(Rotation);
+		carc.DesiredRotation = DesiredRotation;
+		carc.bRotateToDesired = True;
+		carc.RotationRate = RotationRate;
+	}
+}
+
+state Dying
+{
+	ignores SeePlayer, EnemyNotVisible, HearNoise, KilledBy, Trigger, Bump, HitWall, HeadZoneChange, FootZoneChange, Falling, WarnTarget, Died, Timer; //, TakeDamage;
+
+	//== Total HACK, but the WaitForLanding() function doesn't check for water, so we have to force the carcass spawn
+	function ZoneChange(ZoneInfo newZone)
+	{	
+		Super.ZoneChange(newZone);
+	}
+
+	event Landed(vector HitNormal)
+	{
+		SetPhysics(PHYS_Flying);
+	}
+
+	//== This does nothing but apply momentum, so we can have impressive deaths -- Y|yukichigai
+	function TakeDamage( int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
+	{
+		Super.TakeDamage(Damage, instigatedBy, hitLocation, momentum, damageType);
+	}
+
+	function Tick(float deltaSeconds)
+	{
+		Super.Tick(deltaSeconds);
+	}
+
+	function MoveFallingBody()
+	{
+		local Vector moveDir;
+		local float  totalTime;
+		local float  speed;
+		local float  stopTime;
+		local int    numFrames;
+
+		if ((AnimRate > 0) && !IsA('Robot'))
+		{
+			totalTime = 1.0/AnimRate;  // determine how long the anim lasts
+			numFrames = int((1.0/(1.0-AnimLast))+0.1);  // count frames (hack)
+
+			// defaults
+			moveDir   = vect(0,0,0);
+			stopTime  = 0.01;
+
+			ComputeFallDirection(totalTime, numFrames, moveDir, stopTime);
+
+			speed = VSize(moveDir)/stopTime;  // compute speed
+
+			// Set variables necessary for movement when walking
+			if (moveDir == vect(0,0,0))
+				Acceleration = vect(0,0,0);
+			else
+				Acceleration = Normal(moveDir)*AccelRate;
+			GroundSpeed  = speed;
+			//DesiredSpeed = 1.0; //Our bodies should FLY -- Y|yukichigai
+			bIsWalking   = false;
+			DeathTimer   = stopTime;
+		}
+		else
+			Acceleration = vect(0,0,0);
+	}
+
+	function BeginState()
+	{
+		Super.BeginState();
+	}
+
+Begin:
+	WaitForLanding();
+	MoveFallingBody();
+
+//	DesiredRotation.Pitch = 0;
+//	DesiredRotation.Roll  = 0;
+
+	// if we don't gib, then wait for the animation to finish
+	if ((Health > -100) && !IsA('Robot'))
+		FinishAnim();
+
+	SetWeapon(None);
+
+	bHidden = True;
+
+	Acceleration = vect(0,0,0);
+	SpawnCarcass();
+	ExtinguishFire(); //Just to be sure
+	Destroy();
+}
+
 defaultproperties
 {
      bFlock=True
      WalkingSpeed=1.000000
+     bLikesNeutral=False
      bHasShadow=False
      bHighlight=False
      bSpawnBubbles=False

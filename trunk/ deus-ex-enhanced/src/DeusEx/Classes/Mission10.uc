@@ -46,6 +46,14 @@ function FirstFrame()
 	{
 		flags.SetBool('ClubComplete', True,, 11);
 	}
+	else if (localURL == "10_PARIS_CATACOMBS")
+	{
+		if(!flags.GetBool('M10_PickupRifle_Placed'))
+		{
+			spawn(class'WeaponPrecisionRifle', None,, vect(-2985.000000,4523.120361,2090.600000));
+			flags.SetBool('M10_PickupRifle_Placed', True,, 11);
+		}
+	}
 }
 
 // ----------------------------------------------------------------------
@@ -82,6 +90,8 @@ function Timer()
 	local Greasel greasel;
 	local GuntherHermann gunther;
 	local MJ12Commando commando;
+	local CrateBreakableMedCombat crate;
+	local Ammo10mm ammoten;
 	local Actor A;
 
 	Super.Timer();
@@ -167,6 +177,30 @@ function Timer()
 				A.Trigger(Self, Player);
 
 			flags.SetBool('MS_CopBarked', True,, 11);
+		}
+		if(!flags.GetBool('MS_RailgunAdded'))
+		{
+			foreach AllActors(class'CrateBreakableMedCombat', crate)
+			{
+				if(crate.contents == Class'DeusEx.WeaponPlasmaRifle' && !flags.GetBool('MS_RailgunAdded'))
+				{
+					crate.contents = Class'DeusEx.WeaponRailgun';
+					flags.SetBool('MS_RailgunAdded', True,, 11);
+				}
+			}
+		}
+		if(!flags.GetBool('M10_10mmEX_Added'))
+		{
+			foreach AllActors(class'Ammo10mm', ammoten)
+			{
+				if(!flags.GetBool('M10_10mmEX_Added'))
+				{
+					spawn(class'Ammo10mmEX',None,, ammoten.Location, ammoten.Rotation);
+					ammoten.Destroy();
+					flags.SetBool('M10_10mmEX_Added',True,, 11);
+				}
+			}
+			spawn(class'Ammo10mmEX',None,, vect(1536.00, 1998.00, 525.00));
 		}
 	}
 	else if (localURL == "10_PARIS_CHATEAU")

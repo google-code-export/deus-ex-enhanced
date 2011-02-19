@@ -26,6 +26,7 @@ struct TextFileInfo
 {
 	var Name   fileName;
 	var String fileDescription;
+	var String fileString;
 };
 
 struct TextEmailInfo 
@@ -35,6 +36,7 @@ struct TextEmailInfo
 	var String emailFrom;
 	var String emailTo;
 	var String emailCC;
+	var String emailString;
 };
 
 var transient TextFileInfo fileInfo[10];
@@ -580,6 +582,47 @@ function SetNetworkTerminal(NetworkTerminal newTerm)
 	winTerm = newTerm;
 }
 
+
+function ProcessScriptEmail(optional int Index, optional TextWindow winText)
+{
+	local int i;
+	local DeusExLevelInfo info;
+
+	if(winText != None)
+	{
+		if(Index > 0)
+			winText.AppendText(emailInfo[Index].emailString);
+		else
+			winText.AppendText(emailInfo[emailIndex].emailString);
+	}
+	else
+	{
+		info = player.GetLevelInfo();
+
+		for(i = 0; i<ArrayCount(info.emailTo); i++)
+		{
+			if(info.emailTo[i] != "")
+			{
+				if(info.emailTo[i] == winTerm.GetUserName())
+				{
+					emailIndex++;
+		
+					if(emailIndex >= 9)
+						return;
+	
+					if(emailIndex < 0)
+						emailIndex = 0;
+		
+					emailInfo[emailIndex].emailSubject = info.emailSubject[i];
+					emailInfo[emailIndex].emailFrom = info.emailFrom[i];
+					emailInfo[emailIndex].emailTo = info.emailTo[i];
+					emailInfo[emailIndex].emailString = info.emailString[i];
+				}
+			}
+		}
+	}
+}
+
 // ----------------------------------------------------------------------
 // ProcessDeusExText()
 // ----------------------------------------------------------------------
@@ -717,7 +760,8 @@ function ProcessEmail(DeusExTextParser parser)
 		emailInfo[emailIndex].emailFrom,
 		emailInfo[emailIndex].emailTo,
 		emailInfo[emailIndex].emailCC);
-	
+
+	emailInfo[emailIndex].emailString = "";	
 	emailInfo[emailIndex].emailName = StringToName(emailStringName);
 }
 

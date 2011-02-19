@@ -9,6 +9,8 @@ var float mpEnergyDrain;
 var float reconstructTime;
 var float lastDroneTime;
 
+var float lastTickTime;
+
 state Active
 {
 Begin:
@@ -23,6 +25,17 @@ Begin:
 		Player.spyDroneLevel = CurrentLevel;
 		Player.spyDroneLevelValue = LevelValues[CurrentLevel];
 	}
+}
+
+function Tick(float deltaTime)
+{
+	if(DeusExGameInfo(Level.Game) != None)
+		if(lastTickTime <= DeusExGameInfo(Level.Game).PauseStartTime) //== Pause time offset
+			lastDroneTime += (DeusExGameInfo(Level.Game).PauseEndTime - DeusExGameInfo(Level.Game).PauseStartTime);
+
+	Super.Tick(deltaTime);
+
+	lastTickTime = Level.TimeSeconds;
 }
 
 function Deactivate()
@@ -53,7 +66,7 @@ defaultproperties
      mpAugValue=100.000000
      mpEnergyDrain=20.000000
      reconstructTime=30.000000
-     lastDroneTime=-30.000000
+     lastDroneTime=30.000000
      EnergyRate=150.000000
      Icon=Texture'DeusExUI.UserInterface.AugIconDrone'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconDrone_Small'
@@ -64,5 +77,6 @@ defaultproperties
      LevelValues(1)=20.000000
      LevelValues(2)=35.000000
      LevelValues(3)=50.000000
+     LevelValues(4)=65.000000
      MPConflictSlot=7
 }

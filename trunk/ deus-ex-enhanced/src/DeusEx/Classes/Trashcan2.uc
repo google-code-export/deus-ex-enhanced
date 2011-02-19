@@ -3,6 +3,20 @@
 //=============================================================================
 class Trashcan2 extends Containers;
 
+function bool Facelift(bool bOn)
+{
+	if(!Super.Facelift(bOn))
+		return false;
+
+	if(bOn)
+		Mesh = mesh(DynamicLoadObject("HDTPDecos.HDTPtrashcan2", class'mesh', True));
+
+	if(Mesh == None || !bOn)
+		Mesh = Default.Mesh;
+
+	return true;
+}
+
 defaultproperties
 {
      bGenerateTrash=True

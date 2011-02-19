@@ -284,7 +284,7 @@ function UpdateAugCans()
 
 		while(anItem != None)
 		{
-			if (anItem.IsA('AugmentationUpgradeCannister'))
+			if (anItem.IsA('AugmentationUpgradeCannister') || anItem.IsA('AugmentationUpgrade'))
 				augCanCount++;
 
 			anItem = anItem.Inventory;
@@ -624,6 +624,7 @@ function SelectAugmentation(PersonaItemButton buttonPressed)
 function UpgradeAugmentation()
 {
 	local AugmentationUpgradeCannister augCan;
+	local AugmentationUpgrade augUp; //Damn badly coded conversations
 
 	// First make sure we have a selected Augmentation
 	if (selectedAug == None)
@@ -631,16 +632,20 @@ function UpgradeAugmentation()
 
 	// Now check to see if we have an upgrade cannister
 	augCan = AugmentationUpgradeCannister(player.FindInventoryType(Class'AugmentationUpgradeCannister'));
+	augUp = AugmentationUpgrade(player.FindInventoryType(Class'AugmentationUpgrade'));
 
-	if (augCan != None)
+	if (augCan != None || augUp != None)
 	{
 		// Increment the level and remove the aug cannister from
 		// the player's inventory
 
 		selectedAug.IncLevel();
 		selectedAug.UpdateInfo(winInfo);
- 
-		augCan.UseOnce();
+
+		if(augUp != None)
+			augUp.UseOnce();
+		else
+			augCan.UseOnce();
 
 		// Update the level icons
 		if (selectedAugButton != None)

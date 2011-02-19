@@ -1,12 +1,78 @@
 //=============================================================================
 // WeaponBaton.
 //=============================================================================
+
+//Modified -- Y|yukichigai
+
 class WeaponBaton extends DeusExWeapon;
+
+function bool Facelift(bool bOn)
+{
+	local Name tName;
+
+	if(!Super.Facelift(bOn))
+		return false;
+
+	tName = GetStateName();
+
+	if(bOn)
+		PlayerViewMesh = mesh(DynamicLoadObject("HDTPItems.HDTPWeaponBaton", class'mesh', True));
+
+	if(PlayerViewMesh == None || !bOn)
+		PlayerViewMesh = Default.PlayerViewMesh;
+
+	if(tName != 'Pickup')
+		Mesh = PlayerViewMesh;
+
+	return true;
+}
+
+simulated function bool ClientAltFire( float Value )
+{
+		if(IsA('WeaponBlackjack'))
+			return false;
+
+        	bClientReadyToFire = False;
+        	bInProcess = True;
+        	GotoState('ClientFiring');
+        	bPointing = True;
+        	if ( PlayerPawn(Owner) != None )
+	     	PlayerPawn(Owner).PlayFiring();
+        	PlayFiringAltSound();
+        	ProjectileAltFire(AltProjectileClass, AltProjectileSpeed, bAltWarnTarget);
+		if(Level.NetMode == NM_Standalone)
+			SwitchItem();
+        	Destroy();
+        	return true;		
+}
+
+function AltFire( float Value )
+{
+		if(IsA('WeaponBlackjack'))
+			return;
+
+        	GotoState('AltFiring');
+        	bPointing = True;
+        	if ( Owner.IsA('PlayerPawn') )
+	     	PlayerPawn(Owner).PlayFiring();
+        	PlayFiringAltSound();
+        	ProjectileAltFire(AltProjectileClass, AltProjectileSpeed, bAltWarnTarget);
+		if(Level.NetMode == NM_Standalone)
+			SwitchItem();
+        	Destroy();
+}
 
 function name WeaponDamageType()
 {
 	return 'KnockedOut';
 }
+
+function bool TestCycleable()
+{
+	return true;
+}
+
+//Increased damage from 7 to 8
 
 defaultproperties
 {
@@ -14,10 +80,12 @@ defaultproperties
      GoverningSkill=Class'DeusEx.SkillWeaponLowTech'
      NoiseLevel=0.050000
      reloadTime=0.000000
-     HitDamage=7
+     HitDamage=8
      maxRange=80
      AccurateRange=80
      BaseAccuracy=1.000000
+     FireSound2=Sound'DeusExSounds.Weapons.BatonFire'
+     bHasAltFire=True
      bPenetrating=False
      bHasMuzzleFlash=False
      bHandToHand=True
@@ -27,6 +95,7 @@ defaultproperties
      ReloadCount=0
      bInstantHit=True
      FireOffset=(X=-24.000000,Y=14.000000,Z=17.000000)
+     AltProjectileClass=Class'DeusEx.BatonThrown'
      shakemag=20.000000
      FireSound=Sound'DeusExSounds.Weapons.BatonFire'
      SelectSound=Sound'DeusExSounds.Weapons.BatonSelect'

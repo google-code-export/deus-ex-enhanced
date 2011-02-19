@@ -46,6 +46,20 @@ function Frob(actor Frobber, Inventory frobWith)
 	}
 }
 
+function bool Facelift(bool bOn)
+{
+	if(!Super.Facelift(bOn))
+		return false;
+
+	if(bOn)
+		Mesh = mesh(DynamicLoadObject("HDTPDecos.HDTPFaucet", class'mesh', True));
+
+	if(Mesh == None || !bOn)
+		Mesh = Default.Mesh;
+
+	return true;
+}
+
 function PostBeginPlay()
 {
 	local Vector loc;

@@ -2,6 +2,8 @@
 // WaterZone
 //=============================================================================
 class WaterZone expands ZoneInfo;
+var() float SurfaceLevel;
+var() bool bSurfaceLevelKnown;
 
 defaultproperties
 {

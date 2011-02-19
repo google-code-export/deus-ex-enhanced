@@ -208,6 +208,10 @@ var()   bool        bInvincible;     // true if this pawn cannot be killed
 
 var     bool        bInitialized;    // true if this pawn has been initialized
 
+var	bool	    bNPCRandomCheck; //Checked for random NPC inventory and deemed they should be given something
+var	bool	    bNPCRandomGiven; //Were they given the item?
+var	bool	    bCheckedCombat; // Were they eligible for the combat knife replacement?
+
 var(Combat) bool    bAvoidAim;      // avoid enemy's line of fire
 var(Combat) bool    bAimForHead;    // aim for the enemy's head
 var(Combat) bool    bDefendHome;    // defend the home base
@@ -335,6 +339,7 @@ var       bool      bStaring;
 var       bool      bAttacking;
 var       bool      bDistressed;
 var       bool      bStunned;
+var       bool      bOutInOne; //If they were killed/KOd in one hit
 var       bool      bSitting;
 var       bool      bDancing;
 var       bool      bCrouching;
@@ -415,6 +420,23 @@ var      int      NumCarcasses;     // number of carcasses seen
 var      float    walkAnimMult;
 var      float    runAnimMult;
 
+var transient	 bool	  bUnStunnable;	    // for bLethal weapons
+var transient	 bool	  bTookHandtoHand;  // tracks Hand to Hand weapons
+
+var()	 bool	  bCanGiveWeapon;   // Can the player give this NPC a weapon?
+
+var()	 int	  PendingSkillPoints; // how many skillpoints are pending for Stealth bonuses
+
+var()    vector    EnemyLastSeenAt; //A vector indicating the last position the enemy was sighted
+
+var(Sounds) sound SearchingSound;
+var(Sounds) sound SpeechTargetAcquired;
+var(Sounds) sound SpeechTargetLost;
+var(Sounds) sound SpeechOutOfAmmo;
+var(Sounds) sound SpeechCriticalDamage;
+var(Sounds) sound SpeechScanning;
+var(Sounds) sound SpeechAreaSecure;
+
 native(2102) final function ConBindEvents();
 
 native(2105) final function bool IsValidEnemy(Pawn TestEnemy, optional bool bCheckAlliance);
@@ -423,6 +445,12 @@ native(2107) final function EAllianceType GetPawnAllianceType(Pawn QueryPawn);
 
 native(2108) final function bool HaveSeenCarcass(Name CarcassName);
 native(2109) final function AddCarcass(Name CarcassName);
+
+//== Because we can't just override the native function we have to jump through hoops here
+function EAllianceType CheckPawnAllianceType(Pawn QueryPawn)
+{
+	return GetPawnAllianceType(QueryPawn);
+}
 
 // ----------------------------------------------------------------------
 // PreBeginPlay()
@@ -456,8 +484,23 @@ function PreBeginPlay()
 
 	// Set up callbacks
 	UpdateReactionCallbacks();
+
+	if(Level.NetMode == NM_StandAlone)
+		Facelift(true);
 }
 
+function bool Facelift(bool bOn)
+{
+	//== Only do this for DeusEx classes
+	if(instr(String(Class.Name), ".") > -1 && bOn)
+		if(instr(String(Class.Name), "DeusEx.") <= -1)
+			return false;
+	else
+		if((Class != Class(DynamicLoadObject("DeusEx."$ String(Class.Name), class'Class', True))) && bOn)
+			return false;
+
+	return true;
+}
 
 // ----------------------------------------------------------------------
 // PostBeginPlay()
@@ -512,8 +555,20 @@ simulated function Destroyed()
 
 	player = DeusExPlayer(GetPlayerPawn());
 
-	if ((player != None) && (player.conPlay != None))
-		player.conPlay.ActorDestroyed(Self);
+	if (player != None)
+	{
+		if (player.conPlay != None)
+			player.conPlay.ActorDestroyed(Self);
+
+		//== Offload any relevant stealth skillpoint bonuses before this NPC is destroyed
+		if(PendingSkillPoints > 0)
+		{
+			PendingSkillPoints += player.FlagBase.GetInt('PendingSkillPoints');
+			player.FlagBase.SetInt('PendingSkillPoints', PendingSkillPoints,, 0);
+			PendingSkillPoints = 0; // Cover our Asses
+		}
+		
+	}
 
 	Super.Destroyed();
 }
@@ -531,6 +586,10 @@ function InitializePawn()
 {
 	if (!bInitialized)
 	{
+		//== Unrealistic difficulty makes us smarter
+		if(Level.Game.Difficulty >= 4.0)
+			Intelligence = BRAINS_Human;
+
 		InitializeInventory();
 		InitializeAlliances();
 		InitializeHomeBase();
@@ -552,6 +611,7 @@ function InitializePawn()
 		PlayTurnHead(LOOK_Forward, 1.0, 0.0001);
 
 		bInitialized = true;
+		SetTimer(5.0, True); //== Random inventory checker
 	}
 }
 
@@ -567,6 +627,12 @@ function InitializeInventory()
 	local Weapon    weapons[8];
 	local int       weaponCount;
 	local Weapon    firstWeapon;
+	local int	testRandom;
+	local DeusExPlayer dxPlayer;
+
+	local class<Inventory>	Consumables[6]; //== A list of consumables for NPC Random Inventory
+
+	dxPlayer = DeusExPlayer(GetPlayerPawn());
 
 	// Add initial inventory items
 	weaponCount = 0;
@@ -586,7 +652,9 @@ function InitializeInventory()
 				}
 				if (inv == None)
 				{
-					inv = spawn(InitialInventory[i].Inventory, self);
+					if(inv == None)
+						inv = spawn(InitialInventory[i].Inventory, self);
+
 					if (inv != None)
 					{
 						inv.InitialState='Idle2';
@@ -615,6 +683,91 @@ function InitializeInventory()
 				weapons[i].AmmoType.SetBase(Self);
 			}
 		}
+	}
+
+	//Modified -- Y|yukichigai
+	//Give the pawn some random extra items based on chance
+	// Better known as NPC Random Inventory.  Some is done here, some is done by the GenerateRandomInventory() function
+	// Anything not done here is initiated by the ScriptedPawn.Timer() function
+
+	testRandom = Rand(22);
+
+	if(testRandom >= 15 && (bIsHuman || dxPlayer.combatDifficulty > 4.0))
+	{
+		Consumables[0] = class'SoyFood';
+		Consumables[1] = class'Candybar';
+		Consumables[2] = class'Sodacan';
+		Consumables[3] = class'Medkit';
+		Consumables[4] = class'VialCrack';
+		Consumables[5] = class'Cigarettes';
+
+		//== Some substitutions for TNM
+		if(dxPlayer.Class.Name == 'trestkon')
+		{
+			Consumables[0] = Class<Inventory>(DynamicLoadObject("TNMItems.Beans", class'Class', False)); //== Same as Soy Food, really
+			Consumables[1] = Class<Inventory>(DynamicLoadObject("TNMItems.KetchupBar", class'Class', False)); //== Worse than Candy, but thematically appropriate
+			Consumables[4] = Class<Inventory>(DynamicLoadObject("TNMItems.TNMVialCrack", class'Class', False)); //== Just a different name for Zyme.  Meh.
+			Consumables[5] = Class<Inventory>(DynamicLoadObject("TNMItems.PlasticCoffee", class'Class', False)); //== Arguably more useful than smokes.  Probably an even tradeoff in Shifter
+		}
+
+		if(testRandom <= 15) //Credits
+		{
+			inv = spawn(Class'Credits',self);
+			if(default.Health >= default.HealthHead)
+				Credits(inv).numCredits = 1 + Rand(default.Health);
+			else
+				Credits(inv).numCredits = 1 + Rand(default.HealthHead);
+			inv.InitialState='Idle2';
+			inv.GiveTo(Self);
+			inv.setBase(Self);
+			//log("ScriptedPawn==>Gave Credits in amount of " $Credits(inv).numCredits$ " to " $Self);
+		}
+		if(Rand(4) == 2 || (dxPlayer.combatDifficulty > 4.0 && Rand(3) > 0))
+			bCheckedCombat = True; //If/when they are carrying a combat knife, replace it with a Crowbar or Sword
+		inv = None;
+		i = Rand(7);
+		switch(i)
+		{
+			case 2:
+				inv = spawn(Consumables[Rand(3)], Self);
+			case 3:
+			case 4:
+			case 5:
+				inv = spawn(Consumables[i], Self);
+				break;
+		}
+		bNPCRandomCheck = True;
+
+		//Now we give out the items, if applicable
+		if(inv != None)
+		{
+			inv.InitialState='Idle2';
+			inv.GiveTo(Self);
+			inv.setBase(Self);
+			if(Weapon(inv) != None)
+			{
+				weapons[WeaponCount] = Weapon(inv);
+				if ((weapons[WeaponCount].AmmoType == None) && (weapons[WeaponCount].AmmoName != None) &&
+					(weapons[WeaponCount].AmmoName != Class'AmmoNone'))
+				{
+					weapons[WeaponCount].AmmoType = Ammo(FindInventoryType(weapons[WeaponCount].AmmoName));
+					if (weapons[WeaponCount].AmmoType == None)
+					{
+						weapons[WeaponCount].AmmoType = spawn(weapons[WeaponCount].AmmoName);
+						weapons[WeaponCount].AmmoType.InitialState='Idle2';
+						weapons[WeaponCount].AmmoType.GiveTo(Self);
+						weapons[WeaponCount].AmmoType.SetBase(Self);
+					}
+				}
+				WeaponCount++;
+			}
+			if(Rand(7) != 4)
+				bNPCRandomGiven = True;
+			//log("ScriptedPawn==>Item Given: " $inv$ " " $Self);
+			inv = None;
+		}
+		//else
+			//log("ScriptedPawn==>No item given for random inventory to " $Self $", setting flag to check for later weapon possession.");
 	}
 
 	SetupWeapon(false);
@@ -709,6 +862,10 @@ function bool SetEnemy(Pawn newEnemy, optional float newSeenTime,
 			EnemyTimer = 0;
 		Enemy         = newEnemy;
 		EnemyLastSeen = newSeenTime;
+		if(newEnemy != None)
+			EnemyLastSeenAt = newEnemy.Location;
+		else
+			EnemyLastSeenAt = vect(0, 0, 0);
 
 		return True;
 	}
@@ -1485,6 +1642,10 @@ function HandleEnemy()
 
 function HandleSighting(Pawn pawnSighted)
 {
+	if(pawnSighted == GetPlayerPawn() && PendingSkillPoints > 1)
+	{
+		PendingSkillPoints /= 2;
+	}
 	SetSeekLocation(pawnSighted, pawnSighted.Location, SEEKTYPE_Sight);
 	GotoState('Seeking');
 }
@@ -1568,7 +1729,7 @@ function GenerateTotalHealth()
 		// Scoring works as follows:
 		// Disabling the head (100 points damage) will kill you.
 		// Disabling the torso (100 points damage) will kill you.
-		// Disabling 2 1/2 limbs (250 points damage) will kill you.
+		// Disabling 2 1/2 limbs (250 points damage) will kill you. -- err, knock you out now, kinda -- Y|yukichigai
 		// Combinations can also do you in -- 50 points damage to the head
 		// and 125 points damage to the limbs, for example.
 
@@ -1603,12 +1764,13 @@ function GenerateTotalHealth()
 	else
 	{
 		// Pawn is invincible - reset health to defaults
-		HealthHead     = Default.HealthHead;
-		HealthTorso    = Default.HealthTorso;
-		HealthArmLeft  = Default.HealthArmLeft;
-		HealthArmRight = Default.HealthArmRight;
-		HealthLegLeft  = Default.HealthLegLeft;
-		HealthLegRight = Default.HealthLegRight;
+		//== Pawns can now be made invicible and uninvicible off and on, this would screw things up
+		//HealthHead     = Default.HealthHead;
+		//HealthTorso    = Default.HealthTorso;
+		//HealthArmLeft  = Default.HealthArmLeft;
+		//HealthArmRight = Default.HealthArmRight;
+		//HealthLegLeft  = Default.HealthLegLeft;
+		//HealthLegRight = Default.HealthLegRight;
 		Health         = Default.Health;
 	}
 }
@@ -1704,7 +1866,10 @@ function UpdateActorVisibility(actor seeActor, float deltaSeconds,
 		else
 			bCanSee = false;
 		if (bCanSee)
+		{
 			EnemyLastSeen = 0;
+			EnemyLastSeenAt = seeActor.Location;
+		}
 		else if (EnemyLastSeen <= 0)
 			EnemyLastSeen = 0.01;
 	}
@@ -1907,6 +2072,18 @@ function bool CheckEnemyPresence(float deltaSeconds,
 									CycleCumulative += 100000;  // a bit of a hack...
 								else
 									CycleCumulative += visibility;
+							}
+						}
+						//== Stealth Skillpoints
+						else if(bPlayer && PendingSkillPoints < 0)
+						{
+							if(bValidEnemy || bPotentialEnemy)
+							{
+								candidateDist = Abs(VSize(Location - candidate.Location));
+								if(candidateDist <= 420)
+								{
+									PendingSkillPoints = FMax(Default.Health, Default.HealthHead) / 5;
+								}
 							}
 						}
 					}
@@ -2749,6 +2926,8 @@ function Carcass SpawnCarcass()
 	local FleshFragment chunk;
 	local int i;
 	local float size;
+	local bool bHadWeapon, bHadPowerfulWeapon;
+	local Fire f;
 
 	// if we really got blown up good, gib us and don't display a carcass
 	if ((Health < -100) && !IsA('Robot'))
@@ -2769,6 +2948,12 @@ function Carcass SpawnCarcass()
 					chunk.SetCollisionSize(chunk.CollisionRadius / chunk.DrawScale, chunk.CollisionHeight / chunk.DrawScale);
 					chunk.bFixedRotationDir = True;
 					chunk.RotationRate = RotRand(False);
+
+					//== Let's give the gib chunks a little velocity
+					chunk.Velocity = Velocity;
+					chunk.Velocity.X += (1-2*FRand()) * (Velocity.X/5.0000);
+					chunk.Velocity.Y += (1-2*FRand()) * (Velocity.Y/5.0000);
+					chunk.Velocity.Z += (1-2*FRand()) * (Velocity.Z/5.0000);
 				}
 			}
 		}
@@ -2793,10 +2978,55 @@ function Carcass SpawnCarcass()
 		carc.SetLocation(loc);
 		carc.Velocity = Velocity;
 		carc.Acceleration = Acceleration;
+		carc.BurnPeriod = BurnPeriod;
+
+		//== If we're on fire, transfer the fire to the carc
+		if(bOnFire)
+		{
+//			carc.CatchFire();
+//			ExtinguishFire();
+
+			// Change the base of the fires so we can reuse the existing ones (makes the change seamless)
+			foreach BasedActors(class'Fire', f)
+			{
+				f.SetBase(carc);
+				f.SetOwner(carc);
+				if(f.smokeGen != None)
+				{
+					f.smokeGen.SetBase(carc);
+					f.smokeGen.SetLocation(f.Location);
+					if(f.smokeGen.proxy != None)
+					{
+						f.smokeGen.proxy.SetCollision(false,false,false);
+						f.smokeGen.proxy.bCollideWorld = False;
+					}
+				}
+				if(f.fireGen != None)
+				{
+					f.fireGen.SetBase(carc);
+					f.fireGen.SetLocation(f.Location);
+					if(f.fireGen.proxy != None)
+					{
+						f.fireGen.proxy.SetCollision(false,false,false);
+						f.fireGen.proxy.bCollideWorld = False;
+					}
+				}
+			}
+
+			// Mark the carcass as being on fire
+			carc.bOnFire = True;			
+			carc.burnTimer = burnTimer;
+
+			// Do everything in ExtinguishFire manually, save the clearing of the fires
+			bOnFire = False;
+			burnTimer = 0;
+			SetTimer(0, False); //== Dead people don't need to be checked for random inventory
+		}
 
 		// give the carcass the pawn's inventory if we aren't an animal or robot
-		if (!IsA('Animal') && !IsA('Robot'))
+		if ((bIsHuman || DeusExPlayer(GetPlayerPawn()).combatDifficulty > 4.0) && !IsA('Robot'))
 		{
+			bHadWeapon = False;
 			if (Inventory != None)
 			{
 				do
@@ -2805,9 +3035,56 @@ function Carcass SpawnCarcass()
 					nextItem = item.Inventory;
 					DeleteInventory(item);
 					if ((DeusExWeapon(item) != None) && (DeusExWeapon(item).bNativeAttack))
+					{
+						if(DeusExWeapon(item).AmmoType != None)
+						{
+							if(DeusExWeapon(item).AmmoType.PickupViewMesh == LodMesh'DeusExItems.TestBox')
+							{
+								carc.DeleteInventory(DeusExWeapon(item).AmmoType);
+								DeusExWeapon(item).AmmoType.Destroy();
+							}
+						}
 						item.Destroy();
+					}
 					else
+					{
+						if(item.IsA('DeusExWeapon'))
+						{
+							if(Weapon(item).AmmoType != None)
+							{
+								//== Clear out any non-standard ammo the NPC might be using
+								if(DeusExAmmo(Weapon(item).AmmoType).bIsNonStandard && DeusExWeapon(item).AmmoNames[1] != None)
+								{
+									//== We don't want non-standard ammo in the chamber, no matter what
+									Weapon(item).AmmoType = None;
+									DeusExWeapon(item).AmmoName = DeusExWeapon(item).Default.AmmoName;
+
+									for(i = 0; i < 3; i++)
+									{
+										nextItem = FindInventoryType(DeusExWeapon(item).AmmoNames[i]);
+										if(nextItem != None)
+										{
+											if(!DeusExAmmo(nextItem).bIsNonStandard)
+											{
+												Weapon(item).AmmoName = DeusExWeapon(item).AmmoNames[i];
+												Weapon(item).AmmoType = DeusExAmmo(nextItem);
+											}
+										}
+									}
+									nextItem = item.Inventory;
+								}
+
+								if(Weapon(item).AmmoType.AmmoAmount == 0)
+									Weapon(item).AmmoType.AmmoAmount = 1;
+							}
+
+							if(item.IsA('WeaponCombatKnife'))
+								Weapon(item).PickupAmmoCount = 1;
+						}
+
 						carc.AddInventory(item);
+					}
+
 					item = nextItem;
 				}
 				until (item == None);
@@ -2818,6 +3095,368 @@ function Carcass SpawnCarcass()
 	return carc;
 }
 
+// ----------------------------------------------------------------------
+// Explode() [Ripped off from MIB/etc., now based on collisionradius]
+// ----------------------------------------------------------------------
+
+
+function Explode(optional vector HitLocation)
+{
+	local SphereEffect sphere;
+	local ScorchMark s;
+	local ExplosionLight light;
+	local int i;
+	local float explosionDamage;
+	local float explosionRadius;
+	local FleshFragment f;
+
+	if(HitLocation == vect(0,0,0))
+		HitLocation = Location;
+
+	explosionDamage = 100;
+	explosionRadius = CollisionRadius * 11.64; //was 256.  When multiplied by the default collisionradius (22) and converted to int it IS 256
+
+	// alert NPCs that I'm exploding
+	AISendEvent('LoudNoise', EAITYPE_Audio, , explosionRadius*16);
+	PlaySound(Sound'LargeExplosion1', SLOT_None,,, explosionRadius*16);
+
+	// draw a pretty explosion
+	light = Spawn(class'ExplosionLight',,, HitLocation);
+	if (light != None)
+		light.size = 4;
+
+	Spawn(class'ExplosionSmall',,, HitLocation + 2*VRand()*CollisionRadius);
+	if(explosionRadius > 96)
+		Spawn(class'ExplosionMedium',,, HitLocation + 2*VRand()*CollisionRadius);
+	if(explosionRadius > 192)
+		Spawn(class'ExplosionMedium',,, HitLocation + 2*VRand()*CollisionRadius);
+	if(explosionRadius > 224)
+		Spawn(class'ExplosionLarge',,, HitLocation + 2*VRand()*CollisionRadius);
+
+	sphere = Spawn(class'SphereEffect',,, HitLocation);
+	if (sphere != None)
+		sphere.size = explosionRadius / 32.0;
+
+	// spawn a mark
+	s = spawn(class'ScorchMark', Base,, HitLocation-vect(0,0,1)*CollisionHeight, Rotation+rot(16384,0,0));
+	if (s != None)
+	{
+		s.DrawScale = FClamp(explosionRadius/76.8, 0.1, 3.0);
+		s.ReattachDecal();
+	}
+
+	// spawn some rocks and flesh fragments
+	for (i=0; i<explosionRadius/15; i++)
+	{
+		if (FRand() < 0.3)
+			spawn(class'Rockchip',,,HitLocation);
+		else
+			f = spawn(class'FleshFragment',,,HitLocation);
+
+		if(f != None)
+			f.DrawScale = ExplosionRadius/256;
+	}
+
+	HurtRadius(explosionDamage, explosionRadius, 'Exploded', explosionDamage*100, HitLocation);
+}
+
+//=== NPC Random Inventory -- Y|yukichigai
+function bool GenerateRandomInventory()
+{
+	local Inventory item;
+	local DeusExAmmo ammo;
+	local bool bHadWeapon, bHadPowerfulWeapon;
+	local DeusExPlayer dxPlayer;
+
+	local class<Inventory> Am20mm, AmDragon, AmFlare, Am10mmEx, AmRocketWP, GepGun, SawedOff, PepperGun, PS20, Prod, Shuriken, Pistol, Flamethrower, LAW;
+
+
+	//== For mod compatibility we're going to store the list of random inventory goodies as a list that can be overridden
+	Am20mm 		= class'Ammo20mm';
+	AmDragon 	= class'AmmoDragon';
+	AmFlare		= class'AmmoDartFlare';
+	Am10mmEX	= class'Ammo10mmEX';
+	AmRocketWP	= class'AmmoRocketWP';
+
+
+	GepGun		= class'WeaponGEPGun';
+	SawedOff	= class'WeaponSawedOffShotgun';
+	PepperGun	= class'WeaponPepperGun';
+	PS20		= class'WeaponHideAGun';
+	Prod		= class'WeaponProd';
+	Shuriken	= class'WeaponShuriken';
+	Pistol		= class'WeaponPistol';
+	Flamethrower	= class'WeaponFlamethrower';
+	LAW		= class'WeaponLAW';
+
+	dxPlayer = DeusExPlayer(GetPlayerPawn());
+
+	item = Inventory;
+
+	bHadWeapon = False;
+	bHadPowerfulWeapon = False;
+
+	//== For TNM we need to redo the list almost completely, albeit with TNM versions of the same damn thing
+	if(dxPlayer.Class.Name == 'trestkon')
+	{
+		GepGun		= Class<Inventory>(DynamicLoadObject("TNMItems.WeaponTNMGepGun", class'Class', False));
+		SawedOff	= Class<Inventory>(DynamicLoadObject("TNMItems.WeaponTNMSawedOffShotgun", class'Class', False));
+		PepperGun	= Class<Inventory>(DynamicLoadObject("TNMItems.WeaponTNMPepperGun", class'Class', False));
+		PS20		= Class<Inventory>(DynamicLoadObject("TNMItems.WeaponTNMHideAGun", class'Class', False));
+		Prod		= Class<Inventory>(DynamicLoadObject("TNMItems.WeaponTNMProd", class'Class', False));
+		Shuriken	= Class<Inventory>(DynamicLoadObject("TNMItems.WeaponTNMShuriken", class'Class', False));
+		Pistol		= Class<Inventory>(DynamicLoadObject("TNMItems.WeaponTNMPistol", class'Class', False));
+		Flamethrower	= Class<Inventory>(DynamicLoadObject("TNMItems.WeaponTNMFlamethrower", class'Class', False));
+		LAW		= Class<Inventory>(DynamicLoadObject("TNMItems.WeaponTNMLAW", class'Class', False));
+
+		//== These special ammo types aren't usable by the TNM weapons, unfortunately
+		AmDragon	= Pistol;
+		Am10mmEX	= PS20;
+	}
+
+
+	while(item != None && !(bHadWeapon && bHadPowerfulWeapon))
+	{	
+
+		if(DeusExPlayer(item.Owner) == dxPlayer)
+			break;
+
+
+		if(DeusExWeapon(item) != None) //They have a weapon?
+		{
+			bHadWeapon = True;
+
+			//Did they have a powerful weapon?
+			if(InStr(String(item.Class.Name), "Assault") > -1 || DeusExWeapon(item).GoverningSkill == Class'DeusEx.SkillWeaponHeavy' || IsA('Robot'))
+				bHadPowerfulWeapon = True;
+		}
+
+		item = item.Inventory;
+	}
+
+	if(bHadWeapon || IsA('HumanMilitary') || IsA('GenericAggressive') || IsA('TNMAggressive') || dxPlayer.combatDifficulty > 4.0)
+	{
+		if(bHadPowerfulWeapon || Rand(7) == 4 || (dxPlayer.combatDifficulty > 4.0 && bHadWeapon))
+		{
+			switch(Rand(11))
+			{
+				case 0: if(!bHadPowerfulWeapon && bHadWeapon && dxPlayer.combatDifficulty > 4.0)
+						item = spawn(GepGun,self);
+					else if (!bHadWeapon)
+						item = spawn(SawedOff,self);
+					else
+						item = spawn(AmDragon,self);
+					break;
+				case 1:
+					item = spawn(Am20mm,self);
+					break;
+				case 2: if(bHadWeapon)
+						item = spawn(AmRocketWP,self);
+					else
+						item = spawn(Prod,self);
+					break;
+				case 3:
+					item = spawn(PepperGun,self);
+					break;
+				case 4:
+					item = spawn(PS20,self);
+					break;
+				case 5: if(!bHadWeapon)
+						item = spawn(Pistol,self);
+					else
+						item = spawn(AmFlare,self);
+					break;
+				case 6: 
+					item = spawn(Shuriken,self);
+					break;
+				case 7: if(!bHadPowerfulWeapon && bHadWeapon && dxPlayer.combatDifficulty > 4.0)
+						item = spawn(Flamethrower,self);
+					else
+						item = spawn(Prod,self);
+					break;
+				case 8:
+					item = spawn(Am10mmEX,self);
+					break;
+				case 9: if(!bHadPowerfulWeapon && bHadWeapon && dxPlayer.combatDifficulty > 4.0)
+						item = spawn(LAW,self);
+					break;
+				case 10: if(!bHadWeapon)
+						item = spawn(Pistol,self);
+					break;
+			}
+		}
+		else
+		{
+        		switch(Rand(9))
+        		{
+				case 4:
+        			case 0:
+        				item = spawn(PS20,self);
+         				break;
+				case 5:
+        			case 1:
+        				item = spawn(AmFlare,self);
+        				break;
+				case 6:
+        			case 2:
+        				item = spawn(Shuriken,self);
+        				break;
+				case 7:
+				case 3:
+					item = spawn(PepperGun,self);
+					break;
+				case 8: if(!bHadWeapon && dxPlayer.combatDifficulty > 4.0)
+						item = spawn(Pistol,self);
+					break;
+        		}
+		}
+      	}
+      
+      	//Now, if the above didn't do anything, or if the
+      	// pawn is a MiB/WiB, add stuff from the uber-super-cool list
+      	if((item == None && (bHadWeapon == True || IsA('HumanMilitary') || IsA('GenericAggressive') || IsA('TNMAggressive'))) || IsA('MIB') || IsA('WIB') || IsA('TNMMIB') || IsA('TNMWIB') || IsA('WCIDAgent'))
+      	{
+      		//give the inventory to MiBs/WiBs so we can give 'em something else
+      		if(item != None)
+      		{
+			item.InitialState='Idle2';
+			item.GiveTo(Self);
+			item.SetBase(Self);
+
+			if(Weapon(item) != None)
+			{
+      				if ((Weapon(item).AmmoType == None) && (Weapon(item).AmmoName != None) && (Weapon(item).AmmoName != Class'AmmoNone'))
+      				{
+      					Weapon(item).AmmoType = Ammo(FindInventoryType(Weapon(item).AmmoName));
+      					if (Weapon(item).AmmoType == None)
+      					{
+						Weapon(item).AmmoType = spawn(Weapon(item).AmmoName,self);
+      					}
+      				}
+				if(Weapon(item).AmmoType != None)
+				{
+					Weapon(item).AmmoType.InitialState='Idle2';
+					Weapon(item).AmmoType.GiveTo(Self);
+					Weapon(item).AmmoType.SetBase(Self);
+				}
+      			}
+      			item = None;
+      		}
+      		switch(Rand(8))
+      		{
+      			case 0:
+      				item = spawn(Class'WeaponModAccuracy',self);
+      				break;
+      			case 1:
+      				item = spawn(Class'WeaponModRecoil',self);
+      				break;
+      			case 2:
+      				item = spawn(Class'WeaponModReload',self);
+      				break;
+      			case 3:
+      				item = spawn(Class'WeaponModClip',self);
+      				break;
+      			case 4:
+      				item = spawn(Class'WeaponModRange',self);
+      				break;
+      			case 5:
+      			case 6:
+      				item = spawn(Class'WeaponModAuto',self);
+      				break;
+      			case 7:
+      				item = spawn(Class'AugmentationUpgradeCannister',self);
+      				break;
+      		}
+
+      	}
+     	if(item != None)
+     	{
+		ammo = DeusExAmmo(item);
+
+		item.InitialState='Idle2';
+		item.GiveTo(Self);
+		item.SetBase(Self);
+
+     		if(Weapon(item) != None)
+     		{
+     			if ((Weapon(item).AmmoType == None) && (Weapon(item).AmmoName != None) && (Weapon(item).AmmoName != Class'AmmoNone'))
+     			{
+     				Weapon(item).AmmoType = Ammo(FindInventoryType(Weapon(item).AmmoName));
+      				if ((Weapon(item).AmmoType == None) && (Weapon(item).AmmoName != None) && (Weapon(item).AmmoName != Class'AmmoNone'))
+      				{
+      					Weapon(item).AmmoType = Ammo(FindInventoryType(Weapon(item).AmmoName));
+      					if (Weapon(item).AmmoType == None)
+      					{
+						Weapon(item).AmmoType = spawn(Weapon(item).AmmoName,self);
+      					}
+      				}
+				if(Weapon(item).AmmoType != None)
+				{
+					Weapon(item).AmmoType.InitialState='Idle2';
+					Weapon(item).AmmoType.GiveTo(Self);
+					Weapon(item).AmmoType.SetBase(Self);
+				}
+     			}
+     		}
+		log("ScriptedPawn==>Item Given: " $item$ " to " $Self);
+
+		if(dxPlayer.combatDifficulty >= 2.0 && ammo != None)
+		{
+			//== For some kinds of alternate ammo we want to let NPCs use it if they have it
+			if(ammo.IsA('AmmoDartFlare'))
+			{
+				item = Inventory;
+	
+				while(item != None)
+				{
+					if(WeaponMiniCrossbow(item) != None)
+					{
+						DeusExWeapon(item).LoadAmmo(2);
+						item = None;
+						break;
+					}
+					item = item.Inventory;
+				}
+			}
+			else if(ammo.IsA('Ammo10mmEX'))
+			{
+				item = Inventory;
+	
+				while(item != None)
+				{
+					if(WeaponPistol(item) != None || WeaponStealthPistol(item) != None)
+					{
+						DeusExWeapon(item).LoadAmmo(1);
+						item = None;
+						break;
+					}
+					item = item.Inventory;
+				}
+			}
+			else if(ammo.IsA('AmmoDragon'))
+			{
+				item = Inventory;
+	
+				while(item != None)
+				{
+					if(WeaponAssaultShotgun(item) != None || WeaponSawedOffShotgun(item) != None)
+					{
+						DeusExWeapon(item).LoadAmmo(2);
+						item = None;
+						break;
+					}
+					item = item.Inventory;
+				}
+			}
+		}
+
+     		item = None;
+
+		//== If we have a weapon in hand, make sure we're using the best one now
+		if(Weapon != None)
+			SwitchToBestWeapon();
+     	}
+}
 
 // ----------------------------------------------------------------------
 // FilterDamageType()
@@ -2966,6 +3605,7 @@ function bool IsPrimaryDamageType(name damageType)
 		case 'Flamed':
 		case 'Poison':
 		case 'Shot':
+		case 'Shell':
 		case 'Sabot':
 		default:
 			bPrimary = true;
@@ -3011,6 +3651,10 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 
 	if (actualDamage > 0)
 	{
+		//== Kinda hacky, but we don't want to actually damage invincible pawns, just play the animations
+		if(bInvincible)
+			actualDamage = 0;
+
 		if (offset.z > headOffsetZ)		// head
 		{
 			// narrow the head region
@@ -3137,6 +3781,7 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 	local float        origHealth;
 	local EHitLocation hitPos;
 	local float        shieldMult;
+	local bool	   bFlare; //== Flare dart check
 
 	// use the hitlocation to determine where the pawn is hit
 	// transform the worldspace hitlocation into objectspace
@@ -3155,12 +3800,27 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 	if ((Damage <= 0) && (damageType == 'None'))
 		return;
 
+	if(damageType == 'Flared')
+	{
+		bFlare = True;
+		damageType = 'Flamed';
+	}
+	else
+		bFlare = False;
+
 	// Block certain damage types; perform special ops on others
 	if (!FilterDamageType(instigatedBy, hitLocation, offset, damageType))
 		return;
 
+	// Give the shotgun some extra kick
+	if(damageType == 'Shell')
+		momentum *= 3.000000;
+
 	// Impart momentum
-	ImpartMomentum(momentum, instigatedBy);
+	if(damageType != 'ShotSoft')
+		ImpartMomentum(momentum, instigatedBy);
+	else
+		damageType = 'Shot';
 
 	actualDamage = ModifyDamage(Damage, instigatedBy, hitLocation, offset, damageType);
 
@@ -3194,8 +3854,17 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 	if ((actualDamage > 0) && (damageType == 'Poison'))
 		StartPoison(Damage, instigatedBy);
 
+	if ((DamageType == 'Flamed') && !bOnFire)
+	{
+		CatchFire();
+		if(bFlare)
+			burnTimer += BurnPeriod/2.000000;			
+	}
+
 	if (Health <= 0)
 	{
+		if(origHealth >= Default.Health)
+			bOutInOne = True;
 		ClearNextState();
 		//PlayDeathHit(actualDamage, hitLocation, damageType);
 		if ( actualDamage > mass )
@@ -3209,6 +3878,11 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 			Health = -1;
 
 		Died(instigatedBy, damageType, HitLocation);
+		SkillsForKills(instigatedBy, damageType, HitLocation);
+
+		//== Now to be really, really cool we'll make the death shot apply extra momentum
+		momentum *= 2.000000;
+		ImpartMomentum(momentum, instigatedBy);
 
 		if ((DamageType == 'Flamed') || (DamageType == 'Burned'))
 		{
@@ -3224,9 +3898,6 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 	// play a hit sound
 	if (DamageType != 'Stunned')
 		PlayTakeHitSound(actualDamage, damageType, 1);
-
-	if ((DamageType == 'Flamed') && !bOnFire)
-		CatchFire();
 
 	ReactToInjury(instigatedBy, damageType, hitPos);
 }
@@ -3296,7 +3967,8 @@ function CheckOpenDoor(vector HitNormal, actor Door, optional name Label)
 	dxMover = DeusExMover(Door);
 	if (dxMover != None)
 	{
-		if (bCanOpenDoors && !IsDoor(dxMover) && dxMover.bBreakable)  // break glass we walk into
+		//== Upgrade this later to have the NPC use the weapon, or play some kind of "tackle-esque" anim, or something
+		if (bCanOpenDoors && !IsDoor(dxMover) && dxMover.bBreakable && Weapon != None)  // break glass we walk into
 		{
 			dxMover.TakeDamage(200, self, dxMover.Location, Velocity, 'Shot');
 			return;
@@ -3600,7 +4272,10 @@ function EnableCloak(bool bEnable)  // beware! called from C++
 
 function PlayBodyThud()
 {
-	PlaySound(sound'BodyThud', SLOT_Interact);
+	if(DeusExPlayer(GetPlayerPawn()).DrugEffectTimer < 0)
+		PlaySound(sound'BodyThud', SLOT_Interact,,,, 0.5);
+	else
+		PlaySound(sound'BodyThud', SLOT_Interact);
 }
 
 
@@ -3613,6 +4288,8 @@ function PlayBodyThud()
 
 function float RandomPitch()
 {
+	if(DeusExPlayer(GetPlayerPawn()).DrugEffectTimer < 0)
+		return ((1.1 - 0.2*FRand()) * 0.5);
 	return (1.1 - 0.2*FRand());
 }
 
@@ -3679,7 +4356,11 @@ function PlayPreAttackSearchingSound()
 
 	dxPlayer = DeusExPlayer(GetPlayerPawn());
 	if ((dxPlayer != None) && (SeekPawn == dxPlayer))
+	{
 		dxPlayer.StartAIBarkConversation(self, BM_PreAttackSearching);
+		PendingSkillPoints *= 7;
+		PendingSkillPoints /= 8;
+	}
 }
 
 
@@ -3693,7 +4374,11 @@ function PlayPreAttackSightingSound()
 
 	dxPlayer = DeusExPlayer(GetPlayerPawn());
 	if ((dxPlayer != None) && (SeekPawn == dxPlayer))
+	{
 		dxPlayer.StartAIBarkConversation(self, BM_PreAttackSighting);
+		PendingSkillPoints *= 3;
+		PendingSkillPoints /= 4;
+	}
 }
 
 
@@ -3720,8 +4405,16 @@ function PlayTargetAcquiredSound()
 	local DeusExPlayer dxPlayer;
 
 	dxPlayer = DeusExPlayer(GetPlayerPawn());
+
 	if ((dxPlayer != None) && (Enemy == dxPlayer))
+	{
 		dxPlayer.StartAIBarkConversation(self, BM_TargetAcquired);
+		//== Neutralize all stealth bonuses
+		PendingSkillPoints = 0;
+	}
+
+	if(SpeechTargetAcquired != None)
+		PlaySound(SpeechTargetAcquired, SLOT_None,,, 2048);
 }
 
 
@@ -3736,6 +4429,9 @@ function PlayTargetLostSound()
 	dxPlayer = DeusExPlayer(GetPlayerPawn());
 	if ((dxPlayer != None) && (SeekPawn == dxPlayer))
 		dxPlayer.StartAIBarkConversation(self, BM_TargetLost);
+
+	if(SpeechTargetLost != None)
+		PlaySound(SpeechTargetLost, SLOT_None,,, 2048);
 }
 
 
@@ -3909,7 +4605,11 @@ function PlayAllianceHostileSound()
 
 	dxPlayer = DeusExPlayer(GetPlayerPawn());
 	if ((dxPlayer != None) && (Enemy == dxPlayer))
+	{
 		dxPlayer.StartAIBarkConversation(self, BM_AllianceHostile);
+		//== Neutralize all stealth bonuses
+		PendingSkillPoints = 0;
+	}
 }
 
 
@@ -4121,6 +4821,8 @@ function PlayFootStep()
 	volume      = 1.0;
 	range       = FClamp(range, 0.01, maxRadius);
 	pitch       = FClamp(pitch, 1.0, 1.5);
+	if(DeusExPlayer(GetPlayerPawn()).DrugEffectTimer < 0)
+		pitch *= 0.5;
 
 	// play the sound and send an AI event
 	PlaySound(stepSound, SLOT_Interact, volume, , range, pitch);
@@ -4265,6 +4967,32 @@ function PlayRunningAndFiring()
 	}
 }
 
+// ----------------------------------------------------------------------
+// PlayDodge()
+//  In Unrealistic, NPCs can dodge too.  Make sure it looks good
+// ----------------------------------------------------------------------
+
+function PlayDodge(eDodgeDir DodgeMove)
+{
+	//== Slow animations make it look like they're waiting to land
+	switch(DodgeMove)
+	{
+		case DODGE_Left:
+		case DODGE_Right:
+				if (HasTwoHandedWeapon())
+					LoopAnimPivot('Strafe2H',0.1,0.1);
+				else
+					LoopAnimPivot('Strafe',0.1,0.1);
+				break;
+		case DODGE_Back:
+		case DODGE_Forward:
+				if (HasTwoHandedWeapon())
+					LoopAnimPivot('RunShoot2H',0.1,0.1);
+				else
+					LoopAnimPivot('Run',0.1,0.1);
+				break;
+	}
+}
 
 // ----------------------------------------------------------------------
 // PlayReloadBegin()
@@ -5041,7 +5769,8 @@ function ExtinguishFire()
 
 	bOnFire = False;
 	burnTimer = 0;
-	SetTimer(0, False);
+	//SetTimer(0, False);
+	SetTimer(5.0, True);
 
 	foreach BasedActors(class'Fire', f)
 		f.Destroy();
@@ -5059,7 +5788,7 @@ function UpdateFire()
 	if (Health <= 0)
 	{
 		TakeDamage(10, None, Location, vect(0,0,0), 'Burned');
-		ExtinguishFire();
+		//ExtinguishFire();
 	}
 }
 
@@ -5088,7 +5817,7 @@ function bool CanConverseWithPlayer(DeusExPlayer dxPlayer)
 {
 	local name alliance1, alliance2, carcname;  // temp vars
 
-	if (GetPawnAllianceType(dxPlayer) == ALLIANCE_Hostile)
+	if (CheckPawnAllianceType(dxPlayer) == ALLIANCE_Hostile)
 		return false;
 	else if ((GetStateName() == 'Fleeing') && (Enemy != dxPlayer) && (IsValidEnemy(Enemy, false)))  // hack
 		return false;
@@ -5183,7 +5912,7 @@ function float DistressScore(actor receiver, actor sender, float score)
 	scriptedSender = ScriptedPawn(sender);
 	if (pawnSender == None)
 		score = 0;
-	else if ((GetPawnAllianceType(pawnSender) != ALLIANCE_Friendly) && !bFearDistress)
+	else if ((CheckPawnAllianceType(pawnSender) != ALLIANCE_Friendly) && !bFearDistress)
 		score = 0;
 	else if ((scriptedSender != None) && !scriptedSender.bDistressed)
 		score = 0;
@@ -5575,7 +6304,7 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
 			bDistressorValid = false;
 			distresseePlayer = DeusExPlayer(distressee);
 			distresseePawn   = ScriptedPawn(distressee);
-			if (GetPawnAllianceType(distressee) == ALLIANCE_Friendly)
+			if (CheckPawnAllianceType(distressee) == ALLIANCE_Friendly)
 			{
 				if (distresseePawn != None)
 				{
@@ -5595,12 +6324,12 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
 				distressorPawn   = ScriptedPawn(distressor);
 				if (distressorPawn != None)
 				{
-					if (bHateDistress || (distressorPawn.GetPawnAllianceType(distressee) == ALLIANCE_Hostile))
+					if (bHateDistress || (distressorPawn.CheckPawnAllianceType(distressee) == ALLIANCE_Hostile))
 						bDistressorValid = true;
 				}
 				else if (distresseePawn != None)
 				{
-					if (bHateDistress || (distresseePawn.GetPawnAllianceType(distressor) == ALLIANCE_Hostile))
+					if (bHateDistress || (distresseePawn.CheckPawnAllianceType(distressor) == ALLIANCE_Hostile))
 						bDistressorValid = true;
 				}
 
@@ -5869,6 +6598,24 @@ function bool ShouldBeStartled(Pawn startler)
 
 
 // ----------------------------------------------------------------------
+// ShouldCrouch()  [stub function, overridden by subclasses and individual states]
+// ----------------------------------------------------------------------
+
+function bool ShouldCrouch()
+{
+	return false;
+}
+
+
+// ----------------------------------------------------------------------
+// PickDestination()  [stub function, overridden by subclasses and individual states]
+// ----------------------------------------------------------------------
+
+//function PickDestination(){}
+function bool PickNextDestination(){}
+function EDestinationType GetNewDestination(){}
+
+// ----------------------------------------------------------------------
 // ShouldPlayTurn()
 // ----------------------------------------------------------------------
 
@@ -5975,6 +6722,34 @@ function ChangeAlly(Name newAlly, optional float allyLevel, optional bool bPerma
 }
 
 
+function ChangeInitialAlly(Name newAlly, optional float allyLevel, optional bool bPermanent)
+{
+	local int i;
+
+	// Members of the same alliance will ALWAYS be friendly to each other
+	if (newAlly == Alliance)
+	{
+		allyLevel  = 1;
+		bPermanent = true;
+	}
+
+	if (allyLevel < -1)
+		allyLevel = -1;
+	if (allyLevel > 1)
+		allyLevel = 1;
+
+	for (i=0; i<8; i++)
+		if ((InitialAlliances[i].AllianceName == newAlly) || (InitialAlliances[i].AllianceName == ''))
+			break;
+
+	if (i < 8)
+	{
+		InitialAlliances[i].AllianceName         = newAlly;
+		InitialAlliances[i].AllianceLevel        = allyLevel;
+		InitialAlliances[i].bPermanent           = bPermanent;
+	}
+}
+
 // ----------------------------------------------------------------------
 // AgitateAlliance()
 // ----------------------------------------------------------------------
@@ -6011,6 +6786,38 @@ function AgitateAlliance(Name newEnemy, float agitation)
 	}
 }
 
+//== Removes Zero-value (neutral) alliances so the game actually counts them as neutral
+function StripZeroAlliances()
+{
+	local int i, j;
+
+	for(i = 0; i < 16; i++)
+	{
+		if(AlliancesEx[i].AllianceLevel == 0 && AlliancesEx[i].AllianceName != '')
+		{
+			AlliancesEx[i].AllianceName = '';
+			bAlliancesChanged = True;
+			for(j = i; j < 15; j++)
+				AlliancesEx[j] = AlliancesEx[j + 1];
+
+			i--;
+		}
+	}
+}
+
+function ClearAlliances()
+{
+	local int i;
+	for(i = 0; i < 16; i++)
+	{
+		AlliancesEx[i].AllianceName = '';
+		AlliancesEx[i].AllianceLevel = 0.0000000;
+		AlliancesEx[i].AgitationLevel = 0.0000000;
+		AlliancesEx[i].bPermanent = False;
+	}
+	bAlliancesChanged = True;
+}
+
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
@@ -6041,6 +6848,10 @@ function bool AISafeToShoot(out Actor hitActor, vector traceEnd, vector traceSta
 	bSafe    = true;
 	hitActor = None;
 
+	//== Railgun doesn't really care about the objects in the way
+	if(WeaponRailgun(Weapon) != None)
+		return true;
+
 	foreach TraceActors(Class'Actor', traceActor, hitLocation, hitNormal,
 	                    traceEnd, traceStart, extent)
 	{
@@ -6057,8 +6868,31 @@ function bool AISafeToShoot(out Actor hitActor, vector traceEnd, vector traceSta
 		{
 			if (tracePawn != self)
 			{
-				if (GetPawnAllianceType(tracePawn) == ALLIANCE_Friendly)
+				if (CheckPawnAllianceType(tracePawn) == ALLIANCE_Friendly)
 					bSafe = false;
+
+				//== If we're a robot...
+				if(Robot(Self) != None)
+				{
+					//== ...then we might be scrambled, so use the scrambler's alliances
+					if(Robot(Self).CrazedTimer > 0 && Robot(Self).CrazedInstigator != None)
+					{
+						if(ScriptedPawn(tracePawn) != None)
+						{
+							if(ScriptedPawn(tracePawn).CheckPawnAllianceType(Robot(Self).CrazedInstigator) == ALLIANCE_Hostile)
+								bSafe = true;
+							else
+								bSafe = false;
+						}
+						else if(ScriptedPawn(Robot(Self).CrazedInstigator) != None)
+						{
+							if(ScriptedPawn(Robot(Self).CrazedInstigator).CheckPawnAllianceType(tracePawn) == ALLIANCE_Hostile)
+								bSafe = true;
+							else
+								bSafe = false;
+						}
+					}
+				}
 				break;
 			}
 		}
@@ -6278,6 +7112,7 @@ function bool AICanShoot(pawn target, bool bLeadTarget, bool bCheckReadiness,
 	local bool   bIsThrown;
 	local float  elevation;
 	local bool   bSafe;
+	local bool   bThruShot; //can our weapon shoot through walls?
 
 	if (target == None)
 		return false;
@@ -6297,6 +7132,12 @@ function bool AICanShoot(pawn target, bool bLeadTarget, bool bCheckReadiness,
 		if (dxWeapon.AmmoType.AmmoAmount <= 0)
 			return false;
 	}
+
+	if(dxWeapon.IsA('WeaponRailgun'))
+		bThruShot = True;
+	else
+		bThruShot = False;
+
 	if (FireElevation > 0)
 	{
 		elevation = FireElevation + (CollisionHeight+target.CollisionHeight);
@@ -6357,7 +7198,7 @@ function bool AICanShoot(pawn target, bool bLeadTarget, bool bCheckReadiness,
 			projEnd += vect(0,0,1)*target.BaseEyeHeight;
 			bSafe = FastTrace(target.Location + vect(0,0,1)*target.BaseEyeHeight, projStart);
 		}
-		if (!bSafe)
+		if (!bSafe && !bThruShot)
 			return false;
 	}
 
@@ -6543,6 +7384,17 @@ function CheckEnemyParams(Pawn checkPawn,
 	local bool         bValid;
 
 	bValid = IsValidEnemy(checkPawn);
+
+	//== For scrambled bots we should use the scramblers alliances
+	if(Robot(Self) != None)
+	{
+		if(Robot(Self).CrazedTimer > 0 && Robot(Self).CrazedInstigator != None)
+		{
+			if(ScriptedPawn(Robot(Self).CrazedInstigator) != None)
+				bValid = ScriptedPawn(Robot(Self).CrazedInstigator).IsValidEnemy(checkPawn);
+			else 
+		}		bValid = (ScriptedPawn(checkPawn).CheckPawnAllianceType(Robot(Self).CrazedInstigator) == ALLIANCE_Hostile);
+	}
 	if (bValid && (Enemy != checkPawn))
 	{
 		// Honor cloaking, radar transparency, and other augs if this guy isn't our current enemy
@@ -6627,7 +7479,7 @@ function FindBestEnemy(bool bIgnoreCurrentEnemy)
 	if (!bIgnoreCurrentEnemy && (Enemy != None))
 		CheckEnemyParams(Enemy, bestPawn, bestThreatLevel, bestDist);
 	foreach RadiusActors(Class'Pawn', nextPawn, 2000)  // arbitrary
-		if (enemy != nextPawn)
+		if (enemy != nextPawn && nextPawn != Self) //We are not out own worst enemy, I assure you
 			CheckEnemyParams(nextPawn, bestPawn, bestThreatLevel, bestDist);
 
 	if (bestPawn != Enemy)
@@ -6686,7 +7538,7 @@ function bool ShouldFlee()
 
 function bool ShouldDropWeapon()
 {
-	if (((HealthArmLeft <= 0) || (HealthArmRight <= 0)) && (Health > 0))
+	if (((HealthArmLeft <= 0) || (HealthArmRight <= 0)) && (Health > 0) && !bInvincible)
 		return true;
 	else
 		return false;
@@ -7426,6 +8278,34 @@ function SpurtBlood()
 
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
 {
+	//== Anything Gray-esque gets the Radiation heal effect
+	if(Default.Mesh == LodMesh'DeusExCharacters.Gray')
+	{
+		if(damageType == 'Radiation')
+		{
+			if(Health < Default.Health && Damage > 0)
+			{
+				Health += Damage;
+				if(Health > Default.Health)
+					Health = Default.Health;
+
+				return;
+			}
+		}
+
+		//== Exclude classes for which this is already done (Zodiac)
+		if(!(Default.BindName == "Grey" || Default.BindName == "Blue" || Default.BindName == "Sen"))
+		{
+			if(damageType == 'EnergyWeapon')
+			{
+				if(!bOnFire && fRand() >= 0.9)
+					CatchFire();
+				else
+					Damage *= 1.1;
+			}
+		}
+	}
+
 	TakeDamageBase(Damage, instigatedBy, hitlocation, momentum, damageType, true);
 }
 
@@ -7436,7 +8316,83 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 
 function Timer()
 {
-	UpdateFire();
+	local Inventory inv, itemp;
+	local bool bWhatever, bCheck;
+	local int check; //Guard against infinite inventory
+
+	local class<Inventory>	CombatReplace[4];
+
+	if(bOnFire)
+		UpdateFire();
+	//== Don't do TOO much.  If they're on fire they really don't need weapons THIS VERY SECOND.  We can wait until they stop burning
+	else if(bNPCRandomCheck && !bNPCRandomGiven)
+	{
+		CombatReplace[0] = class'WeaponCrowbar';
+		CombatReplace[1] = class'WeaponSword';
+		CombatReplace[2] = class'WeaponCrowbar';
+		CombatReplace[3] = class'WeaponCrowbar';
+
+		if(GetPlayerPawn().Class.Name == 'trestkon')
+		{
+			CombatReplace[0]	= Class<Inventory>(DynamicLoadObject("TNMItems.WeaponTNMCrowbar", class'Class', False));
+			CombatReplace[1]	= Class<Inventory>(DynamicLoadObject("TNMItems.WeaponTNMSword", class'Class', False));
+			CombatReplace[2]	= Class<Inventory>(DynamicLoadObject("TNMItems.WeaponHammer", class'Class', False));
+			CombatReplace[3]	= Class<Inventory>(DynamicLoadObject("TNMItems.WeaponWrench", class'Class', False));
+		}
+
+		bCheck = false;
+		bWhatever = false;
+		inv = Inventory;
+		check = 0;
+		while(inv != None && check <= 20 && inv.Owner == Self)
+		{
+			//== Okay, while we're at it, make sure our items are carried and not pickups (grr, TNM)
+			if(!inv.bCarriedItem)
+			{
+				log(Self $" somehow wasn't carrying their "$ inv $". Putting it back into their inventory.");
+				inv.GiveTo(Self);
+			}
+
+			check++;
+			itemp = None;
+			if(DeusExWeapon(inv) != None || DeusExPlayer(GetPlayerPawn()).combatDifficulty > 4.0)
+			{
+				bWhatever = true;
+			}
+			//== This will check for all types of combat knives, including those in TNM
+			if(InStr(String(inv.Class.Name), "CombatKnife") > -1 && bCheckedCombat)
+			{
+
+				if(Rand(4) < 4)
+					itemp = spawn(CombatReplace[Rand(3)], self);
+
+				if(itemp != None)
+				{
+					itemp.InitialState='Idle2';
+					itemp.GiveTo(Self);
+					itemp.setBase(Self);
+
+					bCheckedCombat = False;
+				}
+			}
+			if(itemp != None)
+				itemp = inv;
+			inv = inv.Inventory;
+			if(itemp != None)
+			{
+				DeleteInventory(itemp);
+				itemp.destroy();
+			}
+
+		}
+		if(bWhatever)
+		{
+			GenerateRandomInventory();
+			bNPCRandomGiven = True;
+		}
+	}
+	else if(!bOnFire)
+		SetTimer(0, False);
 }
 
 
@@ -7613,10 +8569,9 @@ function PreSetMovement()
 	bCanFly = false;
 	MinHitWall = -0.6;
 	if (Intelligence > BRAINS_Reptile)
-		bCanOpenDoors = true;
+		bCanOpenDoors = true; */
 	if (Intelligence == BRAINS_Human)
 		bCanDoSpecial = true;
-	*/
 }
 
 
@@ -7678,6 +8633,9 @@ function bool SwitchToBestWeapon()
 				FireTimer = dxWeapon.AIFireDelay;
 			}
 		}
+
+		if(dxWeapon.IsInState('Reload') && !bIsHuman && !IsA('Robot')) //Hack, avoid switching weapons while reloading
+			return true;
 	}
 
 	bestWeapon      = None;
@@ -7713,6 +8671,7 @@ function bool SwitchToBestWeapon()
 		{
 			log("********** RUNAWAY LOOP IN SWITCHTOBESTWEAPON ("$self$") **********");
 			loopInv = Inventory;
+			inv = loopInv;
 			i = 0;
 			while (loopInv != None)
 			{
@@ -7720,8 +8679,16 @@ function bool SwitchToBestWeapon()
 				if (i > 300)
 					break;
 				log("   Inventory "$i$" - "$loopInv);
+
+				if(loopInv.Owner != Self && loopInv.Base != Self) // Attempt to half-assed fix the problem if it's some kind of inventory "sharing" issue
+					DeleteInventory(loopInv);
+
+				if(loopInv.Inventory == inv) // circular-linked inventory
+					loopInv.Inventory = None;
+
 				loopInv = loopInv.Inventory;
 			}
+			inv = None; // break the loop
 		}
 
 		curWeapon = DeusExWeapon(inv);
@@ -7839,6 +8806,7 @@ function bool SwitchToBestWeapon()
 					case 'Burned':
 					case 'Flamed':
 					case 'Shot':
+					case 'Shell':
 						if (enemyRobot != None)
 							score += 0.5;
 						break;
@@ -8492,8 +9460,13 @@ function HandToHandAttack()
 	local DeusExWeapon dxWeapon;
 
 	dxWeapon = DeusExWeapon(Weapon);
-	if (dxWeapon != None)
-		dxWeapon.OwnerHandToHandAttack();
+	if (dxWeapon != None && dxWeapon.bHandToHand)
+	{
+		if(dxWeapon.bOwnerWillNotify)
+			dxWeapon.OwnerHandToHandAttack();
+		else
+			dxWeapon.HandToHandAttack();
+	}
 }
 
 
@@ -8516,11 +9489,13 @@ function Died(pawn Killer, name damageType, vector HitLocation)
 {
 	local DeusExPlayer player;
 	local name flagName;
+	local Vector offset;
 
 	// Set a flag when NPCs die so we can possibly check it later
 	player = DeusExPlayer(GetPlayerPawn());
 
-	ExtinguishFire();
+	//== For effect, this doesn't happen
+	//ExtinguishFire();
 
 	// set the instigator to be the killer
 	Instigator = Killer;
@@ -8536,7 +9511,13 @@ function Died(pawn Killer, name damageType, vector HitLocation)
 			player.BarkManager.ScriptedPawnDied(Self);
 	}
 
+	offset = (hitLocation - Location) << Rotation;
+
 	Super.Died(Killer, damageType, HitLocation);  // bStunned is set here
+
+	if(bUnStunnable)
+		bStunned = false;
+
 
 	if (player != None)
 	{
@@ -8560,7 +9541,134 @@ function Died(pawn Killer, name damageType, vector HitLocation)
 	}
 }
 
+function SkillsForKills(pawn Killer, name damageType, vector HitLocation)
+{
+	local DeusExPlayer player;
+	local int skillpt;
+	local int temp;
+	local bool skillon, robokill;
+	local Vector offset;
+	local EHitLocation hitPos;
 
+	player = DeusExPlayer(GetPlayerPawn());
+
+	offset = (hitLocation - Location) << Rotation;
+
+	// == do a whopping one point of damage to acquire the EHitLocation Enumeration value
+	hitPos = handleDamage(1, HitLocation, offset, damageType);
+
+	//Skill point stuff -- Y|yukichigai
+	skillon = true;
+	if(DeusExGameInfo(Level.Game) != None)
+		skillon = DeusExGameInfo(Level.Game).bNewSkillSystem; //Makes sure the skillpoint system is enabled
+
+	robokill = False;
+	if(skillon && Robot(Killer) != None)
+	{
+		if(Robot(Killer).CrazedInstigator == GetPlayerPawn())
+			robokill = True;
+	}
+
+	if( (player == DeusExPlayer(Killer) || robokill) && skillon && player != None)
+	{
+		//== Killing the NPC pretty much takes out that stealth bonus
+		PendingSkillPoints = 0;
+
+		skillpt = FMax(default.HealthHead, default.Health); //Skill points based on the health of the enemy
+
+		if(CheckPawnAllianceType(player) == ALLIANCE_Hostile)
+			skillpt *= 2;
+		else if(CheckPawnAllianceType(player) == ALLIANCE_Friendly) //Way to kill a friendly dipass
+		{
+			skillpt *= -1;
+
+			if(Robot(self) != None)
+			{
+				if(Robot(self).CrazedTimer > 0.0)
+					skillpt = 0;
+			}
+			else if(IsA('Rat') || IsA('Bird') || IsA('Fly') || IsA('Fishes'))  //Unless they're a pest or of little consequence
+				skillpt = 0;
+		}
+		else //if(!bStunned)
+			skillpt = 0;
+
+		if(bImportant)	//If they were important, super keen my friend
+			skillpt *= 3;
+
+		if(IsA('Robot')) //Robots, eh?  Moving up the ol' difficulty ladder I see
+		{
+			//== No points for destroying disabled robots.
+			if(Robot(self).EMPHitPoints <= 0 || IsInState('Disabled') || IsInState('Idle'))
+				skillpt = 0;
+
+			skillpt *= 3;
+		}
+		else if(Mass > 200) //Anything that big must have taken a lot
+			skillpt *= 2;
+
+		if(damageType == 'Exploded') //So you had to use explosives to get your kills.  For shame
+			skillpt /= 2;
+
+		temp = skillpt;
+
+		if(bStunned && (IsA('MIB') || IsA('WIB') || IsA('MJ12Commando')))	//If you stunned them, way to be you
+		{
+			skillpt += temp/2;
+		}
+
+		if(bOutInOne) //One shot, one kill.  Way to be.
+			skillpt += temp/2;
+
+		//======= Hit location stuff
+		if(IsPrimaryDamageType(damageType) && skillpt > 0 && !Killer.IsA('Robot'))  //Primary damage just means damage directly from a weapon, excluding explosions
+		{
+			if(!bTookHandtoHand && !bStunned)
+			{
+				if((hitPos == HITLOC_HeadFront || hitPos == HITLOC_HeadBack) && damageType != 'Shell') //Head Shot, all right!
+				{
+					player.ClientMessage(Sprintf("Head shot! %d point bonus", temp/40));
+					skillpt += temp/2;
+				}
+				if(DistanceFromPlayer >= 3500)
+				{
+					player.ClientMessage(Sprintf("Distance bonus! %d points", temp/20));
+					skillpt += temp;
+				}
+				else if(DistanceFromPlayer >= 1750)
+				{
+					player.ClientMessage(Sprintf("Distance bonus! %d points", temp/60));
+					skillpt += temp/3;
+				}
+			}
+			else if(DistanceFromPlayer <= 40 && bTookHandtoHand) //Add in a check for in hand being HandToHand
+			{
+				skillpt += temp/2;
+			}
+		}
+
+
+
+		if(skillpt != 0) //Now if the level is 0 there's really no point to do any of the rest
+		{
+			skillpt /= 20; //Get the skill points down to a reasonable level
+			if(LastRendered() <= 1.0 || bImportant)
+				player.SkillPointsAdd(skillpt);
+			else //== Silent award
+			{
+				player.SkillPointsAvail += skillpt;
+				player.SkillPointsTotal += skillpt;
+
+				//== Prevent any potential crashes due to skillpoint awards
+				if(player.SkillPointsAvail > 115900)
+					player.SkillPointsAvail = 115900;
+				if(player.SkillPointsTotal > 115900)
+					player.SkillPointsTotal = 115900;
+			}
+		}
+		
+	}
+}
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
@@ -10322,7 +11430,12 @@ State Seeking
 		return (!bDone);
 	}
 
-	function bool PickDestination()
+	function bool PickDestination() //== Obsoleted
+	{
+		return PickNextDestination();
+	}
+
+	function bool PickNextDestination()
 	{
 		local bool bValid;
 
@@ -10464,9 +11577,14 @@ Begin:
 	WaitForLanding();
 	PlayWaiting();
 	if ((Weapon != None) && bKeepWeaponDrawn && (Weapon.CockingSound != None) && !bSeekPostCombat)
-		PlaySound(Weapon.CockingSound, SLOT_None,,, 1024);
+	{
+		if(DeusExPlayer(GetPlayerPawn()).DrugEffectTimer < 0)
+			PlaySound(Weapon.CockingSound, SLOT_None,,, 1024, 0.5);
+		else
+			PlaySound(Weapon.CockingSound, SLOT_None,,, 1024);
+	}
 	Acceleration = vect(0,0,0);
-	if (!PickDestination())
+	if (!PickNextDestination())
 		Goto('DoneSeek');
 
 GoToLocation:
@@ -10592,7 +11710,7 @@ LookAround:
 
 FindAnotherPlace:
 	SeekLevel--;
-	if (PickDestination())
+	if (PickNextDestination())
 		Goto('GoToLocation');
 
 DoneSeek:
@@ -10622,7 +11740,50 @@ ContinueFromDoor:
 // ----------------------------------------------------------------------
 
 State Fleeing
-{
+{ 
+	function Bump(actor Other)
+	{
+		//== If we bumped a weapon pickup we might want to, say, pick it up
+		if(!bFearWeapon && !ShouldDropWeapon() && Other.isA('DeusExWeapon') && (bIsHuman || DeusExPlayer(GetPlayerPawn()).combatDifficulty > 4.0) && Physics == PHYS_Walking && !ShouldFlee())
+		{
+			if(!DeusExWeapon(Other).bUnique)
+			{
+				if(FindInventoryType(Other.Class) == None)
+				{
+					Other.InitialState='Idle2';
+					Inventory(Other).GiveTo(Self);
+					Other.SetBase(Self);
+				}
+	
+	     			if ((Weapon(Other).AmmoType == None) && (Weapon(Other).AmmoName != None) && (Weapon(Other).AmmoName != Class'AmmoNone'))
+	     			{
+	     				Weapon(Other).AmmoType = Ammo(FindInventoryType(Weapon(Other).AmmoName));
+	      				if ((Weapon(Other).AmmoType == None) && (Weapon(Other).AmmoName != None) && (Weapon(Other).AmmoName != Class'AmmoNone'))
+	      				{
+	      					Weapon(Other).AmmoType = Ammo(FindInventoryType(Weapon(Other).AmmoName));
+	      					if (Weapon(Other).AmmoType == None)
+	      					{
+							Weapon(Other).AmmoType = spawn(Weapon(Other).AmmoName,Self);
+	      					}
+	      				}
+					if(Weapon(Other).AmmoType != None)
+					{
+						Weapon(Other).AmmoType.InitialState='Idle2';
+						Weapon(Other).AmmoType.GiveTo(Self);
+						Weapon(Other).AmmoType.SetBase(Self);
+					}
+	     			}
+				else if(Weapon(Other).AmmoType != None && Weapon(Other).AmmoType.AmmoAmount < 1)
+					Weapon(Other).AmmoType.AmmoAmount += (DeusExWeapon(Other).AmmoName).default.AmmoAmount;
+	
+				SwitchToBestWeapon();
+				FinishFleeing();
+			}
+		}
+
+		Global.Bump(Other);
+	} 
+
 	function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
 	{
 		local Name currentState;
@@ -10711,7 +11872,12 @@ State Fleeing
 
 	function Tick(float deltaSeconds)
 	{
+		local Inventory item, nextitem, ammo;
+		local bool bPickedUp;
+		local DeusExCarcass nearcarc;
+
 		UpdateActorVisibility(Enemy, deltaSeconds, 1.0, false);
+
 		if (IsValidEnemy(Enemy))
 		{
 			if (EnemyLastSeen > FearSustainTime)
@@ -10721,6 +11887,69 @@ State Fleeing
 			FinishFleeing();
 		else if (!IsFearful())
 			FinishFleeing();
+
+		if(destLoc != vect(0, 0, 0) && VSize(Location - destLoc) <= 16 && (bIsHuman || DeusExPlayer(GetPlayerPawn()).combatDifficulty > 4.0))
+		{
+			foreach RadiusActors(class'DeusExCarcass', nearcarc, FMax(CollisionRadius, CollisionHeight))
+			{
+				if(nearcarc.Inventory != None)
+				{
+					item = nearcarc.Inventory;
+
+					do
+					{
+						ammo = None;
+						nextItem = item.Inventory;
+
+						if(item.Owner == Self)
+							break;
+
+						if(Weapon(item) != None && !DeusExWeapon(item).bUnique)
+						{
+							if(FindInventoryType(item.Class) == None)
+							{
+								nearcarc.DeleteInventory(item);
+
+								item.InitialState='Idle2';
+								item.GiveTo(Self);
+								item.SetBase(Self);
+
+								bPickedUp = True;
+							}
+
+							if(DeusExWeapon(item).AmmoType != None)
+							{
+
+								ammo = FindInventoryType(DeusExWeapon(item).AmmoName);
+								if (ammo != None)
+									Ammo(ammo).AmmoAmount += (DeusExWeapon(item).AmmoName).default.AmmoAmount;
+				
+								else
+								{
+									ammo = spawn(DeusExWeapon(item).AmmoName, self);
+				
+									if (ammo != None)
+									{
+										Ammo(ammo).AmmoAmount += (DeusExWeapon(item).AmmoName).default.AmmoAmount;
+										ammo.InitialState='Idle2';
+										ammo.GiveTo(Self);
+										ammo.SetBase(Self);
+									}
+								}
+							}
+						}
+						item = nextItem;
+
+					}until(item == None);
+				}
+			}
+
+			if(bPickedUp)
+			{
+				SwitchToBestWeapon();
+			}
+		}
+
 		Global.Tick(deltaSeconds);
 	}
 
@@ -10740,6 +11969,7 @@ State Fleeing
 	function PickDestination()
 	{
 		local HidePoint      hidePoint;
+		local DeusExWeapon   lWeapon; //== For picking up found weapons
 		local Actor          waypoint;
 		local float          dist;
 		local float          score;
@@ -10795,6 +12025,81 @@ State Fleeing
 
 		if (Enemy != None)
 		{
+			//== If we're fleeing because we have no weapons, try to find another weapon
+			if(!ShouldDropWeapon() && !bFearWeapon && (bIsHuman || DeusExPlayer(GetPlayerPawn()).combatDifficulty > 4.0) && !ShouldFlee())
+			{
+				foreach RadiusActors(Class'DeusExWeapon', lWeapon, maxDist)
+				{
+					if (Pawn(lWeapon.Owner) == None && (DeusExCarcass(Owner) == None || !bFearCarcass) && !lWeapon.bUnique)
+					{
+						// How far is it to the hiding place?
+						dist = VSize(lWeapon.Location - Location);
+
+						// Determine vectors to the waypoint and our enemy
+						vector1 = enemy.Location - Location;
+						vector2 = lWeapon.Location - Location;
+
+						// Strip out magnitudes from the vectors
+						tmpDist = VSize(vector1);
+						if (tmpDist > 0)
+							vector1 /= tmpDist;
+						tmpDist = VSize(vector2);
+						if (tmpDist > 0)
+							vector2 /= tmpDist;
+
+						// Add them
+						vector1 += vector2;
+
+						// Compute a score (a function of angle)
+						score = VSize(vector1);
+						score = 4-(score*score);
+
+						// Find an empty slot for this candidate
+						openSlot  = -1;
+						bestScore = score;
+						bestDist  = dist;
+
+						for (i=0; i<maxCandidates; i++)
+						{
+							// Can we replace the candidate in this slot?
+							if (bestScore > candidates[i].score)
+								bReplace = TRUE;
+							else if ((bestScore == candidates[i].score) &&
+							         (bestDist < candidates[i].dist))
+								bReplace = TRUE;
+							else
+								bReplace = FALSE;
+							if (bReplace)
+							{
+								bestScore = candidates[i].score;
+								bestDist  = candidates[i].dist;
+								openSlot = i;
+							}
+						}
+
+						// We found an open slot -- put our candidate here
+						if (openSlot >= 0)
+						{
+							waypoint = GetNextWaypoint(lWeapon);
+							candidates[openSlot].point = None;
+							if(waypoint != None)
+							{
+								candidates[openSlot].waypoint = waypoint;
+								candidates[openSlot].location = waypoint.Location;
+							}
+							else
+							{
+								candidates[openSlot].waypoint = None;
+								candidates[openSlot].location = lWeapon.Location;
+							}
+							candidates[openSlot].score    = score;
+							candidates[openSlot].dist     = dist;
+							if (candidateCount < maxCandidates)
+								candidateCount++;
+						}
+					}
+				}
+			}
 			foreach RadiusActors(Class'HidePoint', hidePoint, maxDist)
 			{
 				// Can the boogeyman see our hiding spot?
@@ -11096,6 +12401,53 @@ ContinueFromDoor:
 
 State Attacking
 {
+	function Bump(actor Other)
+	{
+		//== If we bumped a weapon pickup we might want to, say, pick it up
+		if(Other.IsA('DeusExWeapon') && (bIsHuman || DeusExPlayer(GetPlayerPawn()).combatDifficulty > 4.0) && Physics == PHYS_Walking)
+		{
+			//== No picking up Unique weapons
+			if(!DeusExWeapon(Other).bUnique && FindInventoryType(Other.Class) == None)
+			{
+				//== Unlike flee, let's assume we just want to pick up everything
+				Other.InitialState='Idle2';
+				Inventory(Other).GiveTo(Self);
+				Other.SetBase(Self);
+
+	     			if ((Weapon(Other).AmmoType == None) && (Weapon(Other).AmmoName != None) && (Weapon(Other).AmmoName != Class'AmmoNone'))
+	     			{
+	     				Weapon(Other).AmmoType = Ammo(FindInventoryType(Weapon(Other).AmmoName));
+	      				if ((Weapon(Other).AmmoType == None) && (Weapon(Other).AmmoName != None) && (Weapon(Other).AmmoName != Class'AmmoNone'))
+	      				{
+	      					Weapon(Other).AmmoType = Ammo(FindInventoryType(Weapon(Other).AmmoName));
+	      					if (Weapon(Other).AmmoType == None)
+	      					{
+							Weapon(Other).AmmoType = spawn(Weapon(Other).AmmoName,Self);
+	      					}
+	      				}
+					if(Weapon(Other).AmmoType != None)
+					{
+						Weapon(Other).AmmoType.InitialState='Idle2';
+						Weapon(Other).AmmoType.GiveTo(Self);
+						Weapon(Other).AmmoType.SetBase(Self);
+					}
+	     			}
+				else if(Weapon(Other).AmmoType != None && Weapon(Other).AmmoType.AmmoAmount < 1)
+					Weapon(Other).AmmoType.AmmoAmount += (DeusExWeapon(Other).AmmoName).default.AmmoAmount;
+
+				SwitchToBestWeapon();
+				if(ShouldCrouch())
+					StartCrouch();
+	
+				//== New weapon, new tactics
+				GetNewDestination();
+			}
+
+		}
+
+		Global.Bump(Other);
+	}
+
 	function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
 	{
 		local Pawn oldEnemy;
@@ -11159,7 +12511,12 @@ State Attacking
 					TweenToShoot(0);
 	}
 
-	function EDestinationType PickDestination()
+	function EDestinationType PickDestination() //== Having multiple return types is bad, but we kinda need it for TNM
+	{
+		return GetNewDestination();
+	}
+
+	function EDestinationType GetNewDestination()
 	{
 		local vector               distVect;
 		local vector               tempVect;
@@ -11169,10 +12526,16 @@ State Attacking
 		local int                  iterations;
 		local EDestinationType     destType;
 		local NearbyProjectileList projList;
+		local DeusExWeapon	   lWeapon, bestWeapon;
+		local DeusExCarcass	   carc;
+		local Inventory		   inv;
+		local float		   actorVis;
 
 		destPoint = None;
 		destLoc   = vect(0, 0, 0);
 		destType  = DEST_Failure;
+
+		actorVis = 1.0;
 
 		if (enemy == None)
 			return (destType);
@@ -11180,19 +12543,56 @@ State Attacking
 		if (bCrouching && (CrouchTimer > 0))
 			destType = DEST_SameLocation;
 
-		if (destType == DEST_Failure)
+		//== Weapon Search. Every so often, randomly see if you can find a better weapon
+		//== Or, y'know, if you're using a crap weapon
+		if(Weapon != None && (bIsHuman || DeusExPlayer(GetPlayerPawn()).combatDifficulty > 4.0))
 		{
-			if (AICanShoot(enemy, true, false, 0.025) || ActorReachable(enemy))
+			if( ( Rand(18) > 13 || (DeusExWeapon(Weapon).bHandToHand && FMax(DeusExWeapon(Weapon).HitDamage, DeusExWeapon(Weapon).ProjectileDamage) < 20) ) && !DeusExWeapon(Weapon).bNativeAttack)
 			{
-				destType = ComputeBestFiringPosition(tempVect);
-				if (destType == DEST_NewLocation)
-					destLoc = tempVect;
+				bestWeapon = None;
+				foreach RadiusActors(Class'DeusExWeapon', lWeapon, 240)
+				{
+					if(FMax(lWeapon.HitDamage, lWeapon.ProjectileDamage) > FMax(DeusExWeapon(Weapon).HitDamage, DeusExWeapon(Weapon).ProjectileDamage) && !lWeapon.bUnique && Pawn(lWeapon.Owner) == None && (DeusExCarcass(lWeapon.Owner) == None || !bFearCarcass)) //
+						bestWeapon = lWeapon;
+				}
+
+				if(bestWeapon != None)
+				{
+					if (bAvoidHarm)
+						GetProjectileList(projList, bestWeapon.Location);
+					if (!bAvoidHarm || !IsLocationDangerous(projList, bestWeapon.Location))
+					{
+						destLoc = bestWeapon.Location;
+						destType = DEST_NewLocation;
+					}
+				}
 			}
 		}
 
+		if(destType == DEST_Failure)
+			actorVis = ComputeActorVisibility(Enemy);
+
+		//== Only try to kill 'em if we can actually see 'em
+		if(actorVis >= 0.1)
+		{
+			if (destType == DEST_Failure)
+			{
+				if (AICanShoot(enemy, true, false, 0.025) || ActorReachable(enemy))
+				{
+					destType = ComputeBestFiringPosition(tempVect);
+					if (destType == DEST_NewLocation)
+						destLoc = tempVect;
+				}
+			}
+		}
+
+
 		if (destType == DEST_Failure)
 		{
-			MoveTarget = FindPathToward(enemy);
+			if(actorVis >= 0.1)
+				MoveTarget = FindPathToward(enemy);
+			else if (EnemyLastSeenAt != vect(0, 0, 0))
+				MoveTarget = FindPathTo(EnemyLastSeenAt);
 			if (MoveTarget != None)
 			{
 				if (!bDefendHome || IsNearHome(MoveTarget.Location))
@@ -11211,7 +12611,10 @@ State Attacking
 		// Default behavior, so they don't just stand there...
 		if (destType == DEST_Failure)
 		{
-			enemyDir = Rotator(Enemy.Location - Location);
+			if(actorVis >= 0.1)
+				enemyDir = Rotator(Enemy.Location - Location);
+			else if (EnemyLastSeenAt != vect(0, 0, 0))
+				enemyDir = Rotator(EnemyLastSeenAt - Location);
 			if (AIPickRandomDestination(60, 150,
 			                            enemyDir.Yaw, 0.5, enemyDir.Pitch, 0.5, 
 			                            2, FRand()*0.4+0.35, tempVect))
@@ -11333,11 +12736,14 @@ State Attacking
 
 	function Tick(float deltaSeconds)
 	{
-		local bool   bCanSee;
+		local bool   bCanSee, bPickedUp;
 		local float  yaw;
 		local vector lastLocation;
 		local Pawn   lastEnemy;
 		local float  surpriseTime;
+		local DeusExCarcass nearcarc;
+		local Inventory item, nextitem, ammo;
+		local int count;
 
 		Global.Tick(deltaSeconds);
 		if (CrouchTimer > 0)
@@ -11372,6 +12778,77 @@ State Attacking
 				yaw = Abs(yaw)*360/32768;  // 0-180 x 2
 				if (yaw <= FireAngle)
 					FireIfClearShot();
+			}
+		}
+
+		if(destLoc != vect(0, 0, 0) && VSize(Location - destLoc) <= 16 && (bIsHuman || DeusExPlayer(GetPlayerPawn()).combatDifficulty > 4.0))
+		{
+			foreach RadiusActors(class'DeusExCarcass', nearcarc, FMax(CollisionRadius, CollisionHeight))
+			{
+				if(nearcarc.Inventory != None)
+				{
+					item = nearcarc.Inventory;
+
+					do
+					{
+						count++;
+						ammo = None;
+						nextItem = item.Inventory;
+
+						if(item.Owner == Self)
+							break;
+
+						if(Weapon(item) != None && !DeusExWeapon(item).bUnique)
+						{
+							if(FindInventoryType(item.Class) == None)
+							{
+								nearcarc.DeleteInventory(item);
+
+								item.InitialState='Idle2';
+								item.GiveTo(Self);
+								item.SetBase(Self);
+
+								bPickedUp = True;
+							}
+
+							if(DeusExWeapon(item).AmmoType != None)
+							{
+
+								ammo = FindInventoryType(DeusExWeapon(item).AmmoName);
+								if (ammo != None)
+									Ammo(ammo).AmmoAmount += (DeusExWeapon(item).AmmoName).default.AmmoAmount;
+				
+								else
+								{
+									ammo = spawn(DeusExWeapon(item).AmmoName, self);
+				
+									if (ammo != None)
+									{
+										Ammo(ammo).AmmoAmount += (DeusExWeapon(item).AmmoName).default.AmmoAmount;
+										ammo.InitialState='Idle2';
+										ammo.GiveTo(Self);
+										ammo.SetBase(Self);
+									}
+								}
+							}
+						}
+						item = nextItem;
+
+					}until(item == None || count >= 9999);
+
+					if(count >= 9999)
+						log("*********** Scripted Pawn - Attack State - Corpse Weapon Frob - RUNAWAY LOOP ***********");
+				}
+			}
+
+			if(bPickedUp)
+			{
+				SwitchToBestWeapon();
+				if(ShouldCrouch())
+					StartCrouch();
+	
+				//== New weapon, new tactics
+				GetNewDestination();
 			}
 		}
 		//UpdateReactionLevel(true, deltaSeconds);
@@ -11529,10 +13006,12 @@ RunToRange:
 			PlayTurning();
 		TurnToward(enemy);
 	}
+	else if(IsA('Animal'))
+		Sleep(0.05);
 	else
 		Sleep(0);
 	bCanFire = true;
-	while (PickDestination() == DEST_NewLocation)
+	while (GetNewDestination() == DEST_NewLocation)
 	{
 		if (bCanStrafe && ShouldStrafe())
 		{
@@ -11581,13 +13060,18 @@ Fire:
 	bReadyToReload = true;
 
 ContinueFire:
+	if((!bIsHuman) && Weapon != None && !DeusExWeapon(Weapon).bNativeAttack) //Weird glitch... animals using non-native weapons enter infinite loops
+		Sleep(0.05);
+
 	while (!ReadyForWeapon())
 	{
-		if (PickDestination() != DEST_SameLocation)
+		if (GetNewDestination() != DEST_SameLocation)
 			Goto('RunToRange');
 		CheckAttack(true);
 		if (!IsWeaponReloading() || bCrouching)
 			TurnToward(enemy);
+		else if ((!bIsHuman) && Weapon != None && !DeusExWeapon(Weapon).bNativeAttack)
+			Sleep(0.05);
 		else
 			Sleep(0);
 	}
@@ -11615,10 +13099,12 @@ ContinueFire:
 			TweenToShoot(0);
 	}
 	CheckAttack(true);
-	if (PickDestination() != DEST_NewLocation)
+	if (GetNewDestination() != DEST_NewLocation)
 	{
 		if (!IsWeaponReloading() || bCrouching)
 			TurnToward(enemy);
+		else if (!bIsHuman && Weapon != None && !DeusExWeapon(Weapon).bNativeAttack)
+			Sleep(0.05);
 		else
 			Sleep(0);
 		Goto('ContinueFire');
@@ -11628,7 +13114,7 @@ ContinueFire:
 ContinueAttack:
 ContinueFromDoor:
 	CheckAttack(true);
-	if (PickDestination() != DEST_NewLocation)
+	if (GetNewDestination() != DEST_NewLocation)
 		Goto('Fire');
 	else
 		Goto('RunToRange');
@@ -11769,7 +13255,7 @@ State Alerting
 
 		// Do we have any allies on this level?
 		foreach AllActors(Class'ScriptedPawn', pawnAlly)
-			if (GetPawnAllianceType(pawnAlly) == ALLIANCE_Friendly)
+			if (CheckPawnAllianceType(pawnAlly) == ALLIANCE_Friendly)
 				break;
 
 		// Yes, so look for an alarm box that isn't active...
@@ -11797,7 +13283,12 @@ State Alerting
 		return (bestAlarm);
 	}
 
-	function bool PickDestination()
+	function bool PickDestination() //== Obsoleted, but kept for TNM
+	{
+		return PickNextDestination();
+	}
+
+	function bool PickNextDestination()
 	{
 		local bool      bDest;
 		local AlarmUnit alarm;
@@ -11866,7 +13357,7 @@ Alert:
 		Goto('Done');
 
 	WaitForLanding();
-	if (!PickDestination())
+	if (!PickNextDestination())
 		Goto('Done');
 
 Moving:
@@ -12024,7 +13515,12 @@ State Shadowing
 		return (VSize(Location-orderActor.Location));
 	}
 
-	function bool PickDestination()
+	function bool PickDestination() //== Obsoleted, but kept for TNM
+	{
+		return PickNextDestination();
+	}
+
+	function bool PickNextDestination()
 	{
 		local Actor   destActor;
 		local Vector  distVect;
@@ -12131,7 +13627,7 @@ Moving:
 	Sleep(0.0);
 
 	// Can we go somewhere?
-	if (PickDestination())
+	if (PickNextDestination())
 	{
 		// Are we going to a navigation point?
 		if (destPoint != None)
@@ -12276,7 +13772,12 @@ state Following
 		}
 	}
 
-	function bool PickDestination()
+	function bool PickDestination() //== Obsoleted, but kept for TNM
+	{
+		return PickNextDestination();
+	}
+
+	function bool PickNextDestination()
 	{
 		local float   dist;
 		local float   extra;
@@ -12358,7 +13859,7 @@ Begin:
 	if (orderActor == None)
 		GotoState('Standing');
 
-	if (!PickDestination())
+	if (!PickNextDestination())
 		Goto('Wait');
 
 Follow:
@@ -12381,7 +13882,7 @@ Follow:
 		MoveTo(destLoc, MaxDesiredSpeed);
 		CheckDestLoc(destLoc);
 	}
-	if (PickDestination())
+	if (PickNextDestination())
 		Goto('Follow');
 
 Wait:
@@ -12392,7 +13893,7 @@ Wait:
 WaitLoop:
 	Acceleration=vect(0,0,0);
 	Sleep(0.0);
-	if (!PickDestination())
+	if (!PickNextDestination())
 		Goto('WaitLoop');
 	else
 		Goto('Follow');
@@ -12400,7 +13901,7 @@ WaitLoop:
 ContinueFollow:
 ContinueFromDoor:
 	Acceleration=vect(0,0,0);
-	if (PickDestination())
+	if (PickNextDestination())
 		Goto('Follow');
 	else
 		Goto('Wait');
@@ -13102,7 +14603,7 @@ state AvoidingProjectiles
 		PlayWaiting();
 	}
 
-	function PickDestination(bool bGotoWatch)
+	function PickSafeDestination(bool bGotoWatch)
 	{
 		local NearbyProjectileList projList;
 		local bool                 bMove;
@@ -13160,14 +14661,14 @@ state AvoidingProjectiles
 
 Begin:
 	Acceleration = vect(0,0,0);
-	PickDestination(true);
+	PickSafeDestination(true);
 
 RunAway:
 	PlayTurnHead(LOOK_Forward, 1.0, 0.0001);
 	if (ShouldPlayWalk(destLoc))
 		PlayRunning();
 	MoveTo(destLoc, MaxDesiredSpeed);
-	PickDestination(true);
+	PickSafeDestination(true);
 
 Watch:
 	Acceleration = vect(0,0,0);
@@ -13179,7 +14680,7 @@ Watch:
 	{
 		sleepTime -= 0.5;
 		Sleep(0.5);
-		PickDestination(false);
+		PickSafeDestination(false);
 	}
 
 Done:
@@ -13190,7 +14691,7 @@ Done:
 
 ContinueRun:
 ContinueFromDoor:
-	PickDestination(false);
+	PickSafeDestination(false);
 	Goto('Done');
 
 }
@@ -13336,7 +14837,12 @@ state BackingOff
 		CheckOpenDoor(HitNormal, Wall);
 	}
 
-	function bool PickDestination()
+	function bool PickDestination() //== Obsoleted, but kept for TNM
+	{
+		return PickNextDestination();
+	}
+
+	function bool PickNextDestination()
 	{
 		local bool    bSuccess;
 		local float   magnitude;
@@ -13379,7 +14885,7 @@ state BackingOff
 
 Begin:
 	useRot = Rotation;
-	if (!PickDestination())
+	if (!PickNextDestination())
 		Goto('Pause');
 	Acceleration = vect(0,0,0);
 
@@ -13781,16 +15287,75 @@ Begin:
 
 state Dying
 {
-	ignores SeePlayer, EnemyNotVisible, HearNoise, KilledBy, Trigger, Bump, HitWall, HeadZoneChange, FootZoneChange, ZoneChange, Falling, WarnTarget, Died, Timer, TakeDamage;
+	ignores SeePlayer, EnemyNotVisible, HearNoise, KilledBy, Trigger, Bump, HitWall, HeadZoneChange, FootZoneChange, Falling, WarnTarget, Died, Timer; //, TakeDamage;
+
+	//== Total HACK, but the WaitForLanding() function doesn't check for water, so we have to force the carcass spawn
+	function ZoneChange(ZoneInfo newZone)
+	{	
+		if (newZone.bWaterZone)
+		{
+			ExtinguishFire();
+			MoveFallingBody();
+		
+			DesiredRotation.Pitch = 0;
+			DesiredRotation.Roll  = 0;
+		
+			SetWeapon(None);
+		
+			bHidden = True;
+		
+			Acceleration = vect(0,0,0);
+			SpawnCarcass();
+			Destroy();
+		}
+	}
 
 	event Landed(vector HitNormal)
 	{
 		SetPhysics(PHYS_Walking);
 	}
 
+	//== This does nothing but apply momentum, so we can have impressive deaths -- Y|yukichigai
+	function TakeDamage( int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
+	{
+		momentum *= 2.000000;
+		if(damageType == 'Shell') //Shotgun has massive kick
+		{
+			momentum *= 5.000000;
+			momentum.Z *= 1.500000;
+		}
+
+		momentum = momentum/Mass;
+		AddVelocity( momentum ); 
+	}
+
 	function Tick(float deltaSeconds)
 	{
+		local Fire f;
+		local ParticleGenerator p;
+		local vector loc;
+
 		Global.Tick(deltaSeconds);
+
+		if(bOnFire)
+		{
+			//== Move the fire down a little so the transition doesn't look as crappy
+			foreach BasedActors(class'Fire',f)
+			{
+				loc = f.Location;
+				//== It would be nice if we could get the collision height from the carcass type, but that's wayyyyy
+				//==  more typecasting than I want to deal with.  Let's just use the default value of 7
+				if( loc.Z > Location.Z - Default.CollisionHeight + (7.000000 * 0.300000) )
+					loc.Z -= ( FMax(loc.Z - (Location.Z - Default.CollisionHeight), Default.CollisionHeight/3) * deltaSeconds );
+				f.SetLocation(loc);
+
+				if(f.smokeGen != None)
+					f.smokeGen.SetLocation(loc);
+
+				if(f.fireGen != None)
+					f.fireGen.SetLocation(loc);
+			}
+		}
 
 		if (DeathTimer > 0)
 		{
@@ -13827,7 +15392,7 @@ state Dying
 			else
 				Acceleration = Normal(moveDir)*AccelRate;
 			GroundSpeed  = speed;
-			DesiredSpeed = 1.0;
+			//DesiredSpeed = 1.0; //Our bodies should FLY -- Y|yukichigai
 			bIsWalking   = false;
 			DeathTimer   = stopTime;
 		}
@@ -13875,6 +15440,7 @@ Begin:
 
 	Acceleration = vect(0,0,0);
 	SpawnCarcass();
+	ExtinguishFire(); //Just to be sure
 	Destroy();
 }
 
@@ -13967,7 +15533,12 @@ state FallingState
 			landVol = Velocity.Z/JumpZ;
 			landVol = 0.005 * Mass * FMin(5, landVol * landVol);
 			if ( !FootRegion.Zone.bWaterZone )
-				PlaySound(Land, SLOT_Interact, FMin(20, landVol));
+			{
+				if(DeusExPlayer(GetPlayerPawn()).DrugEffectTimer < 0)
+					PlaySound(Land, SLOT_Interact, FMin(20, landVol),,,0.5);
+				else
+					PlaySound(Land, SLOT_Interact, FMin(20, landVol));
+			}
 		}
 		else if ( Velocity.Z < -0.8 * JumpZ )
 			PlayLanded(Velocity.Z);
@@ -14201,6 +15772,7 @@ defaultproperties
      CloakThreshold=50
      walkAnimMult=0.700000
      runAnimMult=1.000000
+     PendingSkillPoints=-1
      bCanStrafe=True
      bCanWalk=True
      bCanSwim=True

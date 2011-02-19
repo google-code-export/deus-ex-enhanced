@@ -38,17 +38,86 @@ function Trigger(Actor Other, Pawn Instigator)
 
 function BeginPlay()
 {
+	local String texstr;
+
 	Super.BeginPlay();
 
 	switch (SkinColor)
 	{
-		case SC_1:	Skin = Texture'CageLightTex1'; break;
-		case SC_2:	Skin = Texture'CageLightTex2'; break;
-		case SC_3:	Skin = Texture'CageLightTex3'; break;
-		case SC_4:	Skin = Texture'CageLightTex4'; break;
-		case SC_5:	Skin = Texture'CageLightTex5'; break;
-		case SC_6:	Skin = Texture'CageLightTex6'; break;
+		case SC_1:	texstr = "CageLightTex1";
+				break;
+		case SC_2:	texstr = "CageLightTex2";
+				break;
+		case SC_3:	texstr = "CageLightTex3";
+				break;
+		case SC_4:	texstr = "CageLightTex4";
+				break;
+		case SC_5:	texstr = "CageLightTex5";
+				break;
+		case SC_6:	texstr = "CageLightTex6";
+				break;
 	}
+
+
+	Mesh = mesh(DynamicLoadObject("HDTPDecos.HDTPCageLight", class'mesh', True));
+
+	if(Mesh == None)
+	{
+		MultiSkins[1] = None;
+		MultiSkins[2] = None;
+		Mesh = Default.Mesh;
+		Skin = Texture(DynamicLoadObject("DeusExDeco." $ texstr, class'Texture', True));
+	}
+	else
+	{
+		Skin = None;
+		MultiSkins[1] = Texture(DynamicLoadObject("HDTPDecos.Skins.HDTP" $ texstr, class'Texture', True));
+		MultiSkins[2] = MultiSkins[1];
+	}
+}
+
+function bool Facelift(bool bLiftOn)
+{
+	local String texstr;
+
+	if(!Super.Facelift(bLiftOn))
+		return false;
+
+	switch (SkinColor)
+	{
+		case SC_1:	texstr = "CageLightTex1";
+				break;
+		case SC_2:	texstr = "CageLightTex2";
+				break;
+		case SC_3:	texstr = "CageLightTex3";
+				break;
+		case SC_4:	texstr = "CageLightTex4";
+				break;
+		case SC_5:	texstr = "CageLightTex5";
+				break;
+		case SC_6:	texstr = "CageLightTex6";
+				break;
+	}
+
+
+	if(bLiftOn)
+		Mesh = mesh(DynamicLoadObject("HDTPDecos.HDTPCageLight", class'mesh', True));
+
+	if(Mesh == None || !bLiftOn)
+	{
+		MultiSkins[1] = None;
+		MultiSkins[2] = None;
+		Mesh = Default.Mesh;
+		Skin = Texture(DynamicLoadObject("DeusExDeco." $ texstr, class'Texture', True));
+	}
+	else
+	{
+		Skin = None;
+		MultiSkins[1] = Texture(DynamicLoadObject("HDTPDecos.Skins.HDTP" $ texstr, class'Texture', True));
+		MultiSkins[2] = MultiSkins[1];
+	}
+
+	return true;
 }
 
 function PostBeginPlay()

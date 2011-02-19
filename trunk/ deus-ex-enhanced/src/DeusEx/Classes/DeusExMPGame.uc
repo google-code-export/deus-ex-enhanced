@@ -211,7 +211,10 @@ event PostLogin(playerpawn NewPlayer)
 
 function bool ApproveClass( class<playerpawn> SpawnClass)
 {
-	return true;
+	if(ClassIsChildOf(SpawnClass, class'DeusExPlayer'))
+		return true;
+
+	return false;
 }
 
 //
@@ -1048,7 +1051,7 @@ defaultproperties
      AugsPerKill=2
      ScoreToWin=20
      VictoryCondition="Frags"
-     MPSkillStartLevel=1
+     MPSkillStartLevel=2
      CurrentMap="DXMP_Cmd"
      fFriendlyFireMult=0.500000
      bChangeLevels=True

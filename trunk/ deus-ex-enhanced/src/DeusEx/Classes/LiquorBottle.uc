@@ -1,35 +1,53 @@
 //=============================================================================
 // LiquorBottle.
 //=============================================================================
-class LiquorBottle extends DeusExPickup;
+class LiquorBottle extends Consumable;
+
+function bool Facelift(bool bOn)
+{
+	if(!Super.Facelift(bOn))
+		return false;
+
+	if(bOn)
+		Mesh = mesh(DynamicLoadObject("HDTPItems.HDTPLiquorBottle", class'mesh', True));
+
+	if(Mesh == None || !bOn)
+	{
+		Texture = None;
+		Mesh = Default.Mesh;
+		PlayerViewMesh = Default.PlayerViewMesh;
+		PickupViewMesh = Default.PickupViewMesh;
+		ThirdPersonMesh = Default.ThirdPersonMesh;
+	}
+	else
+	{
+		PlayerViewMesh = Mesh;
+		PickupViewMesh = Mesh;
+		ThirdPersonMesh = Mesh;
+		Texture = Texture(DynamicLoadObject("HDTPItems.Skins.HDTPLiquorBottletex2", class'Texture'));
+	}
+
+	return true;
+}
 
 state Activated
 {
 	function Activate()
 	{
-		// can't turn it off
+		Super.Activate();
 	}
 
 	function BeginState()
 	{
-		local DeusExPlayer player;
-		
 		Super.BeginState();
-
-		player = DeusExPlayer(Owner);
-		if (player != None)
-		{
-			player.HealPlayer(2, False);
-			player.drugEffectTimer += 5.0;
-		}
-
-		UseOnce();
 	}
 Begin:
 }
 
 defaultproperties
 {
+     drugEffect=10.000000
+     healthEffect=3
      bBreakable=True
      maxCopies=10
      bCanHaveMultipleCopies=True

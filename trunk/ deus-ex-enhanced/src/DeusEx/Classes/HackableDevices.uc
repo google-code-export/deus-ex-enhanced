@@ -77,11 +77,11 @@ function Timer()
 	if (bHacking)
 	{
 		curTool.PlayUseAnim();
-
-	  TicksSinceLastHack += (Level.TimeSeconds - LastTickTime) * 10;
-	  LastTickTime = Level.TimeSeconds;
+	  TicksSinceLastHack += LastTickTime * 10;//(Level.TimeSeconds - LastTickTime) * 10;
+	  LastTickTime = 0;//Level.TimeSeconds;
       //TicksSinceLastHack = TicksSinceLastHack + 1;
-      while (TicksSinceLastHack > TicksPerHack)
+      //== Only loop through for as many uses as the multitool has
+      while (TicksSinceLastHack > TicksPerHack && numHacks > 0)
       {
          numHacks--;
          hackStrength -= 0.01;
@@ -119,6 +119,8 @@ function Timer()
 //
 function Tick(float deltaTime)
 {
+   LastTickTime += deltaTime;
+
    TimeSinceReset = TimeSinceReset + deltaTime;
    //only reset in multiplayer, if we aren't hacking it, and if it has been completely hacked.
    if ((!bHacking) && (Level.NetMode != NM_Standalone) && (hackStrength == 0.0))
@@ -211,7 +213,7 @@ function Frob(Actor Frobber, Inventory frobWith)
                if (Level.Netmode != NM_Standalone)
                   hackTime = default.hackTime / (hackValue * hackValue);
                TicksPerHack = (hackTime * 10.0) / numHacks;
-			   LastTickTime = Level.TimeSeconds;
+			   LastTickTime = 0;//Level.TimeSeconds;
                TicksSinceLastHack = 0;
                SetTimer(0.1, True);
 					msg = msgHacking;

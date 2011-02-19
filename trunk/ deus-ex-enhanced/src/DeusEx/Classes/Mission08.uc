@@ -13,6 +13,9 @@ function FirstFrame()
 {
 	local SandraRenton Sandra;
 	local FordSchick Ford;
+	local vector loc;
+	local name tname, songname;
+	local Phone aPhone;
 
 	Super.FirstFrame();
 
@@ -29,6 +32,66 @@ function FirstFrame()
 		{
 			foreach AllActors(class'FordSchick', Ford)
 				Ford.EnterWorld();
+		}
+		if(!flags.getBool('M08_Pickup1_Placed'))
+		{
+			loc.X = -564.548157;
+			loc.Y = 1705.896484;
+			loc.Z = 250.310501;
+			spawn(class'WeaponModAuto', None,, loc);
+			flags.SetBool('M08_Pickup1_Placed', True,, 9);
+		}
+		if(!flags.getBool('M08_Pickup2_Placed'))
+		{
+			loc.X = -283.971252;
+			loc.Y = 26.320299;
+			loc.Z = -3.072773;
+			spawn(class'WeaponJackHammer', None,, loc);
+			flags.SetBool('M08_Pickup2_Placed', True,, 9);
+		}
+	}
+	else if(localURL == "08_NYC_UNDERGROUND")
+	{
+		if(!flags.GetBool('M08_ILAW_Placed'))
+		{
+			loc.X = -1080.712158;
+			loc.Y = -63.224194;
+			loc.Z = -807.898682;
+			spawn(class'WeaponMiniRocket', None,, loc);
+			flags.SetBool('M08_ILAW_Placed', True,, 9);
+		}
+	}
+	else if(localURL == "08_NYC_HOTEL")
+	{
+		if(!flags.GetBool('PaulDenton_Dead') && !flags.GetBool('M08_Blackjack_Placed') && !flags.GetBool('M02_Blackjack_Placed'))
+		{
+			loc.X = -880.00;
+			loc.Y = -1203.00;
+			loc.Z = -76.25;
+			spawn(class'WeaponBlackjack',None,, loc);
+			flags.SetBool('M08_Blackjack_Placed', True,, 9);
+		}
+
+		//== We need to set the phone here one last time
+		if (!flags.GetBool('M08_Ans_Mach_Placed'))
+		{
+			aPhone = Spawn(class'Phone',None,, vect(-613.23, -3236.47, 117.19));
+			if(aPhone != None)
+			{
+				aPhone.AnswerSound = AS_ShutDown;
+				flags.SetBool('M08_Ans_Mach_Placed', True,, 9);
+			}
+		}
+	}
+	else if(localURL == "08_NYC_STREET")
+	{
+		if(flags.GetBool('PaulDenton_Dead') && !flags.GetBool('M08_SwordA_Placed'))
+		{
+			loc.X = 3230.000000;
+			loc.Y = -4225.000000;
+			loc.Z = -391.000000;
+			spawn(class'WeaponPrototypeSwordA',None,, loc);
+			flags.SetBool('M08_SwordA_Placed', True,, 9);
 		}
 	}
 }
@@ -68,7 +131,9 @@ function Timer()
 	local StantonDowd Stanton;
 	local ThugMale Thug;
 	local BlackHelicopter chopper;
+	local FordSchick Ford;
 	local int count;
+	local name tname, songname;
 
 	Super.Timer();
 
@@ -83,6 +148,21 @@ function Timer()
 	}
 	else if (localURL == "08_NYC_STREET")
 	{
+		//== Set the "backup" song variable here for the GOTY players who don't normally get music in this level
+		if(flags.GetName('Song_Name1') != 'NYCStreets2_Music' || flags.GetName('Song_Name2') != 'NYCStreets2_Music')
+		{
+			//== For the users that have issues with the music in this map, give the backup method something to work with
+			songname = DeusExRootWindow(Player.rootWindow).StringToName("NYCStreets2_Music");
+	
+			tname = DeusExRootWindow(Player.rootWindow).StringToName("Song_Name1");
+			flags.SetName(tname, songname);
+			flags.SetExpiration(tname, FLAG_Name, 9);
+	
+			tname = DeusExRootWindow(Player.rootWindow).StringToName("Song_Name2");
+			flags.SetName(tname, songname);
+			flags.SetExpiration(tname, FLAG_Name, 9);
+		}
+
 		// spawn reinforcements as cops are killed
 		if (!flags.GetBool('MS_UnhideTroop1'))
 		{
@@ -190,7 +270,10 @@ function Timer()
 			{
 				foreach AllActors(class'ScriptedPawn', pawn, 'StantonDowd')
 					if (pawn.IsA('StantonDowd'))
+					{
 						pawn.EnterWorld();
+						pawn.AttitudeToPlayer = ATTITUDE_Friendly; //== Make sure he talks to the player
+					}
 
 				flags.SetBool('MS_StantonUnhidden', True,, 9);
 			}
@@ -272,6 +355,21 @@ function Timer()
 				chopper.EnterWorld();
 
 			flags.SetBool('MS_Helicopter_Unhidden', True,, 9);
+		}
+
+	}
+	else if(localURL == "08_NYC_SMUG")
+	{
+		if(flags.getBool('FordSchickRescued'))
+		{
+			if(!flags.getBool('M08FordShick_Appeared'))
+			{
+				foreach AllActors(class'FordSchick', Ford)
+				{
+					Ford.EnterWorld();
+					flags.SetBool('M08FordSchick_Appeared', True,, 9);
+				}
+			}
 		}
 	}
 }

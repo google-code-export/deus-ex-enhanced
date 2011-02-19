@@ -10,7 +10,8 @@ class Multitool extends SkilledTool;
 
 simulated function bool TestMPBeltSpot(int BeltSpot)
 {
-   return (BeltSpot == 8);
+   //Was BeltSpot 9 until I realized you don't need a keyring in MP
+   return (BeltSpot == 0);
 }
 
 

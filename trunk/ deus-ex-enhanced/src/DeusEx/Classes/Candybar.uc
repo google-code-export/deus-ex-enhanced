@@ -1,32 +1,57 @@
 //=============================================================================
 // Candybar.
 //=============================================================================
-class Candybar extends DeusExPickup;
+class Candybar extends Consumable;
+
+simulated function BeginPlay()
+{
+	Super.BeginPlay();
+
+	if(Rand(2) == 1)
+		Skin = Texture'CandybarTex2';
+}
+
+function bool Facelift(bool bOn)
+{
+	local Texture lSkin;
+
+	if(!Super.Facelift(bOn))
+		return false;
+
+	lSkin = Skin;
+
+	if(bOn && lSkin != Texture'CandybarTex2')
+		Skin = Texture(DynamicLoadObject("HDTPItems.Skins.HDTPCandybartex1", class'Texture', true));
+
+	if(Skin == None || !bOn)
+	{
+		if(lSkin == Texture'CandybarTex2')
+			Skin = lSkin;
+
+		else
+			Skin = None;
+	}
+
+	return true;
+}
 
 state Activated
 {
 	function Activate()
 	{
-		// can't turn it off
+		Super.Activate();
 	}
 
 	function BeginState()
 	{
-		local DeusExPlayer player;
-		
 		Super.BeginState();
-
-		player = DeusExPlayer(Owner);
-		if (player != None)
-			player.HealPlayer(2, False);
-		
-		UseOnce();
 	}
 Begin:
 }
 
 defaultproperties
 {
+     healthEffect=3
      maxCopies=20
      bCanHaveMultipleCopies=True
      bActivatable=True

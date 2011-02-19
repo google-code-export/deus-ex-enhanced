@@ -32,8 +32,8 @@ function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
 
 	actualDamage = Super.ModifyDamage(Damage, instigatedBy, hitLocation, offset, damageType);
 
-	if (damageType == 'Stunned')
-		actualDamage = 0;
+	//if (damageType == 'Stunned')
+	//	actualDamage = 0;
 
 	return actualDamage;
 }
@@ -69,6 +69,11 @@ function EHitLocation HandleDamage(int Damage, Vector hitLocation, Vector offset
 
 	return hitPos;
 
+}
+
+function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
+{
+	TakeDamageBase(Damage, instigatedBy, hitlocation, momentum, damageType, true);
 }
 
 
@@ -150,7 +155,6 @@ function bool ShouldBeStartled(Pawn startler)
 	return bPh33r;
 }
 
-
 function FleeFromPawn(Pawn fleePawn)
 {
 	SetEnemy(fleePawn, , true);
@@ -164,6 +168,132 @@ function vector GetSwimPivot()
 	return (vect(0,0,0));
 }
 
+//== Stolen from Pawn.uc and overridden to check whether or not the model has certain animations
+function LipSynch(float deltaTime)
+{
+	local name animseq;
+	local float rnd;
+	local float tweentime;
+
+	// update the animation timers that we are using
+	animTimer[0] += deltaTime;
+	animTimer[1] += deltaTime;
+	animTimer[2] += deltaTime;
+
+	if (bIsSpeaking)
+	{
+		// if our framerate is high enough (>20fps), tween the lips smoothly
+		if (Level.TimeSeconds - animTimer[3]  < 0.05)
+			tweentime = 0.1;
+		else
+			tweentime = 0.0;
+
+		// the last animTimer slot is used to check framerate
+		animTimer[3] = Level.TimeSeconds;
+
+		if (nextPhoneme == "A")
+			animseq = 'MouthA';
+		else if (nextPhoneme == "E")
+			animseq = 'MouthE';
+		else if (nextPhoneme == "F")
+			animseq = 'MouthF';
+		else if (nextPhoneme == "M")
+			animseq = 'MouthM';
+		else if (nextPhoneme == "O")
+			animseq = 'MouthO';
+		else if (nextPhoneme == "T")
+			animseq = 'MouthT';
+		else if (nextPhoneme == "U")
+			animseq = 'MouthU';
+		else if (nextPhoneme == "X")
+			animseq = 'MouthClosed';
+
+		if (animseq != '' && HasAnim(animseq))
+		{
+			if (lastPhoneme != nextPhoneme)
+			{
+				lastPhoneme = nextPhoneme;
+				TweenBlendAnim(animseq, tweentime);
+			}
+		}
+	}
+	else if (bWasSpeaking)
+	{
+		bWasSpeaking = False;
+		if(HasAnim('MouthClosed'))
+			TweenBlendAnim('MouthClosed', tweentime);
+	}
+
+	// blink randomly
+	if (animTimer[0] > 2.0)
+	{
+		animTimer[0] = 0;
+		if (FRand() < 0.4 && HasAnim('Blink'))
+			PlayBlendAnim('Blink', 1.0, 0.1, 1);
+	}
+
+	LoopHeadConvoAnim();
+	LoopBaseConvoAnim();
+}
+
+//== Also overridden to check for the presence of animations before running them
+function LoopBaseConvoAnim()
+{
+	local float rnd;
+
+	rnd = FRand();
+
+	// move arms randomly
+	if (bIsSpeaking)
+	{
+		if (animTimer[2] > 2.5)
+		{
+			animTimer[2] = 0;
+			if (rnd < 0.1 && HasAnim('GestureLeft'))
+				PlayAnim('GestureLeft', 0.35, 0.4);
+			else if (rnd < 0.2 && HasAnim('GestureRight'))
+				PlayAnim('GestureRight', 0.35, 0.4);
+			else if (rnd < 0.3 && HasAnim('GestureBoth'))
+				PlayAnim('GestureBoth', 0.35, 0.4);
+		}
+	}
+
+	// if we're not playing an animation, loop the breathe
+	if (!IsAnimating() && HasAnim('BreatheLight'))
+		LoopAnim('BreatheLight',, 0.4);
+}
+
+// ----------------------------------------------------------------------
+// PlayReloadBegin()
+// ----------------------------------------------------------------------
+
+function PlayReloadBegin()
+{
+	if(HasAnim('ReloadBegin'))
+		PlayAnimPivot('ReloadBegin',, 0.1);
+}
+
+
+// ----------------------------------------------------------------------
+// PlayReload()
+// ----------------------------------------------------------------------
+
+function PlayReload()
+{
+	if(HasAnim('Reload'))
+		LoopAnimPivot('Reload',,0.2);
+}
+
+
+// ----------------------------------------------------------------------
+// PlayReloadEnd()
+// ----------------------------------------------------------------------
+
+function PlayReloadEnd()
+{
+	if(HasAnim('ReloadEnd'))
+		PlayAnimPivot('ReloadEnd',, 0.1);
+}
 
 state Fleeing
 {
@@ -320,6 +450,11 @@ function PlayDying(name damageType, vector hitLoc)
 			PlayAnimPivot('DeathFront',, 0.1);
 	}
 
+	//== You can stun animals now.  Like you care. -- Y|yukichigai
+	if ((damageType == 'Stunned') || (damageType == 'KnockedOut') ||
+	    (damageType == 'Poison') || (damageType == 'PoisonEffect'))
+		bStunned = True;
+
 	PlayDyingSound();
 }
 
@@ -384,6 +519,8 @@ function bool IsValidFood(Actor foodActor)
 		return false;
 	else if (foodActor.bDeleteMe)
 		return false;
+	else if (DeusExCarcass(foodActor) != None && DeusExCarcass(foodActor).bOnFire) //A little too freshly barbecued
+		return false;
 	else if (foodActor.Region.Zone.bWaterZone)
 		return false;
 	else if ((foodActor.Physics == PHYS_Swimming) || (foodActor.Physics == PHYS_Falling))
@@ -445,7 +582,11 @@ function bool ShouldFlee()
 
 function bool ShouldDropWeapon()
 {
-	return false;
+	if(Weapon != None)
+		if(DeusExWeapon(Weapon).bNativeAttack)
+			return false;
+
+	return Super.ShouldDropWeapon();
 }
 
 function Tick(float deltaSeconds)

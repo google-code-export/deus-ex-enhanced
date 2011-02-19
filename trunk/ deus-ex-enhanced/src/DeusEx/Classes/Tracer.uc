@@ -3,6 +3,9 @@
 //=============================================================================
 class Tracer extends DeusExProjectile;
 
+//     speed=4000.000000
+//     MaxSpeed=4000.000000
+
 defaultproperties
 {
      AccurateRange=16000

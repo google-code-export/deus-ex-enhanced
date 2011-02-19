@@ -113,10 +113,11 @@ simulated function DeusExProjectile FindNearestProjectile()
    mindist = 999999;
    foreach AllActors(class'DeusExProjectile', proj)
    {
-      if (Level.NetMode != NM_Standalone)
-         bValidProj = !proj.bIgnoresNanoDefense;
-      else
-         bValidProj = (!proj.IsA('Cloud') && !proj.IsA('Tracer') && !proj.IsA('GreaselSpit') && !proj.IsA('GraySpit'));
+	//== Y|y: all this complication when bIgnoresNanoDefense could handle the problem just fine, with a little help
+      //if (Level.NetMode != NM_Standalone)
+         bValidProj = !proj.bIgnoresNanoDefense && !proj.bStuck;
+      //else
+         //bValidProj = (!proj.IsA('Cloud') && !proj.IsA('Tracer') && !proj.IsA('GreaselSpit') && !proj.IsA('GraySpit') && !proj.IsA('Fireball') && !proj.IsA('Shuriken') && !proj.IsA('Dart'));
 
       if (bValidProj)
       {
@@ -218,5 +219,6 @@ defaultproperties
      LevelValues(1)=320.000000
      LevelValues(2)=480.000000
      LevelValues(3)=800.000000
+     LevelValues(4)=1000.000000
      MPConflictSlot=7
 }

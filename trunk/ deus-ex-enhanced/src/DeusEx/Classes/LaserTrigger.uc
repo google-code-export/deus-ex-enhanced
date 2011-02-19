@@ -17,6 +17,8 @@ var int alarmTimeout;			// how long before the alarm silences itself
 var actor triggerActor;			// actor which last triggered the alarm
 var vector actorLocation;		// last known location of actor that triggered alarm
 
+var Float lastTickTime;
+
 singular function Touch(Actor Other)
 {
 	// does nothing when touched
@@ -37,7 +39,7 @@ function BeginAlarm()
 function EndAlarm()
 {
 	AmbientSound = None;
-	lastAlarmTime = 0;
+	lastAlarmTime = -alarmTimeout;
 	AIEndEvent('Alarm', EAITYPE_Audio);
 
 	// reset our stasis info
@@ -52,12 +54,15 @@ function Tick(float deltaTime)
 
 	if (emitter != None)
 	{
+		if(DeusExGameInfo(Level.Game) != None)
+			if(lastTickTime <= DeusExGameInfo(Level.Game).PauseStartTime) //== Pause time offset
+				lastAlarmTime += (DeusExGameInfo(Level.Game).PauseEndTime - DeusExGameInfo(Level.Game).PauseStartTime);
+
+		lastTickTime = Level.TimeSeconds;
+
 		// shut off the alarm if the timeout has expired
-		if (lastAlarmTime != 0)
-		{
-			if (Level.TimeSeconds - lastAlarmTime >= alarmTimeout)
-				EndAlarm();
-		}
+		if (Level.TimeSeconds - lastAlarmTime >= alarmTimeout)
+			EndAlarm();
 
 		// if we've been EMP'ed, act confused
 		if (bConfused && bIsOn)
@@ -74,6 +79,7 @@ function Tick(float deltaTime)
 			{
 				bConfused = False;
 				confusionTimer = 0;
+				confusionDuration = Default.confusionDuration;
 				emitter.TurnOn();
 			}
 
@@ -192,14 +198,16 @@ function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector
 
 	if (DamageType == 'EMP')
 	{
+		confusionDuration -= confusionTimer;
 		confusionTimer = 0;
+		confusionDuration += Damage/10.000000; //=== New stuff.  Disabled duration is relative to the damage
 		if (!bConfused)
 		{
 			bConfused = True;
 			PlaySound(sound'EMPZap', SLOT_None,,, 1280);
 		}
 	}
-	else if ((DamageType == 'Exploded') || (DamageType == 'Shot'))
+	else if ((DamageType == 'Exploded') || (DamageType == 'Shot') || (DamageType == 'Shell'))
 	{
 		if (Damage >= minDamageThreshold)
 			HitPoints -= Damage;
@@ -231,10 +239,12 @@ function Destroyed()
 	Super.Destroyed();
 }
 
+//     confusionDuration=10.000000
+
 defaultproperties
 {
      bIsOn=True
-     confusionDuration=10.000000
+     confusionDuration=7.000000
      HitPoints=50
      minDamageThreshold=50
      alarmTimeout=30

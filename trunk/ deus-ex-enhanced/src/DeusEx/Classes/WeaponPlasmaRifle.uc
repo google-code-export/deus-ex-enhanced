@@ -1,6 +1,9 @@
 //=============================================================================
 // WeaponPlasmaRifle.
 //=============================================================================
+
+//Modified -- Y|yukichigai
+
 class WeaponPlasmaRifle extends DeusExWeapon;
 
 simulated function PreBeginPlay()
@@ -26,15 +29,25 @@ defaultproperties
      EnviroEffective=ENVEFF_AirVacuum
      reloadTime=2.000000
      HitDamage=35
+     ProjectileDamage=35
+     AltProjectileDamage=9
      maxRange=24000
      AccurateRange=14400
      BaseAccuracy=0.600000
      bCanHaveScope=True
      ScopeFOV=20
      bCanHaveLaser=True
+     FireSound2=Sound'DeusExSounds.Weapons.PlasmaRifleFire'
+     ProjectileString(0)="Standard Fire."
+     ProjectileString(1)="Spread Fire."
+     ProjectileNames(0)=Class'DeusEx.PlasmaBolt'
+     ProjectileNames(1)=Class'DeusEx.PlasmaBolt'
      AreaOfEffect=AOE_Cone
+     AltAreaOfEffect=AOE_Sphere
+     bHasAltFire=True
      bPenetrating=False
      recoilStrength=0.300000
+     MinAltProjSpreadAcc=0.350000
      mpReloadTime=0.500000
      mpHitDamage=20
      mpBaseAccuracy=0.500000
@@ -46,10 +59,12 @@ defaultproperties
      bCanHaveModAccurateRange=True
      bCanHaveModReloadTime=True
      bCanHaveModRecoilStrength=True
+     bCanHaveModShotTime=True
      AmmoName=Class'DeusEx.AmmoPlasma'
      ReloadCount=12
      PickupAmmoCount=12
      ProjectileClass=Class'DeusEx.PlasmaBolt'
+     AltProjectileClass=Class'DeusEx.PlasmaBolt2'
      shakemag=50.000000
      FireSound=Sound'DeusExSounds.Weapons.PlasmaRifleFire'
      AltFireSound=Sound'DeusExSounds.Weapons.PlasmaRifleReloadEnd'

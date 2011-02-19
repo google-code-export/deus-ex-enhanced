@@ -49,6 +49,25 @@ replication
       bTracking, Target, bAggressiveExploded, bHasNetworkTarget, NetworkTargetLoc;
 }
 
+function PreBeginPlay()
+{
+	if(Level.NetMode == NM_Standalone)
+		Facelift(true);
+}
+
+function bool Facelift(bool bOn)
+{
+	//== Only do this for DeusEx classes
+	if(instr(String(Class.Name), ".") > -1 && bOn)
+		if(instr(String(Class.Name), "DeusEx.") <= -1)
+			return false;
+	else
+		if((Class != Class(DynamicLoadObject("DeusEx."$ String(Class.Name), class'Class', True))) && bOn)
+			return false;
+
+	return true;
+}
+
 function PostBeginPlay()
 {
 	Super.PostBeginPlay();
@@ -118,6 +137,7 @@ function GrabProjectile(DeusExPlayer player)
 		}
 	}
 }
+
 
 //
 // update our flight path based on our ranges and tracking info
@@ -449,7 +469,10 @@ Begin:
 	// stagger the HurtRadius outward using Timer()
 	// do five separate blast rings increasing in size
 	gradualHurtCounter = 1;
-	gradualHurtSteps = 5;
+	if(Default.gradualHurtSteps <= 0)
+		gradualHurtSteps = 5;
+	else
+		gradualHurtSteps = Default.gradualHurtSteps;
 	Velocity = vect(0,0,0);
 	bHidden = True;
 	LightType = LT_None;
@@ -514,7 +537,11 @@ auto simulated state Flying
 		}
 
 		if (Wall.IsA('BreakableGlass'))
+		{
 			bDebris = False;
+			if(Role == ROLE_Authority) //== Glass should be broken by projectiles
+				Wall.TakeDamage(Damage, Pawn(Owner), Wall.Location, MomentumTransfer*Normal(Velocity), damageType);
+		}
 
 		SpawnEffects(Location, HitNormal, Wall);
 
@@ -576,6 +603,120 @@ auto simulated state Flying
 		if (bDestroy)
 			Destroy();
 	}
+
+	//== Draw a splash on zone change if we entered or left water
+	simulated function ZoneChange(ZoneInfo NewZone)
+	{
+		local float splashsize;
+		local actor splash;
+		local ParticleGenerator waterGen;
+		local string detLevel;
+
+		if(DeusExPlayer(GetPlayerPawn()) != None)
+			detLevel = DeusExPlayer(GetPlayerPawn()).ConsoleCommand("get ini:Engine.Engine.ViewportManager TextureDetail");
+	
+		if( NewZone.bWaterZone && !Self.IsA('SniperTracer'))
+		{
+			if( !Region.Zone.bWaterZone )
+			{
+				if(!WaterZone(NewZone).bSurfaceLevelKnown)
+				{
+					WaterZone(NewZone).SurfaceLevel = Location.Z;
+					WaterZone(NewZone).bSurfaceLevelKnown = True;
+
+					//== First time around we spawn an air bubble, which will set the surface level for sure
+					Spawn(class'AirBubble');
+				}
+
+				splashSize = FClamp(Abs(Velocity.Z / 200) , 0.25, 2.0 );
+				if( NewZone.EntryActor != None )
+				{
+					splash = Spawn(NewZone.EntryActor); 
+					if ( splash != None )
+					{
+						splash.DrawScale = 0.00001; //splashSize;
+						splash.LifeSpan = 0.30 * splashSize;
+						if(WaterRing(splash) != None)
+							WaterRing(splash).bNoExtraRings = True;
+
+						if(detLevel == "High")
+						{
+							waterGen = Spawn(class'ParticleGenerator', splash,, splash.Location, rot(16384,0,0));
+							if (waterGen != None)
+							{
+								waterGen.bHighDetail = True;
+								waterGen.particleDrawScale = 0.1 * splashSize;
+								waterGen.checkTime = 0.05;
+								waterGen.frequency = 1.0;
+								waterGen.bGravity = True;
+								waterGen.bScale = False;
+								waterGen.bFade = True;
+								waterGen.ejectSpeed = 35.0 * splashSize;
+								waterGen.particleLifeSpan = 0.30 * splashSize;
+								waterGen.numPerSpawn = 15;
+								waterGen.bRandomEject = True;
+								waterGen.particleTexture = Texture'Effects.Generated.WtrDrpSmall';
+								waterGen.bTriggered = True;
+								waterGen.bInitiallyOn = True;
+								waterGen.LifeSpan = 1.1;
+								waterGen.SetBase(splash);
+							}
+						}
+					}
+				}
+			}
+		}
+		else if( Region.Zone.bWaterZone && !Self.IsA('SniperTracer'))
+		{
+			if(!WaterZone(Region.Zone).bSurfaceLevelKnown)
+			{
+				WaterZone(Region.Zone).SurfaceLevel = Location.Z;
+				WaterZone(Region.Zone).bSurfaceLevelKnown = True;
+
+				//== First time around we spawn an air bubble, which will set the surface level for sure
+				Spawn(class'AirBubble');
+			}
+
+			splashSize = FClamp(Abs(Velocity.Z / 200) , 0.25, 2.0 );
+			if( Region.Zone.ExitActor != None )
+			{
+				splash = Spawn(Region.Zone.ExitActor); 
+				if ( splash != None )
+				{
+					splash.DrawScale = 0.00001; //splashSize;
+					splash.LifeSpan = 0.30 * splashSize;
+					if(WaterRing(splash) != None)
+						WaterRing(splash).bNoExtraRings = True;
+
+					if(detLevel == "High")
+					{
+						waterGen = Spawn(class'ParticleGenerator', splash,, splash.Location, rot(16384,0,0));
+						if (waterGen != None)
+						{
+							waterGen.bHighDetail = True;
+							waterGen.particleDrawScale = 0.1 * splashSize;
+							waterGen.checkTime = 0.05;
+							waterGen.frequency = 1.0;
+							waterGen.bGravity = True;
+							waterGen.bScale = False;
+							waterGen.bFade = True;
+							waterGen.ejectSpeed = 35.0 * splashSize;
+							waterGen.particleLifeSpan = 0.30 * splashSize;
+							waterGen.numPerSpawn = 15;
+							waterGen.bRandomEject = True;
+							waterGen.particleTexture = Texture'Effects.Generated.WtrDrpSmall';
+							waterGen.bTriggered = True;
+							waterGen.bInitiallyOn = True;
+							waterGen.LifeSpan = 1.1;
+							waterGen.SetBase(splash);
+						}
+					}
+				}
+			}
+		}
+	
+		Super.ZoneChange(NewZone);
+	}
 	simulated function BeginState()
 	{
 		local DeusExWeapon W;
@@ -593,6 +734,7 @@ defaultproperties
      maxRange=1600
      MinDrawScale=0.050000
      maxDrawScale=2.500000
+     gradualHurtSteps=-1
      bEmitDanger=True
      ItemName="DEFAULT PROJECTILE NAME - REPORT THIS AS A BUG"
      ItemArticle="Error"

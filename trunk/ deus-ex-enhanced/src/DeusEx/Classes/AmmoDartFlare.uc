@@ -1,6 +1,9 @@
 //=============================================================================
 // AmmoDartFlare.
 //=============================================================================
+
+//Modified -- Y|yukichigai
+
 class AmmoDartFlare extends AmmoDart;
 
 defaultproperties

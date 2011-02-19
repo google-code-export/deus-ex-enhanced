@@ -97,6 +97,7 @@ defaultproperties
      MPInfo="When active, you can see enemy players in the dark from any distance, and for short distances you can see through walls and see cloaked enemies.  Energy Drain: Moderate"
      LevelValues(2)=320.000000
      LevelValues(3)=800.000000
+     LevelValues(4)=1200.000000
      AugmentationLocation=LOC_Eye
      MPConflictSlot=6
 }

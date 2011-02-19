@@ -16,11 +16,12 @@ var DeusExPlayer Player;				// which player am I attached to?
 var travel Augmentation FirstAug;		// Pointer to first Augmentation
 
 // All the available augmentations 
-var Class<Augmentation> augClasses[25];
+var Class<Augmentation> augClasses[25]; //was 25.  Can be increased as needed
 var Class<Augmentation> defaultAugs[3];
 
 var localized string AugLocationFull;
 var localized String NoAugInSlot;
+var localized String HighPowerDrain;
 
 // ----------------------------------------------------------------------
 // Network Replication
@@ -198,7 +199,7 @@ function BoostAugs(bool bBoostEnabled, Augmentation augBoosting)
 		{
 			if (bBoostEnabled)
 			{
-				if (anAug.bIsActive && !anAug.bBoosted && (anAug.CurrentLevel < anAug.MaxLevel))
+				if (anAug.bIsActive && !anAug.bBoosted) // && (anAug.CurrentLevel < anAug.MaxLevel))
 				{
 					anAug.Deactivate();
 					anAug.CurrentLevel++;
@@ -387,10 +388,13 @@ function Augmentation GivePlayerAugmentation(Class<Augmentation> giveClass)
 	
 	// Assign hot key to new aug 
 	// (must be after before augCount is incremented!)
-   if (Level.NetMode == NM_Standalone)	
-      anAug.HotKeyNum = AugLocs[anAug.AugmentationLocation].augCount + AugLocs[anAug.AugmentationLocation].KeyBase;
-   else
-      anAug.HotKeyNum = anAug.MPConflictSlot + 2;
+   if(anAug.HotKeyNum == -1)
+   {
+	   if (Level.NetMode == NM_Standalone)	
+	      anAug.HotKeyNum = AugLocs[anAug.AugmentationLocation].augCount + AugLocs[anAug.AugmentationLocation].KeyBase;
+	   else
+	      anAug.HotKeyNum = anAug.MPConflictSlot + 2;
+   }
 
 	if ((!anAug.bAlwaysActive) && (Player.bHUDShowAllAugs))
 	    Player.AddAugmentationDisplay(anAug);
@@ -462,15 +466,21 @@ simulated function Float CalcEnergyUse(float deltaTime)
 	anAug = FirstAug;
 	while(anAug != None)
 	{
-      if (anAug.IsA('AugPower'))
-         PowerAug = anAug;
+		if (anAug.IsA('AugPower'))
+			PowerAug = anAug;
 		if (anAug.bHasIt && anAug.bIsActive)
 		{
 			energyUse += ((anAug.GetEnergyRate()/60) * deltaTime);
 			if (anAug.IsA('AugPower'))
-         {
+	 		{
 				energyMult = anAug.LevelValues[anAug.CurrentLevel];
-         }
+			}
+			//=== AugHealing doesn't deactivate automatically, instead goes to an "idle" drain level
+			else if (anAug.IsA('AugHealing'))
+			{
+				if(player.Health >= 100)
+					energyUse -= ((anAug.GetEnergyRate()/60) * (9/10) * deltaTime);
+			}
 		}
 		anAug = anAug.next;
 	}
@@ -488,6 +498,30 @@ simulated function Float CalcEnergyUse(float deltaTime)
 
       if (PowerAug.bIsActive)				
          energyMult = PowerAug.LevelValues[PowerAug.CurrentLevel];
+   }
+   else if((PowerAug != None) && (PowerAug.bHasIt))
+   {
+	energyMult = PowerAug.LevelValues[PowerAug.CurrentLevel];
+	//=== Automatically activate PowerAug if it would reduce the total energy useage
+	if(PowerAug.bIsActive)
+	{
+		if(energyUse - ((PowerAug.GetEnergyRate()/60) * deltaTime) <= energyUse * energyMult)
+		{
+			//player.ClientMessage(SprintF("Insufficient power drain to warrant use of %d",PowerAug.AugmentationName));
+			PowerAug.Deactivate();
+		}
+	}
+	//=== Similarly, deactivate PowerAug if it would decrease the power drain
+	else
+	{
+		if(((energyUse + ((PowerAug.GetEnergyRate()/60) * deltaTime)) * energyMult) < energyUse)
+		{
+			player.ClientMessage(HighPowerDrain);
+			PowerAug.Activate();
+		}
+		else
+			energyMult = 1.0;
+	}
    }
 	// check for the power augmentation
 	energyUse *= energyMult;
@@ -652,11 +686,13 @@ defaultproperties
      augClasses(18)=Class'DeusEx.AugDatalink'
      augClasses(19)=Class'DeusEx.AugHeartLung'
      augClasses(20)=Class'DeusEx.AugPower'
+     augClasses(21)=Class'DeusEx.AugSkullGun'
      defaultAugs(0)=Class'DeusEx.AugLight'
      defaultAugs(1)=Class'DeusEx.AugIFF'
      defaultAugs(2)=Class'DeusEx.AugDatalink'
      AugLocationFull="You can't add any more augmentations to that location!"
      NoAugInSlot="There is no augmentation in that slot"
+     HighPowerDrain="High power drain detected"
      bHidden=True
      bTravel=True
 }

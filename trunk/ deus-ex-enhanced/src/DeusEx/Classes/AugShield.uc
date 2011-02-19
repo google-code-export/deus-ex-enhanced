@@ -43,6 +43,7 @@ defaultproperties
      LevelValues(1)=0.600000
      LevelValues(2)=0.400000
      LevelValues(3)=0.200000
+     LevelValues(4)=0.100000
      AugmentationLocation=LOC_Torso
      MPConflictSlot=1
 }

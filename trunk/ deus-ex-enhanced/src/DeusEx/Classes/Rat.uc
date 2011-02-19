@@ -53,7 +53,12 @@ function Tick(float deltaTime)
 	{
 		time = 0;
 		if (FRand() < 0.05)
-			PlaySound(sound'RatSqueak2', SLOT_None);
+		{
+			if(FRand() > 0.40)
+				PlaySound(sound'RatSqueak2', SLOT_None);
+			else
+				PlaySound(sound'RatSqueak3', SLOT_None);
+		}
 	}
 }
 
@@ -201,6 +206,7 @@ defaultproperties
      MinHealth=2.000000
      CarcassType=Class'DeusEx.RatCarcass'
      WalkingSpeed=0.360000
+     bLikesNeutral=False
      GroundSpeed=250.000000
      WaterSpeed=24.000000
      AirSpeed=150.000000

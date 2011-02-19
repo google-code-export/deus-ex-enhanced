@@ -36,8 +36,13 @@ simulated function PreBeginPlay()
 		Damage = mpDamage;
 		AccurateRange = mpAccurateRange;
 		MaxRange = mpMaxRange;
+		Mesh = LodMesh'DeusExItems.ShurikenPickup';
 	}
 }
+// Changed the mesh
+//     Mesh=LodMesh'DeusExItems.CombatKnifePickup'
+//     CollisionRadius=10.000000
+//     CollisionHeight=0.800000
 
 defaultproperties
 {
@@ -55,10 +60,10 @@ defaultproperties
      ItemArticle="a"
      speed=750.000000
      MaxSpeed=750.000000
-     Damage=15.000000
+     Damage=22.000000
      MomentumTransfer=1000
      ImpactSound=Sound'DeusExSounds.Generic.BulletHitFlesh'
      Mesh=LodMesh'DeusExItems.ShurikenPickup'
      CollisionRadius=5.000000
-     CollisionHeight=0.300000
+     CollisionHeight=0.800000
 }

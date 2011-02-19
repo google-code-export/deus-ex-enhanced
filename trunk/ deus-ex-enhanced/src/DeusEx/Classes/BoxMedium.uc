@@ -3,6 +3,20 @@
 //=============================================================================
 class BoxMedium extends Containers;
 
+function bool Facelift(bool bOn)
+{
+	if(!Super.Facelift(bOn))
+		return false;
+
+	if(bOn)
+		Mesh = mesh(DynamicLoadObject("HDTPDecos.HDTPboxmedium", class'mesh', True));
+
+	if(Mesh == None || !bOn)
+		Mesh = Default.Mesh;
+
+	return true;
+}
+
 defaultproperties
 {
      HitPoints=10

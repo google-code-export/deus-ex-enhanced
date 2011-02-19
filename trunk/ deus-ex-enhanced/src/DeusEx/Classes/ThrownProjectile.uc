@@ -45,7 +45,7 @@ simulated function Tick(float deltaTime)
 	local ScriptedPawn P;
 	local DeusExPlayer Player;
 	local Vector dist, HitLocation, HitNormal;
-	local float blinkRate, mult, skillDiff;
+	local float blinkRate, mult, skillDiff, levelDiff;
 	local float proxRelevance;
 	local Pawn curPawn;
 	local bool pass;
@@ -85,6 +85,7 @@ simulated function Tick(float deltaTime)
 		{
 			if (bArmed)
 			{
+				levelDiff = 1.000000 / Level.Game.Difficulty;
 				proxCheckTime += deltaTime;
 
 				// beep based on skill
@@ -131,7 +132,7 @@ simulated function Tick(float deltaTime)
 								dist = Player.Location - Location;
 								if (VSize(dist) < proxRadius)
 									if (skillTime == 0)
-										skillTime = FClamp(-20.0 * Player.SkillSystem.GetSkillLevelValue(class'SkillDemolition'), 1.0, 10.0);
+										skillTime = FClamp((-14.0 - (6.0 * levelDiff)) * Player.SkillSystem.GetSkillLevelValue(class'SkillDemolition'), levelDiff, 10.0);
 							}
 						}
 					}
@@ -482,35 +483,51 @@ auto simulated state Flying
 	{
 		local ShockRing ring;
 		local DeusExPlayer player;
+		local Pawn curPawn;
 		local float dist;
 
 		// flash the screen white based on how far away the explosion is
-		//		player = DeusExPlayer(GetPlayerPawn());
-		//		MBCODE: Reference projectile owner to get player
-		//		because sever fails to get it the old way
-		player = DeusExPlayer(Owner);
+	
+		//== Y|y: we need to do this really complicated to make it work in both single and multiplayer, and to work with EVERYONE's grenades
+		//==  Thanks to Lork for pointing out that this was a problem
+		if(Level.NetMode == NM_Standalone)
+			curPawn = GetPlayerPawn();
+		else if (( Level.NetMode == NM_DedicatedServer) || ( Level.NetMode == NM_ListenServer))
+			curPawn = Level.PawnList;
+		
 
-		dist = Abs(VSize(player.Location - Location));
+		while(curPawn != None)
+		{
+			player = DeusExPlayer(curPawn);
 
-		// if you are at the same location, blind the player
-		if (dist ~= 0)
-			dist = 10.0;
-		else
-			dist = 2.0 * FClamp(blastRadius/dist, 0.0, 4.0);
+			dist = Abs(VSize(player.Location - Location));
+	
+			// if you are at the same location, blind the player
+			if (dist ~= 0)
+				dist = 10.0;
+			else
+				dist = 2.0 * FClamp(blastRadius/dist, 0.0, 4.0);
+	
+			if (damageType == 'EMP')
+				player.ClientFlash(dist, vect(0,200,1000));
+			else if (damageType == 'TearGas')
+				player.ClientFlash(dist, vect(0,1000,100));
+			else
+				player.ClientFlash(dist, vect(1000,1000,900));
 
-		if (damageType == 'EMP')
-			player.ClientFlash(dist, vect(0,200,1000));
-		else if (damageType == 'TearGas')
-			player.ClientFlash(dist, vect(0,1000,100));
-		else
-			player.ClientFlash(dist, vect(1000,1000,900));
 
-      //DEUS_EX AMSD Only do visual effects if client or if destroyed via damage (since the client can't detect that)
-      if ((Level.NetMode != NM_DedicatedServer) || (Role < ROLE_Authority) || bDamaged)
-      {
-         SpawnEffects(HitLocation, HitNormal, None);
-         DrawExplosionEffects(HitLocation, HitNormal);
-      }
+			if(Level.NetMode == NM_Standalone) //== Only one player in singleplayer, so halt the loop
+				curPawn = None;
+			else //== Cycle through all the remaining players in Multiplayer
+				curPawn = curPawn.nextPawn;
+		}
+
+		//DEUS_EX AMSD Only do visual effects if client or if destroyed via damage (since the client can't detect that)
+		if ((Level.NetMode != NM_DedicatedServer) || (Role < ROLE_Authority) || bDamaged)
+		{
+		 SpawnEffects(HitLocation, HitNormal, None);
+		 DrawExplosionEffects(HitLocation, HitNormal);
+		}
 
 		if ((damageType=='TearGas') && (Role==ROLE_Authority))
 			SpawnTearGas();

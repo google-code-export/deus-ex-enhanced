@@ -14,6 +14,13 @@ function FirstFrame()
 	local BlackHelicopter chopper;
 	local ScriptedPawn pawn;
 	local SandraRenton Sandra;
+	local Robot bot;
+
+	if(localURL == "12_VANDENBERG_TUNNELS")
+	{
+		dxinfo.startupMessage[0] = "Maintenance Tunnels";
+		dxinfo.startupMessage[1] = "Vandenberg Airforce Base";
+	}
 
 	Super.FirstFrame();
 
@@ -28,6 +35,17 @@ function FirstFrame()
 			foreach AllActors(class'ScriptedPawn', pawn)
 				if (pawn.IsA('Jock') || pawn.IsA('TracerTong'))
 					pawn.EnterWorld();
+		}
+
+		if (!flags.GetBool('No_Bot_Friendly_Fire'))
+		{
+			foreach AllActors(class'Robot', bot)
+			{
+				if(bot.Alliance == 'Bots_Salvagers')
+					bot.ChangeAlly('x51', 1, True, False);
+			}
+
+			flags.SetBool('No_Bot_Friendly_Fire', True);
 		}
 	}
 	else if (localURL == "12_VANDENBERG_GAS")
@@ -143,7 +161,17 @@ function Timer()
 				earth.bHidden = True;
 
 			foreach AllActors(class'BobPage', Bob)
+			{
 				Bob.EnterWorld();
+				Bob.bLookingForEnemy = false;
+				Bob.bLookingForLoudNoise = false;
+				Bob.bLookingForAlarm = false;
+				Bob.bLookingForDistress = false;
+				Bob.bLookingForProjectiles = false;
+				Bob.bLookingForShot = false;
+				Bob.bLookingForInjury = false;
+				Bob.bLookingForIndirectInjury = false;
+			}
 
 			flags.SetBool('MS_M12PageAppeared', True,, 14);
 		}

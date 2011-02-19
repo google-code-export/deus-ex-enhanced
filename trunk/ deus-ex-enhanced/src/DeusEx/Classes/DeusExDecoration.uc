@@ -86,6 +86,22 @@ function PreBeginPlay()
 		flyGen = Spawn(Class'FlyGenerator', , , Location, Rotation);
 	else
 		flyGen = None;
+
+	if(Level.NetMode == NM_StandAlone)
+		Facelift(true);
+}
+
+function bool Facelift(bool bOn)
+{
+	//== Only do this for DeusEx classes
+	if(instr(String(Class.Name), ".") > -1 && bOn)
+		if(instr(String(Class.Name), "DeusEx.") <= -1)
+			return false;
+	else
+		if((Class != Class(DynamicLoadObject("DeusEx."$ String(Class.Name), class'Class', True))) && bOn)
+			return false;
+
+	return true;
 }
 
 // ----------------------------------------------------------------------
@@ -422,6 +438,21 @@ function Bump(actor Other)
 //			return;
 	}
 
+	//== Throw something fast and hard enough and if it hits someone it'll do a good amount of damage
+	if(Other.IsA('ScriptedPawn'))
+	{
+		if(DeusExPlayer(Instigator) != None && DeusExPlayer(Instigator).AugmentationSystem != None)
+		{
+			augLevel = DeusExPlayer(Instigator).AugmentationSystem.GetClassLevel(class'AugMuscle');
+			if(((VSize(Velocity) > 375 && !bBounce) || VSize(Velocity) > 550) && augLevel >= 0)
+			{
+				Other.TakeDamage((VSize(Velocity)*Mass)/(200 - (augLevel * 15)), Instigator, Location, vect(0,0,0), 'KnockedOut');
+				if(!bInvincible)
+					TakeDamage( ((VSize(Velocity)*Mass)/(400 - (augLevel * 30)) ), Instigator, Location, vect(0,0,0), 'fell');
+			}
+		}
+	}
+
 	if (bPushable && (PlayerPawn(Other)!=None) && (Other.Mass > 40))// && (Physics != PHYS_Falling))
 	{
 		// A little bit of a hack...
@@ -745,7 +776,7 @@ auto state Active
 		if (DamageType == 'HalonGas')
 			ExtinguishFire();
 
-		if ((DamageType == 'Burned') || (DamageType == 'Flamed'))
+		if ((DamageType == 'Burned') || (DamageType == 'Flamed') || (DamageType == 'Flared'))
 		{
 			if (bExplosive)		// blow up if we are hit by fire
 				HitPoints = 0;
@@ -851,7 +882,7 @@ state Burning
 			ExtinguishFire();
 
 		// if we are already burning, we can't take any more damage
-		if ((DamageType == 'Burned') || (DamageType == 'Flamed'))
+		if ((DamageType == 'Burned') || (DamageType == 'Flamed') || (DamageType == 'Flared'))
 		{
 			HitPoints -= Damage/2;
 		}
@@ -1065,6 +1096,13 @@ function Trigger(Actor Other, Pawn Instigator)
 		Explode(Location);
 		Super.Trigger(Other, Instigator);
 	}
+}
+
+function String GetDecoName()
+{
+	if(bHighlight)
+		return ItemName;
+	return "";
 }
 
 // ----------------------------------------------------------------------

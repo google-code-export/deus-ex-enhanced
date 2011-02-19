@@ -154,7 +154,7 @@ function float GetHealAmount(int bodyPart, optional float pointsToHeal)
 
 simulated function bool TestMPBeltSpot(int BeltSpot)
 {
-   return (BeltSpot == 9);
+   return (BeltSpot == 8);
 }
 
 // ----------------------------------------------------------------------

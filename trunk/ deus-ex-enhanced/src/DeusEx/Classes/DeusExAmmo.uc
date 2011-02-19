@@ -1,6 +1,9 @@
 //=============================================================================
 // DeusExAmmo.
 //=============================================================================
+
+//Modified -- Y|yukichigai
+
 class DeusExAmmo extends Ammo
 	abstract;
 
@@ -11,6 +14,37 @@ var localized String msgInfoRounds;
 
 var bool bShowInfo;
 var int MPMaxAmmo; //Max Ammo in multiplayer.
+var bool bIsNonStandard; //For the purposes of picking it up from corpses
+var String DynamicLoadIcon; //The icon we should optionally load to use in the GUI, if present
+
+// ----------------------------------------------------------------------
+// PreBeginPlay()
+// ----------------------------------------------------------------------
+simulated function PreBeginPlay()
+{
+	Super.PreBeginPlay();
+
+	if(Level.NetMode == NM_Standalone)
+		Facelift(true);
+}
+
+// ----------------------------------------------------------------------
+// Facelift()
+//  Applies the new HDTP textures and meshes if present, stays the same
+//  otherwise.  Also, the name of this function is made of win
+// ----------------------------------------------------------------------
+function bool Facelift(bool bOn)
+{
+	//== Only do this for DeusEx classes
+	if(instr(String(Class.Name), ".") > -1 && bOn)
+		if(instr(String(Class.Name), "DeusEx.") <= -1)
+			return false;
+	else
+		if((Class != Class(DynamicLoadObject("DeusEx."$ String(Class.Name), class'Class', True))) && bOn)
+			return false;
+
+	return true;
+}
 
 // ----------------------------------------------------------------------
 // PostBeginPlay()

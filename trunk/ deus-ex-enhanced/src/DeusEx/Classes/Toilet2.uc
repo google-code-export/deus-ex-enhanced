@@ -12,14 +12,58 @@ enum ESkinColor
 var() ESkinColor SkinColor;
 var bool bUsing;
 
+function bool Facelift(bool bOn)
+{
+	if(!Super.Facelift(bOn))
+		return false;
+
+	if(bOn)
+		Mesh = mesh(DynamicLoadObject("HDTPDecos.HDTPToilet2", class'mesh', True));
+
+	if(Mesh == None || !bOn)
+	{
+		MultiSkins[1] = None;
+		Mesh = Default.Mesh;
+		switch (SkinColor)
+		{
+			case SC_Clean:	Skin = Texture'Toilet2Tex1';
+					break;
+			case SC_Filthy:	Skin = Texture'Toilet2Tex2';
+					break;
+		}
+	}
+	else
+	{
+		Skin = None;
+		switch (SkinColor)
+		{
+			case SC_Clean:	MultiSkins[1] = Texture(DynamicLoadObject("HDTPDecos.Skins.CleanUrinalTex", class'Texture', True));
+					break;
+			case SC_Filthy:	MultiSkins[1] = Texture(DynamicLoadObject("HDTPDecos.Skins.DirtyUrinalTex", class'Texture', True));
+					break;
+		}
+	}
+
+	return true;
+}
+
 function BeginPlay()
 {
 	Super.BeginPlay();
 
 	switch (SkinColor)
 	{
-		case SC_Clean:	Skin = Texture'Toilet2Tex1'; break;
-		case SC_Filthy:	Skin = Texture'Toilet2Tex2'; break;
+		case SC_Clean:	if(Skin == None)
+					MultiSkins[1] = Texture(DynamicLoadObject("HDTPDecos.Skins.CleanUrinalTex", class'Texture', True));
+				if(MultiSkins[1] == None)
+					Skin = Texture'Toilet2Tex1';
+				break;
+
+		case SC_Filthy:	if(Skin == None)
+					MultiSkins[1] = Texture(DynamicLoadObject("HDTPDecos.Skins.DirtyUrinalTex", class'Texture', True));
+				if(MultiSkins[1] == None)
+					Skin = Texture'Toilet2Tex2';
+				break;
 	}
 }
 

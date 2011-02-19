@@ -390,15 +390,32 @@ function bool ActivateObjectInBelt(int pos)
 			player = DeusExPlayer(parentPawn);
 			if (player != None)
 			{
-				// if the object is an ammo box, load the correct ammo into
-				// the gun if it is the current weapon
-				if ((item != None) && item.IsA('Ammo') && (player.Weapon != None))
-					DeusExWeapon(player.Weapon).LoadAmmoType(Ammo(item));
-				else
+				if(item != None)
 				{
-					player.PutInHand(item);
-					if (item != None)
-						retval = True;
+					// if the object is an ammo box, load the correct ammo into
+					// the gun if it is the current weapon
+					if (item.IsA('Ammo') && (player.Weapon != None))
+						DeusExWeapon(player.Weapon).LoadAmmoType(Ammo(item));
+					else 
+					{
+						if(item != None)
+						{
+							if(item.beltPos != pos && player.Level.NetMode != NM_Standalone)
+							{
+								//== Allow multi-slot items to be activated by number, but don't mess up scrolling
+								if(item != player.inHand && item != player.inHandPending && item != player.ClientInHandPending)
+								{
+									player.PutInHand(item);
+									retval = True;
+								}
+							}
+							else
+							{
+								player.PutInHand(item);
+								retval = True;
+							}
+						}
+					}
 				}
 			}
 		}

@@ -1,6 +1,9 @@
 //=============================================================================
 // AugMuscle.
 //=============================================================================
+//Description="Muscle strength is amplified with ionic polymeric gel myofibrils that allow the agent to push and lift extraordinarily heavy objects.|n|nTECH ONE: Strength is increased slightly.|n|nTECH TWO: Strength is increased moderately.|n|nTECH THREE: Strength is increased significantly.|n|nTECH FOUR: An agent is inhumanly strong."
+//MPInfo="When active, you can pick up large crates.  Energy Drain: Low"
+
 class AugMuscle extends Augmentation;
 
 var float mpAugValue;
@@ -43,12 +46,13 @@ defaultproperties
      Icon=Texture'DeusExUI.UserInterface.AugIconMuscle'
      smallIcon=Texture'DeusExUI.UserInterface.AugIconMuscle_Small'
      AugmentationName="Microfibral Muscle"
-     Description="Muscle strength is amplified with ionic polymeric gel myofibrils that allow the agent to push and lift extraordinarily heavy objects.|n|nTECH ONE: Strength is increased slightly.|n|nTECH TWO: Strength is increased moderately.|n|nTECH THREE: Strength is increased significantly.|n|nTECH FOUR: An agent is inhumanly strong."
-     MPInfo="When active, you can pick up large crates.  Energy Drain: Low"
+     Description="Muscle strength is amplified with ionic polymeric gel myofibrils that allow the agent to push and lift extraordinarily heavy objects and boost hand-to-hand combat strength.|n|nTECH ONE: Strength is increased slightly.|n|nTECH TWO: Strength is increased moderately.|n|nTECH THREE: Strength is increased significantly.|n|nTECH FOUR: An agent is inhumanly strong."
+     MPInfo="When active, you can pick up large crates and combat damage is doubled.  Energy Drain: Low"
      LevelValues(0)=1.250000
      LevelValues(1)=1.500000
      LevelValues(2)=1.750000
      LevelValues(3)=2.000000
+     LevelValues(4)=2.250000
      AugmentationLocation=LOC_Arm
      MPConflictSlot=8
 }

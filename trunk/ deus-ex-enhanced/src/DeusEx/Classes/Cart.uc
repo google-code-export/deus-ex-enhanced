@@ -8,6 +8,14 @@ var float pushTimer;
 var vector pushVel;
 var bool bJustPushed;
 
+//== Unlike everything else, once the cart lands it rolls a bit
+function Landed(vector HitNormal)
+{
+	Super.Landed(HitNormal);
+
+	StartRolling(Velocity);
+}
+
 function StartRolling(vector vel)
 {
 	// Transfer momentum
@@ -44,7 +52,9 @@ function Tick(float deltaTime)
 	if ((Physics == PHYS_Rolling) && (rollTimer > 0))
 	{
 		rollTimer -= deltaTime;
+		//== Perhaps a slightly more realisitc interpretation of physics, mm?
 		Velocity = pushVel;
+		pushVel -= ( (pushVel/VSize(pushVel)) * 16.000 * deltaTime);
 
 		if (pushTimer > 0)
 			pushTimer -= deltaTime;
@@ -64,6 +74,20 @@ function Tick(float deltaTime)
 		AmbientSound = None;
 		SoundPitch = Default.SoundPitch;
 	}
+}
+
+function bool Facelift(bool bOn)
+{
+	if(!Super.Facelift(bOn))
+		return false;
+
+	if(bOn)
+		Mesh = mesh(DynamicLoadObject("HDTPDecos.HDTPCart", class'mesh', True));
+
+	if(Mesh == None || !bOn)
+		Mesh = Default.Mesh;
+
+	return true;
 }
 
 defaultproperties

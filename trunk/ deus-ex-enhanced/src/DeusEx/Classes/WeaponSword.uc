@@ -18,6 +18,11 @@ simulated function PreBeginPlay()
 	}
 }
 
+function bool TestCycleable()
+{
+	return True;
+}
+
 defaultproperties
 {
      LowAmmoWaterMark=0
@@ -25,6 +30,7 @@ defaultproperties
      NoiseLevel=0.050000
      EnemyEffective=ENMEFF_Organic
      reloadTime=0.000000
+     HitDamage=20
      maxRange=64
      AccurateRange=64
      BaseAccuracy=1.000000

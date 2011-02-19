@@ -37,10 +37,5 @@ function ResetNonCustomizableOptions()
 
 defaultproperties
 {
-     SkillsTotal=2000
-     SkillsAvail=2000
-     SkillsPerKill=2000
-     InitialAugs=2
-     AugsPerKill=2
      bCustomizable=False
 }

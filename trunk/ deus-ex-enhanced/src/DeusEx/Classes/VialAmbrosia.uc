@@ -29,7 +29,7 @@ Begin:
 
 defaultproperties
 {
-     msgNoEffect="Strange...nothing happens..."
+     msgNoEffect="Strange... nothing happens..."
      maxCopies=10
      bCanHaveMultipleCopies=True
      bActivatable=True

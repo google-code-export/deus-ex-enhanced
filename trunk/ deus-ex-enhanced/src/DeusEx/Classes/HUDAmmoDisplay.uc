@@ -84,7 +84,11 @@ event DrawWindow(GC gc)
 
 		// how much ammo of this type do we have left?
 		if (weapon.AmmoType != None)
+		{
 			ammoRemaining = weapon.AmmoType.AmmoAmount;
+			if(weapon.AmmoUseModifier > 1)
+				ammoRemaining = ammoRemaining/weapon.AmmoUseModifier;
+		}
 		else
 			ammoRemaining = 0;
 
@@ -134,7 +138,7 @@ event DrawWindow(GC gc)
 		}
 
 		// Now, let's draw the targetting information
-		if (weapon.bCanTrack)
+		if (weapon.bCanTrack || weapon.bLasing)
 		{
 			if (weapon.LockMode == LOCK_Locked)
 				gc.SetTextColor(colLockedText);

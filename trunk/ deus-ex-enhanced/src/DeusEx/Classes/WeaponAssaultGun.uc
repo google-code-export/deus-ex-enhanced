@@ -27,6 +27,7 @@ simulated function PreBeginPlay()
 defaultproperties
 {
      LowAmmoWaterMark=30
+     FireAnim(1)=None
      GoverningSkill=Class'DeusEx.SkillWeaponRifle'
      EnviroEffective=ENVEFF_Air
      Concealability=CONC_Visual
@@ -37,6 +38,7 @@ defaultproperties
      BaseAccuracy=0.700000
      bCanHaveLaser=True
      bCanHaveSilencer=True
+     FireSound2=Sound'DeusExSounds.Weapons.AssaultGunFire20mm'
      AmmoNames(0)=Class'DeusEx.Ammo762mm'
      AmmoNames(1)=Class'DeusEx.Ammo20mm'
      ProjectileNames(1)=Class'DeusEx.HECannister20mm'
@@ -53,6 +55,7 @@ defaultproperties
      bCanHaveModAccurateRange=True
      bCanHaveModReloadTime=True
      bCanHaveModRecoilStrength=True
+     bCanHaveModShotTime=True
      AmmoName=Class'DeusEx.Ammo762mm'
      ReloadCount=30
      PickupAmmoCount=30

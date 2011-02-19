@@ -36,9 +36,5 @@ function ResetNonCustomizableOptions()
 
 defaultproperties
 {
-     SkillsTotal=0
-     SkillsAvail=0
-     InitialAugs=9
-     MPSkillStartLevel=3
      bCustomizable=False
 }

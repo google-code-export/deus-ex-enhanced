@@ -1,11 +1,28 @@
 //=============================================================================
 // WaterFountain.
 //=============================================================================
+
+// Modified -- Y|yukichigai
+
 class WaterFountain extends DeusExDecoration;
 
 var bool bUsing;
 var int numUses;
 var localized String msgEmpty;
+
+function bool Facelift(bool bOn)
+{
+	if(!Super.Facelift(bOn))
+		return false;
+
+	if(bOn)
+		Mesh = mesh(DynamicLoadObject("HDTPDecos.HDTPWaterFountain", class'mesh', True));
+
+	if(Mesh == None || !bOn)
+		Mesh = Default.Mesh;
+
+	return true;
+}
 
 function Timer()
 {
@@ -16,7 +33,11 @@ function Timer()
 
 function Frob(Actor Frobber, Inventory frobWith)
 {
+	local int mult;
+
 	Super.Frob(Frobber, frobWith);
+
+	mult = 1;
 
 	if (numUses <= 0)
 	{
@@ -28,21 +49,28 @@ function Frob(Actor Frobber, Inventory frobWith)
 	if (bUsing)
 		return;
 
-	SetTimer(2.0, False);
+	SetTimer(1.0, False); //Down from 2.0
 	bUsing = True;
 
 	// heal the frobber a small bit
 	if (DeusExPlayer(Frobber) != None)
-		DeusExPlayer(Frobber).HealPlayer(1);
+	{
+		if(DeusExPlayer(Frobber).SkillSystem != None)
+			mult += DeusExPlayer(Frobber).SkillSystem.GetSkillLevel(class'SkillMedicine');
+
+		DeusExPlayer(Frobber).HealPlayer(mult);
+	}
 
 	LoopAnim('Use');
 	AmbientSound = sound'WaterBubbling';
 	numUses--;
 }
 
+//Uses increased from 10
+
 defaultproperties
 {
-     numUses=10
+     numUses=20
      msgEmpty="It's out of water"
      ItemName="Water Fountain"
      bPushable=False

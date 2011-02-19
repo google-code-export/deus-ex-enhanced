@@ -208,6 +208,29 @@ function PlayCriticalDamageSound()
 	PlaySound(sound'GrayFlee', SLOT_None);
 }
 
+//== I'll finish this code when I have some serious time, as modifying AI routines is hard work
+
+state Fleeing
+{
+	function PickDestination()
+	{
+		local DamageTrigger dtrig;
+		Super.PickDestination();
+
+		foreach RadiusActors(class'DamageTrigger', dtrig, 500)
+		{
+			if(dtrig.DamageType == 'Radiation')
+			{
+				if(PointReachable(dtrig.Location))
+				{
+					destLoc = dtrig.Location;
+					break;
+				}
+			}
+		}
+	}
+}
+
 defaultproperties
 {
      DamageRadius=256.000000

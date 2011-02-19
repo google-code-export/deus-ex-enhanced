@@ -3,6 +3,20 @@
 //=============================================================================
 class Fan1 extends DeusExDecoration;
 
+function bool Facelift(bool bOn)
+{
+	if(!Super.Facelift(bOn))
+		return false;
+
+	if(bOn)
+		Mesh = mesh(DynamicLoadObject("HDTPDecos.HDTPFan1", class'mesh', True));
+
+	if(Mesh == None || !bOn)
+		Mesh = Default.Mesh;
+
+	return true;
+}
+
 defaultproperties
 {
      bHighlight=False

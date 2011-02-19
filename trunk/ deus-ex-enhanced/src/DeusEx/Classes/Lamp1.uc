@@ -3,6 +3,20 @@
 //=============================================================================
 class Lamp1 extends Lamp;
 
+function bool Facelift(bool bOn)
+{
+	if(!Super.Facelift(bOn))
+		return false;
+
+	if(bOn)
+		Mesh = mesh(DynamicLoadObject("HDTPDecos.HDTPlamp1", class'mesh', True));
+
+	if(Mesh == None || !bOn)
+		Mesh = Default.Mesh;
+
+	return true;
+}
+
 defaultproperties
 {
      ItemName="Table Lamp"

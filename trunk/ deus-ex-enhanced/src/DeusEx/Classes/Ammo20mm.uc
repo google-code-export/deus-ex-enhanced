@@ -1,11 +1,15 @@
 //=============================================================================
 // Ammo20mm.
 //=============================================================================
+
+//Modified -- Y|yukichigai
+
 class Ammo20mm extends DeusExAmmo;
 
 defaultproperties
 {
      bShowInfo=True
+     bIsNonStandard=True
      AmmoAmount=4
      MaxAmmo=32
      ItemName="20mm HE Ammo"

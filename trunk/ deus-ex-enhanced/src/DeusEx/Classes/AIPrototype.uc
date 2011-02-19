@@ -3,6 +3,20 @@
 //=============================================================================
 class AIPrototype extends DeusExDecoration;
 
+function bool Facelift(bool bOn)
+{
+	if(!Super.Facelift(bOn))
+		return false;
+
+	if(bOn)
+		Mesh = mesh(DynamicLoadObject("HDTPDecos.HDTPAIPrototype", class'mesh', True));
+
+	if(Mesh == None || !bOn)
+		Mesh = Default.Mesh;
+
+	return true;
+}
+
 defaultproperties
 {
      bInvincible=True
