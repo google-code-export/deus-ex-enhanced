@@ -124,11 +124,11 @@ function Frob(actor Frobber, Inventory frobWith)
 
 defaultproperties
 {
+     cost=8
      msgDispensed="%d credits deducted from your account"
      msgNoCredits="Costs %d credits..."
      numUses=10
      msgEmpty="It's empty"
-     cost=8
      CostUnit="credits"
      ItemName="Cigarette Machine"
      Physics=PHYS_None
