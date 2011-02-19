@@ -122,9 +122,12 @@ event DrawWindow(GC gc)
 	local float			fromY, toY;
 	local float			scopeWidth, scopeHeight;
 	local bool			test;
-	local Texture			oldSkins[9];
+	local Texture		oldSkins[9];
 	local Actor			A;
-	local vector			loc;
+	local vector		loc;
+	local bool          narrowScopeView;
+
+	scopeHeight = 512;
 
 	Super.DrawWindow(gc);
 
@@ -135,22 +138,26 @@ event DrawWindow(GC gc)
 	}
 
 	// Figure out where to put everything
+	
 	if (bBinocs)
-		scopeWidth  = 512;
+	{
+		scopeWidth  = 1024;
+	}
 	else
-		scopeWidth  = 256;
-
-	scopeHeight = 256;
-
-	fromX = (width-scopeWidth)/2;
-	fromY = (height-scopeHeight)/2;
-	toX   = fromX + scopeWidth;
-	toY   = fromY + scopeHeight;
+	{		
+		scopeWidth  = 512;
+	}
+	
+	fromX = (width  - scopeWidth)  / 2;
+	fromY = (height - scopeHeight) / 2;
+	toX   = fromX   + scopeWidth;
+	toY   = fromY   + scopeHeight;
 
 	// Draw the black borders
 	gc.SetTileColorRGB(0, 0, 0);
 	gc.SetStyle(DSTY_Normal);
-	if ( Player.Level.NetMode == NM_Standalone)	// Only block out screen real estate in single player
+
+	if (Player.Level.NetMode == NM_Standalone)	// Only block out screen real estate in single player
 	{
 		test = true;
 
@@ -217,13 +224,13 @@ event DrawWindow(GC gc)
 	if (bBinocs)
 	{
 		gc.SetStyle(DSTY_Modulated);
-		gc.DrawTexture(fromX,       fromY, 256, scopeHeight, 0, 0, Texture'HUDBinocularView_1');
-		gc.DrawTexture(fromX + 256, fromY, 256, scopeHeight, 0, 0, Texture'HUDBinocularView_2');
+		gc.DrawTexture(fromX,       fromY, 512, scopeHeight, 0, 0, Texture'HUDBinocularView_1');
+		gc.DrawTexture(fromX + 512, fromY, 512, scopeHeight, 0, 0, Texture'HUDBinocularView_2');
 
 		gc.SetTileColor(colLines);
 		gc.SetStyle(DSTY_Masked);
-		gc.DrawTexture(fromX,       fromY, 256, scopeHeight, 0, 0, Texture'HUDBinocularCrosshair_1');
-		gc.DrawTexture(fromX + 256, fromY, 256, scopeHeight, 0, 0, Texture'HUDBinocularCrosshair_2');
+		gc.DrawTexture(fromX,       fromY, 512, scopeHeight, 0, 0, Texture'HUDBinocularCrosshair_1');
+		gc.DrawTexture(fromX + 512, fromY, 512, scopeHeight, 0, 0, Texture'HUDBinocularCrosshair_2');
 	}
 	else
 	{
