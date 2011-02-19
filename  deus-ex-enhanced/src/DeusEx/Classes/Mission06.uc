@@ -23,6 +23,13 @@ function FirstFrame()
 	local BookOpen book;
 	local float rnd;
 	local Keypad3 pad;
+	local int count;
+	local vector loc;
+	local Inventory item, nextitem;
+	local AllianceTrigger altrig;
+	local MJ12Troop mjtroop;
+	local Mover thecase;
+	local FlagTrigger ftrig;
 
 	Super.FirstFrame();
 
@@ -32,6 +39,31 @@ function FirstFrame()
 		{
 			foreach AllActors(class'MJ12Commando', commando)
 				commando.EnterWorld();
+		}
+	}
+	else if (localURL == "06_HONGKONG_WANCHAI_STREET")
+	{
+		if(!flags.GetBool('MJ12_Troops_Silent'))
+		{
+			foreach AllActors(class'MJ12Troop', mjtroop)
+			{
+				mjtroop.bPlayIdle = False;
+			}
+			flags.SetBool('MJ12_Troops_Silent', True,, 8);
+		}
+
+		if(!flags.GetBool('DisplayCase_Moveable'))
+		{
+			foreach AllActors(class'Mover', thecase, 'Dispalycase')
+			{
+				if(VSize(thecase.KeyPos[1] - thecase.KeyPos[0]) <= 4)
+				{
+					thecase.KeyPos[1].Z = -136.000000;
+					flags.SetBool('DisplayCase_WasUnMoveable',True); //== For debug purposes
+				}
+
+				flags.SetBool('DisplayCase_Moveable',True);
+			}
 		}
 	}
 	else if (localURL == "06_HONGKONG_WANCHAI_CANAL")
@@ -58,7 +90,20 @@ function FirstFrame()
 				else if (pad.Tag == 'RealKeypad_02')
 					pad.bHidden = False;
 			}
+			if(!flags.GetBool('M07_ILAW_Placed'))
+			{
+				loc.X = -1543.734009;
+				loc.Y = -807.897339;
+				loc.Z = -700.000000;
+				spawn(Class'WeaponMiniRocket', None,, loc);
+				flags.SetBool('M07_ILAW_Placed', True,, 8);
+			}
 		}
+//		if(!flags.getBool('M06_Prototypes_Placed'))
+//		{
+//			spawn(Class'WeaponPrototypeSwordC', None,, vect(-1671.00, -328.50, -690.00));
+//			flags.setBool('M06_Prototypes_Placed', True,, 8);
+//		}
 	}
 	else if (localURL == "06_HONGKONG_TONGBASE")
 	{
@@ -148,7 +193,54 @@ function FirstFrame()
 					deco.Destroy();
 			}
 		}
+		else
+		{
+			//== Triad members should only fight with traditional weapons
+			foreach AllActors(class'ScriptedPawn', pawn)
+			{
+				if(pawn.IsA('TriadLumPath') || pawn.IsA('TriadLumPath2') || pawn.IsA('TriadRedArrow'))
+				{
+					pawn.bNPCRandomGiven = True;
+					item = pawn.Inventory;
+
+					if(item != None)
+					{
+						do
+						{
+							nextItem = item.Inventory;
+
+							if(Weapon(item) != None && !item.IsA('WeaponSword'))
+							{
+								if(item.Owner == player)
+									break; //== We have somehow stumbled into the player's inventory. Abort!
+
+								pawn.DeleteInventory(item);
+								item.Destroy();
+							}
+							item = nextItem;
+						}
+						until(item == None);
+					}
+				}
+			}
+		}
 	}
+	else if (localURL == "06_HONGKONG_STORAGE")
+	{
+		if (!flags.GetBool('Keypad_Deactivator_Placed'))
+		{
+			ftrig = spawn(Class'FlagTrigger', None,, vect(54.944206, 671.900024, -728.685852));
+			if(ftrig != None)
+			{
+				ftrig.SetCollision(false, false, false);
+				ftrig.Tag = 'Self_Destruct';
+				ftrig.bTrigger = false;
+				ftrig.flagName = 'Deactivate_Keypad';
+				flags.SetBool('Keypad_Deactivator_Placed', True);
+			}
+		}
+	}
+
 	else if (localURL == "06_HONGKONG_WANCHAI_MARKET")
 	{
 		// prepare for the ceremony
@@ -169,6 +261,17 @@ function FirstFrame()
 			}
 
 			flags.SetBool('CeremonyReadyToBegin', True,, 8);
+		}
+
+		//== Disable the Alliance triggers once you're a-ok with Gordon Quick
+		if(flags.GetBool('QuickLetPlayerIn') && !flags.GetBool('M06_LumTriggersDisabled'))
+		{
+			foreach AllActors(class'AllianceTrigger', altrig)
+			{
+				if(altrig.Tag == 'LumpathPissed')
+					altrig.Event = '';
+			}
+			flags.SetBool('M06_LumTriggersDisabled',True,, 8);
 		}
 
 		// remove the secretary
@@ -291,6 +394,12 @@ function FirstFrame()
 
 function PreTravel()
 {
+	//== Another interesting glitch: you can kill Bob Page after he
+	//==  talks to Maggie Chow, just as they walk by a microscopic
+	//==  crack between the window and the frame
+	if(flags.GetBool('BobPage_Dead'))
+		flags.SetBool('BobPage_Dead', False,, 8);
+
 	Super.PreTravel();
 }
 
@@ -303,6 +412,7 @@ function PreTravel()
 function Timer()
 {
 	local int count;
+	local vector loc;
 	local DeusExMover M;
 	local AlarmUnit unit;
 	local Dispatcher disp;
@@ -316,6 +426,10 @@ function Timer()
 	local Actor A;
 	local PatrolPoint PP;
 	local Keypad1 pad;
+	local WeaponBoomstick Boom;
+	local WeaponSawedOffShotgun Sawoff;
+	local ScientistMaleCarcass scicarc;
+	local Inventory inv;
 
 	Super.Timer();
 
@@ -339,6 +453,27 @@ function Timer()
 				walton.LeaveWorld();
 
 			flags.SetBool('MS_WaltonHidden', True,, 8);
+		}
+		if(!flags.GetBool('MS_BoomstickAdded'))
+		{
+			count = 0;
+			foreach AllActors(class'WeaponBoomstick', Boom)
+				count++;
+			if(count <= 0)
+			{
+				count = 0;
+				foreach AllActors(class'WeaponSawedOffShotgun',Sawoff)
+				{
+					if(count == 0)
+					{
+						spawn(Class'WeaponBoomstick',,,Sawoff.Location,Sawoff.Rotation);
+						Sawoff.Destroy();
+						flags.setBool('MS_BoomstickAdded', True,, 8);
+					}
+					count++;
+				}
+				
+			}
 		}
 	}
 	else if (localURL == "06_HONGKONG_WANCHAI_UNDERWORLD")
@@ -605,6 +740,21 @@ function Timer()
 
 			flags.SetBool('MS_ReadyAUC', True,, 8);
 		}
+
+		if(flags.GetBool('Deactivate_Keypad'))
+		{
+			foreach AllActors(class'Keypad1', pad)
+			{
+				if(pad.Event == 'Self_Destruct')
+				{
+					pad.Event = '';
+					pad.validCode = ""; //=== an empty validCode variable results in an instant "ACCESS DENIED"
+					pad.bHackable = False;
+					pad.hackStrength = 1.0;
+					flags.SetBool('Deactivate_Keypad', False);
+				}
+			}
+		}
 	}
 	else if (localURL == "06_HONGKONG_WANCHAI_CANAL")
 	{
@@ -615,6 +765,18 @@ function Timer()
 				A.Trigger(Self, Player);
 
 			flags.SetBool('MS_DrugDealersAttacking', True,, 8);
+		}
+		if (!flags.GetBool('M06_SwordB_Placed'))
+		{
+			foreach AllActors(class'ScientistMaleCarcass', scicarc)
+			{
+				if(scicarc.InitialInventory[0].Inventory != None)
+				{
+					scicarc.FrobItems[0] = Class'WeaponPrototypeSwordB';
+					flags.SetBool('M06_SwordB_Placed', True,, 8);
+					break;
+				}
+			}
 		}
 	}
 }

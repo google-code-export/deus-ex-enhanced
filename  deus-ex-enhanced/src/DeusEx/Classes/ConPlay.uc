@@ -50,8 +50,11 @@ var Font ConversationNameFonts[2];
 // 3.  Jumps into the 'PlayEvent' state
 // ----------------------------------------------------------------------
 
+//== Modified so conversations can be started at certain points within the convo, if necessary -- Y|yukichigai
 function Bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvokeActor, optional bool bForcePlay)
 {
+	local string startLabel;
+
 	if ( Super.StartConversation(newPlayer, newInvokeActor, bForcePlay) == False )
 		return False;
 
@@ -113,6 +116,17 @@ function Bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvoke
 
 	// Grab the first event!
 	currentEvent = con.eventList;
+
+	startLabel = GetStartLabel();
+
+	if(startLabel != "")
+		currentEvent = con.GetEventFromLabel( startLabel );
+
+	if(currentEvent == None)
+	{
+		currentEvent = con.eventList;
+		log("ConPlay error, event "$ startLabel $" not found, defaulting to normal conversation start point");
+	}
 
 	// Create a ConHistory object
 	if (!bForcePlay)
@@ -430,7 +444,8 @@ function PlaySpeech( int soundID, Actor speaker )
 	{
 		// If this is an intro/endgame, force speech to play through
 		// the player so we can *hear* it.
-		if (bForcePlay)
+		// OR if the convo owner is the player, indicated by the player -> owner distance being 0 -- Y|yukichigai
+		if (bForcePlay || initialRadius == 0)
 		{
 			// Check how close the player is to this actor.  If the player is 
 			// close enough to the speaker, play through the speaker.
@@ -922,7 +937,11 @@ Begin:
 		PlaySpeech( ConEventSpeech(currentEvent).conSpeech.soundID, ConEventSpeech(currentEvent).Speaker ); 
 
 		// Add two seconds to the sound since there seems to be a slight lag
-		SetTimer( con.GetSpeechLength(ConEventSpeech(currentEvent).conSpeech.soundID), False );
+		//== And while we're at it, make sure the sound length will actually set the timer for conversations
+		if( con.GetSpeechLength(ConEventSpeech(currentEvent).conSpeech.soundID) > 0.0)
+			SetTimer( con.GetSpeechLength(ConEventSpeech(currentEvent).conSpeech.soundID), False );
+		else if( conWinThird == None ) //== OMG I CAN GET ON TEH BOTE!
+			SetTimer( FMax(lastSpeechTextLength * perCharDelay, minimumTextPause), False );
 	}
 
 	Goto('Idle');

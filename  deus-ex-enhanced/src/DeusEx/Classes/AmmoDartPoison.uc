@@ -5,6 +5,7 @@ class AmmoDartPoison extends AmmoDart;
 
 defaultproperties
 {
+     bIsNonStandard=False
      ItemName="Tranquilizer Darts"
      Icon=Texture'DeusExUI.Icons.BeltIconAmmoDartsPoison'
      largeIcon=Texture'DeusExUI.Icons.LargeIconAmmoDartsPoison'

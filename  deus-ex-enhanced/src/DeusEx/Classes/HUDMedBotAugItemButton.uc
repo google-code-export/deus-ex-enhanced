@@ -2,6 +2,8 @@
 // HUDMedBotAugItemButton
 //=============================================================================
 
+//Modified -- Y|yukichigai
+
 class HUDMedBotAugItemButton extends PersonaItemButton;
 
 var AugmentationCannister augCan;
@@ -19,10 +21,18 @@ var Color colIconNormal;
 
 event DrawWindow(GC gc)
 {
-	if ((bSlotFull) || (bHasIt))	
-		colIcon = colIconDisabled;
-	else
+	local Augmentation anAug;
+
+	anAug = GetAugmentation();
+	//Only renders the icon disabled if the slot is full, not if you already have it
+//	if ((bSlotFull)) // || (bHasIt))	
+//		colIcon = colIconDisabled;
+//	else
+
+	if(!bHasIt || anAug.CurrentLevel < anAug.MaxLevel)
 		colIcon = colIconNormal;
+	else
+		colIcon = colIconDisabled;
 
 	Super.DrawWindow(gc);
 

@@ -7,7 +7,9 @@ function ChargedPickupUpdate(DeusExPlayer Player)
 {
 	Super.ChargedPickupUpdate(Player);
 
-	Player.swimTimer = Player.swimDuration;
+	Player.swimTimer += 0.150000; //0.100000 + (0.100000 / player.SkillSystem.GetSkillLevelValue(class'SkillEnviro'); //= Player.swimDuration;
+	if(Player.swimTimer > Player.swimDuration)
+		Player.swimTimer = Player.swimDuration;
 }
 
 defaultproperties

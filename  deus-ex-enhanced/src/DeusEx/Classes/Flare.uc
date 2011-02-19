@@ -18,7 +18,12 @@ auto state Pickup
 	function ZoneChange(ZoneInfo NewZone)
 	{
 		if (NewZone.bWaterZone)
-			ExtinguishFlare();
+		{
+			//ExtinguishFlare();
+			//== Don't destroy the flare, just make it stop smoking
+			if(gen != None)
+				gen.DelayedDestroy();
+		}
 
 		Super.ZoneChange(NewZone);
 	}
@@ -26,10 +31,18 @@ auto state Pickup
 	function Frob(Actor Frobber, Inventory frobWith)
 	{
 		// we can't pick it up again if we've already activated it
-		if (gen == None)
+		if (gen == None && AmbientSound == None)
 			Super.Frob(Frobber, frobWith);
 		else if (Frobber.IsA('Pawn'))
-			Pawn(Frobber).ClientMessage(ExpireMessage);
+		{
+/*			if(Frobber.IsA('DeusExPlayer'))
+			{
+				SetBase(Frobber);
+				DeusExPlayer(Frobber).PutInHand(Self);
+			}
+			else */
+				Pawn(Frobber).ClientMessage(ExpireMessage);
+		}
 	}
 }
 
@@ -38,7 +51,12 @@ state Activated
 	function ZoneChange(ZoneInfo NewZone)
 	{
 		if (NewZone.bWaterZone)
-			ExtinguishFlare();
+		{
+			//ExtinguishFlare();
+			//== Don't destroy the flare, just make it stop smoking
+			if(gen != None)
+				gen.DelayedDestroy();
+		}
 
 		Super.ZoneChange(NewZone);
 	}
@@ -70,7 +88,7 @@ function LightFlare()
 
 	if (gen == None)
 	{	
-		LifeSpan = 30;
+		LifeSpan = 360; //30;
 		bUnlit = True;
 		LightType = LT_Steady;
 		AmbientSound = Sound'Flare';
@@ -95,16 +113,37 @@ function LightFlare()
 		{
 			gen.attachTag = Name;
 			gen.SetBase(Self);
-			gen.LifeSpan = 30;
+			gen.LifeSpan = 360;
 			gen.bRandomEject = True;
 			gen.ejectSpeed = 20;
 			gen.riseRate = 20;
 			gen.checkTime = 0.3;
 			gen.particleLifeSpan = 10;
-			gen.particleDrawScale = 0.5;
+			gen.particleDrawScale = 0.25; //0.5;
 			gen.particleTexture = Texture'Effects.Smoke.SmokePuff1';
 		}
+
+		if(Region.Zone.bWaterZone)
+			gen.DelayedDestroy();
 	}
+}
+
+function Tick(float deltaTime)
+{
+	local AirBubble airbub;
+
+	Super.Tick(deltaTime);
+
+	if(Region.Zone.bWaterZone && AmbientSound != None)
+	{
+		if((LifeSpan % 1.000000) + deltaTime > 1.000000)
+		{
+			airbub = Spawn(class'AirBubble', Self,, Location, rot(16384,0,0));
+			if(airbub != None)
+				airbub.EmitOnSurface = class'SmokeTrail';
+		}
+	}
+
 }
 
 defaultproperties
@@ -135,5 +174,5 @@ defaultproperties
      LightSaturation=96
      LightRadius=8
      Mass=2.000000
-     Buoyancy=1.000000
+     Buoyancy=1.300000
 }

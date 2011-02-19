@@ -5,6 +5,20 @@ class LightSwitch extends DeusExDecoration;
 
 var bool bOn;
 
+function bool Facelift(bool bLiftOn)
+{
+	if(!Super.Facelift(bLiftOn))
+		return false;
+
+	if(bLiftOn)
+		Skin = Texture(DynamicLoadObject("HDTPDecos.Skins.HDTPLightswitchTex1",class'Texture', True));
+
+	if(Skin == None || bLiftOn)
+		Skin = None;
+
+	return true;
+}
+
 function Frob(Actor Frobber, Inventory frobWith)
 {
 	Super.Frob(Frobber, frobWith);

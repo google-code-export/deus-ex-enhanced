@@ -1,13 +1,71 @@
 //=============================================================================
 // Cigarettes.
 //=============================================================================
-class Cigarettes extends DeusExPickup;
+class Cigarettes extends Consumable;
 
+enum ECigType
+{
+	SC_Default,
+	SC_BigTop
+};
+
+
+var ECigType Cig;
+
+function BeginPlay()
+{
+	Super.BeginPlay();
+
+	SetSkin();
+}
+
+function SetSkin()
+{
+	local Texture lSkin;
+	local string texstr;
+
+	switch (Cig)
+	{
+		case SC_Default:	 texstr = "HDTPitems.Skins.HDTPcigarettesTex1"; break;
+		case SC_BigTop:		 texstr = "HDTPitems.Skins.HDTPcigarettesTex2"; break;
+	}
+
+	lSkin = Texture(DynamicLoadObject(texstr,class'Texture', True));
+
+	if(lSkin != None)
+		Skin = lSkin;
+}
+
+function bool Facelift(bool bOn)
+{
+	local string texstr;
+
+	if(!Super.Facelift(bOn))
+		return false;
+
+	if(bOn)
+	{
+		switch (Cig)
+		{
+			case SC_Default:	 texstr = "HDTPitems.Skins.HDTPcigarettesTex1"; break;
+			case SC_BigTop:		 texstr = "HDTPitems.Skins.HDTPcigarettesTex2"; break;
+		}
+		Skin = Texture(DynamicLoadObject(texstr,class'Texture', True));
+	}
+
+	if(Skin == None || !bOn)
+		Skin = None;
+
+	return true;
+
+}
+
+//== We can't just use the parent Consumable class, since we gotta do some complex stuff
 state Activated
 {
 	function Activate()
 	{
-		// can't turn it off
+
 	}
 
 	function BeginState()
@@ -15,34 +73,40 @@ state Activated
 		local Pawn P;
 		local vector loc;
 		local rotator rot;
-		local SmokeTrail puff;
+		local CigSmoke puff; //SmokeTrail puff;
 		
-		Super.BeginState();
-
 		P = Pawn(Owner);
 		if (P != None)
 		{
-			P.TakeDamage(5, P, P.Location, vect(0,0,0), 'PoisonGas');
 			loc = Owner.Location;
 			rot = Owner.Rotation;
 			loc += 2.0 * Owner.CollisionRadius * vector(P.ViewRotation);
 			loc.Z += Owner.CollisionHeight * 0.9;
-			puff = Spawn(class'SmokeTrail', Owner,, loc, rot);
+			puff = Spawn(class'CigSmoke', Owner,, loc, rot);
 			if (puff != None)
 			{
 				puff.DrawScale = 1.0;
-				puff.origScale = puff.DrawScale;
+				if(Frand() >= 0.5)
+					puff.DamageType = 'TearGas';
 			}
 			PlaySound(sound'MaleCough');
+			if(DeusExPlayer(Owner) != None)
+			{
+				if(DeusExPlayer(Owner).drugEffectTimer >= 0.0)
+					DeusExPlayer(Owner).drugEffectTimer = 0.0;
+				else
+					DeusExPlayer(Owner).drugEffectTimer = -0.1;
+			}
 		}
 
-		UseOnce();
+		Super.BeginState();
 	}
 Begin:
 }
 
 defaultproperties
 {
+     healthEffect=-5
      maxCopies=20
      bCanHaveMultipleCopies=True
      bActivatable=True

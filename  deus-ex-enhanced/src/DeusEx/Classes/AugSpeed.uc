@@ -62,6 +62,7 @@ defaultproperties
      LevelValues(1)=1.400000
      LevelValues(2)=1.600000
      LevelValues(3)=1.800000
+     LevelValues(4)=2.000000
      AugmentationLocation=LOC_Leg
      MPConflictSlot=5
 }

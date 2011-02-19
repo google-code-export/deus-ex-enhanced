@@ -14,6 +14,7 @@ var() name conversationTag;
 var() string BindName;
 var() name checkFlag;
 var() bool bCheckFalse;
+var() bool bForcePlay;
 
 singular function Trigger(Actor Other, Pawn Instigator)
 {
@@ -44,10 +45,9 @@ singular function Trigger(Actor Other, Pawn Instigator)
 				conOwner = A;
 				break;
 			}
-			
 
 		if (bSuccess)
-			if (player.StartConversationByName(conversationTag, conOwner))
+			if (player.StartConversationByName(conversationTag, conOwner,,bForcePlay))
 				Super.Trigger(Other, Instigator);
 	}
 }
@@ -81,10 +81,10 @@ singular function Touch(Actor Other)
 				conOwner = A;
 				break;
 			}
-			
+
 
 		if (bSuccess)
-			if (player.StartConversationByName(conversationTag, conOwner))
+			if (player.StartConversationByName(conversationTag, conOwner,,bForcePlay))
 				Super.Touch(Other);
 	}
 }

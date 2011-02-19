@@ -19,6 +19,31 @@ var bool bConfused;				// used when hit by EMP
 var float confusionTimer;		// how long until unit resumes normal operation
 var float confusionDuration;	// how long does EMP hit last?
 
+function bool Facelift(bool bOn)
+{
+	if(!Super.Facelift(bOn))
+		return false;
+
+	if(bOn)
+		Mesh = mesh(DynamicLoadObject("HDTPDecos.HDTPalarmunit", class'mesh', True));
+
+	if(Mesh == None || !bOn)
+	{
+		MultiSkins[6] = None;
+		MultiSkins[7] = None;
+		Mesh = Default.Mesh;
+	}
+	else
+	{
+		MultiSkins[2] = Texture'DeusExItems.Skins.PinkMaskTex';
+		MultiSkins[7] = Texture(DynamicLoadObject("HDTPDecos.Skins.HDTPAlarmUnittex2",class'Texture'));
+		MultiSkins[6] = Texture(DynamicLoadObject("HDTPDecos.Skins.HDTPAlarmUnittex1",class'Texture'));
+		MultiSkins[1] = MultiSkins[6];
+	}
+
+	return true;
+}
+
 function UpdateAIEvents()
 {
 	if (bActive)
@@ -62,7 +87,13 @@ function HackAction(Actor Hacker, bool bHacked)
 			UnTrigger(Hacker, Pawn(Hacker));
 			bDisabled = True;
 			LightType = LT_None;
-			MultiSkins[1] = Texture'BlackMaskTex';
+			if(MultiSkins[7] != None)
+			{
+				MultiSkins[1] = MultiSkins[6];
+				MultiSkins[2] = Texture'PinkMaskTex';
+			}
+			else
+				MultiSkins[1] = Texture'BlackMaskTex';
 		}
 /*		else		// don't actually ever set off the alarm
 		{
@@ -88,15 +119,36 @@ function Tick(float deltaTime)
 
 		// randomly flash the light
 		if (FRand() > 0.95)
-			MultiSkins[1] = Texture'AlarmUnitTex2';
+		{
+			if(MultiSkins[7] != None)
+			{
+				MultiSkins[1] = MultiSkins[7];
+				MultiSkins[2] = MultiSkins[7];
+			}
+			else
+				MultiSkins[1] = Texture'AlarmUnitTex2';
+		}
 		else
-			MultiSkins[1] = Texture'PinkMaskTex';
+			if(MultiSkins[7] != None)
+			{
+				MultiSkins[1] = MultiSkins[6];
+				MultiSkins[2] = Texture'PinkMaskTex';
+			}
+			else
+				MultiSkins[1] = Texture'PinkMaskTex';
 
 		if (confusionTimer > confusionDuration)
 		{
 			bConfused = False;
 			confusionTimer = 0;
-			MultiSkins[1] = Texture'AlarmUnitTex2';
+			confusionDuration = Default.confusionDuration;
+			if(MultiSkins[7] != None)
+			{
+				MultiSkins[1] = MultiSkins[7];
+				MultiSkins[2] = MultiSkins[7];
+			}
+			else
+				MultiSkins[1] = Texture'AlarmUnitTex2';
 		}
 
 		return;
@@ -115,12 +167,24 @@ function Tick(float deltaTime)
 		if ((Level.TimeSeconds % 0.5) > 0.25)
 		{
 			LightType = LT_Steady;
-			MultiSkins[1] = Texture'AlarmUnitTex2';
+			if(MultiSkins[7] != None)
+			{
+				MultiSkins[1] = MultiSkins[7];
+				MultiSkins[2] = MultiSkins[7];
+			}
+			else
+				MultiSkins[1] = Texture'AlarmUnitTex2';
 		}
 		else
 		{
 			LightType = LT_None;
-			MultiSkins[1] = Texture'PinkMaskTex';
+			if(MultiSkins[7] != None)
+			{
+				MultiSkins[1] = MultiSkins[6];
+				MultiSkins[2] = Texture'PinkMaskTex';
+			}
+			else
+				MultiSkins[1] = Texture'PinkMaskTex';
 		}
 	}
 }
@@ -144,7 +208,13 @@ function Trigger(Actor Other, Pawn Instigator)
 		SoundVolume = 128;
 		curTime = 0;
 		LightType = LT_Steady;
-		MultiSkins[1] = Texture'AlarmUnitTex2';
+		if(MultiSkins[7] != None)
+		{
+			MultiSkins[1] = MultiSkins[7];
+			MultiSkins[2] = MultiSkins[7];
+		}
+		else
+			MultiSkins[1] = Texture'AlarmUnitTex2';
 		alarmInstigator = Instigator;
 /* taken out for now...
 		if (Instigator != None)
@@ -182,7 +252,13 @@ function UnTrigger(Actor Other, Pawn Instigator)
 		SoundVolume = 192;
 		curTime = 0;
 		LightType = LT_None;
-		MultiSkins[1] = Texture'PinkMaskTex';
+		if(MultiSkins[7] != None)
+		{
+			MultiSkins[1] = MultiSkins[6];
+			MultiSkins[2] = Texture'PinkMaskTex';
+		}
+		else
+			MultiSkins[1] = Texture'PinkMaskTex';
 		UpdateAIEvents();
 		UpdateGroup(Other, Instigator, false);
 
@@ -197,7 +273,9 @@ auto state Active
 	{
 		if (DamageType == 'EMP')
 		{
+			confusionDuration -= confusionTimer;
 			confusionTimer = 0;
+			confusionDuration += Damage/10.000000;
 			if (!bConfused)
 			{
 				curTime = alarmTimeout;

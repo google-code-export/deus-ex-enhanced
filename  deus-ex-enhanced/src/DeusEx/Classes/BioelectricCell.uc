@@ -86,7 +86,7 @@ function bool UpdateInfo(Object winObject)
 
 simulated function bool TestMPBeltSpot(int BeltSpot)
 {
-   return (BeltSpot == 0);
+   return (BeltSpot == 8);
 }
 
 // ----------------------------------------------------------------------

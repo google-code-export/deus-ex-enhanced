@@ -10,7 +10,8 @@ defaultproperties
      bImportant=True
      InitialInventory(0)=(Inventory=Class'DeusEx.WeaponSawedOffShotgun')
      InitialInventory(1)=(Inventory=Class'DeusEx.AmmoShell',Count=12)
-     InitialInventory(2)=(Inventory=Class'DeusEx.WeaponCombatKnife')
+     InitialInventory(2)=(Inventory=Class'DeusEx.WeaponShuriken')
+     InitialInventory(3)=(Inventory=Class'DeusEx.AmmoShuriken',Count=8)
      walkAnimMult=1.000000
      bIsFemale=True
      GroundSpeed=200.000000

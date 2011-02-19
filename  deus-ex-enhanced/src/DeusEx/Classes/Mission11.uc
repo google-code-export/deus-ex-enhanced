@@ -11,7 +11,21 @@ class Mission11 expands MissionScript;
 
 function FirstFrame()
 {
+	local Mechanic mech;
+
 	Super.FirstFrame();
+
+	if (localURL == "11_PARIS_EVERETT")
+	{
+		if (!flags.GetBool('Ray_Neutral') && !flags.GetBool('Ray_Dead'))
+		{
+			foreach AllActors(class'Mechanic', mech)
+			{
+				mech.bLikesNeutral = False;
+				flags.SetBool('Ray_Neutral', True);
+			}
+		}
+	}
 }
 
 // ----------------------------------------------------------------------
@@ -38,6 +52,11 @@ function Timer()
 	local BlackHelicopter chopper;
 	local AlexJacobson alex;
 	local WaltonSimons walton;
+	local Mechanic mech;
+	local MechanicCarcass mechcarc;
+	local Barrel1 barrel;
+	local Rotator rot;
+	local int i;
 
 	Super.Timer();
 
@@ -58,7 +77,7 @@ function Timer()
 			!flags.GetBool('MS_PlayerTeleported'))
 		{
 			flags.SetBool('MS_PlayerTeleported', True,, 12);
-			Level.Game.SendPlayer(Player, "11_PARIS_EVERETT");
+			Level.Game.SendPlayer(Player, "11_PARIS_EVERETT?Difficulty="$Player.combatDifficulty);
 		}
 	}
 	else if (localURL == "11_PARIS_EVERETT")
@@ -81,6 +100,28 @@ function Timer()
 				alex.EnterWorld();
 
 			flags.SetBool('MS_AlexUnhidden', True,, 12);
+		}
+
+		if(!flags.GetBool('Mechanic_Body_Moved') && !flags.GetBool('Ray_Dead'))
+		{
+			foreach AllActors(class'MechanicCarcass', mechcarc)
+			{
+				mechcarc.SetLocation(vect(964.80, 2535.09, 1083.10));
+				rot.Yaw = 16383;
+				mechcarc.SetRotation(rot);
+				flags.SetBool('Mechanic_Body_Moved',True);
+			}
+
+			//== After we've moved the body, let's give it some cover
+			barrel = Spawn(class'Barrel1',,, vect(924.90, 2482.466, 1103.00));
+			barrel.SkinColor = SC_FlammableLiquid;
+
+			barrel = Spawn(class'Barrel1',,, vect(885.90, 2482.466, 1103.00));
+			barrel.SkinColor = SC_FlammableLiquid;
+
+			barrel = Spawn(class'Barrel1',,, vect(970.38, 2462.466, 1103.00));
+			barrel.SkinColor = SC_FlammableLiquid;
+			
 		}
 
 		// set a flag

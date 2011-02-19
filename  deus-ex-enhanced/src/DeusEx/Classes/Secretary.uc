@@ -3,11 +3,18 @@
 //=============================================================================
 class Secretary extends HumanCivilian;
 
+function bool HasTwoHandedWeapon()
+{
+	return false;
+}
+
 defaultproperties
 {
      CarcassType=Class'DeusEx.SecretaryCarcass'
      WalkingSpeed=0.320000
      BaseAssHeight=-18.000000
+     InitialInventory(0)=(Inventory=Class'DeusEx.WeaponPepperGun')
+     InitialInventory(1)=(Inventory=Class'DeusEx.AmmoPepper',Count=100)
      walkAnimMult=0.650000
      bIsFemale=True
      GroundSpeed=120.000000

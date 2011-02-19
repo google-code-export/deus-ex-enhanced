@@ -10,6 +10,8 @@ var int				maxCopies;		// 0 means unlimited copies
 
 var localized String CountLabel;
 var localized String msgTooMany;
+var localized String SwitchingTo;
+var localized String OutOf;
 
 // ----------------------------------------------------------------------
 // Networking Replication
@@ -20,6 +22,35 @@ replication
    //client to server function
    reliable if ((Role < ROLE_Authority) && (bNetOwner))
       UseOnce;
+}
+
+// ----------------------------------------------------------------------
+// PreBeginPlay()
+// ----------------------------------------------------------------------
+simulated function PreBeginPlay()
+{
+	Super.PreBeginPlay();
+
+	if(Level.NetMode == NM_Standalone)
+		Facelift(true);
+}
+
+// ----------------------------------------------------------------------
+// Facelift()
+//  Applies the new HDTP textures and meshes if present, stays the same
+//  otherwise.  Also, the name of this function is made of win
+// ----------------------------------------------------------------------
+function bool Facelift(bool bOn)
+{
+	//== Only do this for DeusEx classes
+	if(instr(String(Class.Name), ".") > -1 && bOn)
+		if(instr(String(Class.Name), "DeusEx.") <= -1)
+			return false;
+	else
+		if((Class != Class(DynamicLoadObject("DeusEx."$ String(Class.Name), class'Class', True))) && bOn)
+			return false;
+
+	return true;
 }
 
 // ----------------------------------------------------------------------
@@ -58,6 +89,10 @@ function bool HandlePickupQuery( inventory Item )
 				// abort the pickup
 				return True;
 			}
+
+			DeusExPickup(Item).NumCopies--;
+			DeusExPickup(anItem).TransferSkin(Item); //== Handle multi-skin pickups
+			DeusExPickup(Item).NumCopies++;
 			bResult = True;
 		}
 
@@ -66,11 +101,11 @@ function bool HandlePickupQuery( inventory Item )
 			player.ClientMessage(Item.PickupMessage @ Item.itemArticle @ Item.itemName, 'Pickup');
 
 			// Destroy me!
-         // DEUS_EX AMSD In multiplayer, we don't want to destroy the item, we want it to set to respawn
-         if (Level.NetMode != NM_Standalone)
-            Item.SetRespawn();
-         else			
-            Item.Destroy();
+         		// DEUS_EX AMSD In multiplayer, we don't want to destroy the item, we want it to set to respawn
+         		if (Level.NetMode != NM_Standalone)
+         		   Item.SetRespawn();
+         		else			
+         		   Item.Destroy();
 		}
 		else
 		{
@@ -78,8 +113,10 @@ function bool HandlePickupQuery( inventory Item )
 		}
 
 		// Update object belt text
-		if (bResult)			
+		if (bResult)
+		{			
 			UpdateBeltText();	
+		}
 
 		return bResult;
 	}
@@ -236,6 +273,59 @@ function PlayLandingSound()
 	}
 }
 
+// ----------------------------------------------------------------------
+// SwitchItem()
+// Changes from lockpick to multitool and medkit to bioelectric cell
+// ----------------------------------------------------------------------
+function SwitchItem()
+{
+	local Inventory W;
+	local DeusExPlayer P;
+	local string Ws;
+
+	P = DeusExPlayer(Owner);
+	W = None;
+	Ws = "-1";
+
+	if(IsA('Multitool') && Level.NetMode == NM_Standalone)
+	{
+		W = P.FindInventoryType(Class'DeusEx.Lockpick');
+		Ws = (Class'Lockpick').Default.ItemName;
+	}
+	else if(IsA('Lockpick') && Level.NetMode == NM_Standalone)
+	{
+		W = P.FindInventoryType(Class'DeusEx.Multitool');
+		Ws = (Class'Multitool').Default.ItemName;
+	}
+	else if(IsA('Medkit'))
+	{
+		W = P.FindInventoryType(Class'DeusEx.BioelectricCell');
+		Ws = (Class'BioelectricCell').Default.ItemName;
+	}
+	else if(IsA('BioelectricCell'))
+	{
+		W = P.FindInventoryType(Class'DeusEx.Medkit');
+		Ws = (Class'Medkit').Default.ItemName;
+	}
+
+	if(W != None)
+	{
+		if(Ws != "-1")
+			P.ClientMessage(sprintf(SwitchingTo, Ws));
+		if(W.beltPos == -1)
+			P.AddObjectToBelt(W,Self.beltPos,false);
+		P.PutInHand(W);
+	}
+	else
+	{
+		P.ClientMessage(sprintf(OutOf, Ws));
+	}
+}
+
+function TransferSkin(Inventory inv)
+{
+
+}
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
@@ -245,6 +335,8 @@ defaultproperties
      FragType=Class'DeusEx.GlassFragment'
      CountLabel="COUNT:"
      msgTooMany="You can't carry any more of those"
+     SwitchingTo="Switching to %s"
+     OutOf="Out of %s"
      NumCopies=1
      PickupMessage="You found"
      ItemName="DEFAULT PICKUP NAME - REPORT THIS AS A BUG"

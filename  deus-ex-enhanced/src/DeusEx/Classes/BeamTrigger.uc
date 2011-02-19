@@ -105,6 +105,8 @@ function Trigger(Actor Other, Pawn Instigator)
 			bIsOn = True;
 			LastHitActor = None;
 			MultiSkins[1] = Texture'LaserSpot1';
+			if(Mesh != Default.Mesh)
+				Skin = Texture(DynamicLoadObject("HDTPDecos.Skin.HDTPlaserEmitterTex2", class'Texture', True));
 		}
 	}
 
@@ -125,6 +127,8 @@ function UnTrigger(Actor Other, Pawn Instigator)
 			bIsOn = False;
 			LastHitActor = None;
 			MultiSkins[1] = Texture'BlackMaskTex';
+			if(Mesh != Default.Mesh)
+				Skin = Texture(DynamicLoadObject("HDTPDecos.Skin.HDTPlaserEmitterTex0", class'Texture', True));
 		}
 	}
 
@@ -161,7 +165,7 @@ function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector
 			PlaySound(sound'EMPZap', SLOT_None,,, 1280);
 		}
 	}
-	else if ((DamageType == 'Exploded') || (DamageType == 'Shot'))
+	else if ((DamageType == 'Exploded') || (DamageType == 'Shot') || (DamageType == 'Shell'))
 	{
 		if (Damage >= minDamageThreshold)
 			HitPoints -= Damage;
@@ -191,6 +195,34 @@ function Destroyed()
 	}
 
 	Super.Destroyed();
+}
+
+function bool Facelift(bool bOn)
+{
+	//== Only do this for DeusEx classes
+	if(instr(String(Class.Name), ".") > -1 && bOn)
+		if(instr(String(Class.Name), "DeusEx.") <= -1)
+			return false;
+	else
+		if((Class != Class(DynamicLoadObject("DeusEx."$ String(Class.Name), class'Class', True))) && bOn)
+			return false;
+
+	if(bOn)
+		Mesh = mesh(DynamicLoadObject("HDTPDecos.HDTPlaseremitter", class'mesh', True));
+
+	if(Mesh == None || !bOn)
+	{
+		MultiSkins[2] = None;
+		Skin = None;
+		Mesh = Default.Mesh;
+	}
+	else
+	{
+		Skin = Texture(DynamicLoadObject("HDTPDecos.Skins.HDTPLaseremittertex0", class'Texture'));
+		MultiSkins[2] = FireTexture'Effects.Laser.LaserSpot1';
+	}
+
+	return true;
 }
 
 defaultproperties

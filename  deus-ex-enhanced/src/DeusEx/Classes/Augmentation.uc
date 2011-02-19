@@ -38,7 +38,7 @@ var() localized String MaximumLabel;
 // which player am I attached to?
 var DeusExPlayer Player;
 
-var() float LevelValues[4];
+var() float LevelValues[5];
 
 // does the player have it?
 var travel bool bHasIt;
@@ -176,10 +176,39 @@ function Deactivate()
 
 function bool IncLevel()
 {
+	local bool result;
+	local Inventory inv;
+	local AugmentationCannister augCan;
+
+	result = false;
+
 	if ( !CanBeUpgraded() )
 	{
-		Player.ClientMessage(Sprintf(AugAlreadyHave, AugmentationName));
-		return False;
+//		if(AugmentationCannister(player.FindInventoryType(Class'AugmentationCannister')).getAugmentation(0) == self)
+//		{}
+//		else if(AugmentationCannister(player.FindInventoryType(Class'AugmentationCannister')).getAugmentation(1) == self)
+//		{}
+//		else
+
+		for(inv = player.Inventory; inv != None; inv = inv.Inventory)
+		{
+			augCan = AugmentationCannister(inv);
+
+			if(augCan != None)
+			{
+				if(augCan.getAugmentation(0) == self || augCan.getAugmentation(1) == self)
+				{
+					result = true;
+					break;
+				}
+			}
+		}
+		//== Only prevent upgrade if we aren't cheating for it
+		if(result || CurrentLevel >= MaxLevel)
+		{
+			Player.ClientMessage(Sprintf(AugAlreadyHave, AugmentationName));
+			return False;
+		}
 	}
 
 	if (bIsActive)
@@ -188,6 +217,8 @@ function bool IncLevel()
 	CurrentLevel++;
 				
 	Player.ClientMessage(Sprintf(AugNowHave, AugmentationName, CurrentLevel + 1));
+
+	return false;
 }
 
 // ----------------------------------------------------------------------
@@ -202,7 +233,10 @@ simulated function bool CanBeUpgraded()
 {
 	local bool bCanUpgrade;
 	local Augmentation anAug;
-	local AugmentationUpgradeCannister augCan;
+	local AugmentationUpgradeCannister augUpCan;
+	local AugmentationUpgrade augUp; //grr, stupid badly-coded conversations
+	local AugmentationCannister augCan;
+	local Inventory inv;
 
 	bCanUpgrade = False;
 
@@ -212,10 +246,30 @@ simulated function bool CanBeUpgraded()
 	{
 		// Now check to see if the player has a cannister that can 
 		// be used to upgrade this Augmentation
-		augCan = AugmentationUpgradeCannister(player.FindInventoryType(Class'AugmentationUpgradeCannister'));
+		augUpCan = AugmentationUpgradeCannister(player.FindInventoryType(Class'AugmentationUpgradeCannister'));
+		augUp = AugmentationUpgrade(player.FindInventoryType(Class'AugmentationUpgrade'));
 
-		if (augCan != None)
+		if(augUp != None)
 			bCanUpgrade = True;
+		else if(augUpCan != None)
+			bCanUpgrade = True;
+		// Also check for normal aug canisters in case we're at a medbot
+		else //if (bUsingMedbot)
+		{
+			for(inv = player.Inventory; inv != None; inv = inv.Inventory)
+			{
+				augCan = AugmentationCannister(inv);
+	
+				if (augCan != None)
+				{
+					if(augCan.getAugmentation(0) == self || augCan.getAugmentation(1) == self)
+					{
+						bCanUpgrade = True;
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	return bCanUpgrade;
@@ -254,6 +308,48 @@ simulated function bool UpdateInfo(Object winObject)
 	else
 	{
 		winInfo.SetText(Description);
+	}
+
+	// Energy Rate
+	winInfo.AppendText(winInfo.CR() $ winInfo.CR() $ Sprintf(EnergyRateLabel, Int(EnergyRate)));
+
+	// Current Level
+	strOut = Sprintf(CurrentLevelLabel, CurrentLevel + 1);
+	
+	// Can Upgrade / Is Active labels
+	if (CanBeUpgraded())
+		strOut = strOut @ CanUpgradeLabel;
+	else if (CurrentLevel == MaxLevel )
+		strOut = strOut @ MaximumLabel;
+
+	winInfo.AppendText(winInfo.CR() $ winInfo.CR() $ strOut);
+
+	// Always Active?
+	if (bAlwaysActive)
+		winInfo.AppendText(winInfo.CR() $ winInfo.CR() $ AlwaysActiveLabel);
+
+	return True;
+}
+
+simulated function bool AppendInfo(Object winObject)
+{
+	local PersonaInfoWindow winInfo;
+	local String strOut;
+
+	winInfo = PersonaInfoWindow(winObject);
+	if (winInfo == None)
+		return False;
+
+	winInfo.AppendText(winInfo.CR() $ winInfo.CR());
+
+	if (bUsingMedbot)
+	{
+		winInfo.AppendText(Sprintf(OccupiesSlotLabel, AugLocsText[AugmentationLocation]));
+		winInfo.AppendText(winInfo.CR() $ winInfo.CR() $ Description);
+	}
+	else
+	{
+		winInfo.AppendText(Description);
 	}
 
 	// Energy Rate

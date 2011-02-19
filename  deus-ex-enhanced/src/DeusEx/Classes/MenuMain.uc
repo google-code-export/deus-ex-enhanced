@@ -78,7 +78,8 @@ function ShowVersionInfo()
 	version.SetWindowAlignments(HALIGN_Right, VALIGN_Bottom);
 	version.SetTextColorRGB(255, 255, 255);
 	version.SetTextAlignments(HALIGN_Right, VALIGN_Bottom);
-	version.SetText(player.GetDeusExVersion());
+//	version.SetText(player.GetDeusExVersion());
+	version.SetText("Shifter v1.8.4 (02/26/10)");
 }
 
 // ----------------------------------------------------------------------

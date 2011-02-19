@@ -15,10 +15,10 @@ struct S_KeyDisplayItem
 	var localized String DisplayName;
 };
 
-var localized string	FunctionText[61];
-var string				MenuValues1[61];
-var string				MenuValues2[61];
-var string				AliasNames[61];
+var localized string	FunctionText[63];
+var string				MenuValues1[63];
+var string				MenuValues2[63];
+var string				AliasNames[63];
 var string				PendingCommands[100];
 var localized S_KeyDisplayItem    keyDisplayNames[71];
 var localized string			  NoneText;
@@ -563,8 +563,8 @@ defaultproperties
 {
      FunctionText(0)="Fire Weapon/Use object in hand"
      FunctionText(1)="Use object in world"
-     FunctionText(2)="Drop/Throw Item"
-     FunctionText(3)="Put Away Item"
+     FunctionText(2)="Alternate Fire Mode"
+     FunctionText(3)="Drop/Throw Item"
      FunctionText(4)="Move Forward"
      FunctionText(5)="Move Backward"
      FunctionText(6)="Turn Left"
@@ -589,7 +589,7 @@ defaultproperties
      FunctionText(25)="Toggle Laser Sight"
      FunctionText(26)="Activate All Augmentations"
      FunctionText(27)="Deactivate All Augmentations"
-     FunctionText(28)="Change Ammo"
+     FunctionText(28)="Change Ammo/Mode"
      FunctionText(29)="Take Screenshot"
      FunctionText(30)="Activate Inventory Screen"
      FunctionText(31)="Activate Health Screen"
@@ -622,10 +622,12 @@ defaultproperties
      FunctionText(58)="Send Message To All"
      FunctionText(59)="Activate Multiplayer Skill Menu"
      FunctionText(60)="Show Multiplayer Kill Details"
+     FunctionText(61)="Put Away Item"
+     FunctionText(62)="Alternate Fire Mode"
      AliasNames(0)="ParseLeftClick|Fire"
      AliasNames(1)="ParseRightClick"
-     AliasNames(2)="DropItem"
-     AliasNames(3)="PutInHand"
+     AliasNames(2)="AltFire"
+     AliasNames(3)="DropItem"
      AliasNames(4)="MoveForward"
      AliasNames(5)="MoveBackward"
      AliasNames(6)="TurnLeft"
@@ -683,6 +685,8 @@ defaultproperties
      AliasNames(58)="Talk"
      AliasNames(59)="BuySkills"
      AliasNames(60)="KillerProfile"
+     AliasNames(61)="PutInHand"
+     AliasNames(62)="AltFire"
      keyDisplayNames(0)=(inputKey=IK_LeftMouse,displayName="Left Mouse Button")
      keyDisplayNames(1)=(inputKey=IK_RightMouse,displayName="Right Mouse Button")
      keyDisplayNames(2)=(inputKey=IK_MiddleMouse,displayName="Middle Mouse Button")

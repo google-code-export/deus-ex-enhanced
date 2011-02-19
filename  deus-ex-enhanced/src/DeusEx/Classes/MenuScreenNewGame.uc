@@ -85,7 +85,16 @@ event DestroyWindow()
 
 function CreateControls()
 {
+	local int buttonIndex;
+
 	Super.CreateControls();
+
+	// Enable Right-click for our action buttons so we can right-click to skip the intro
+	for(buttonIndex=0; buttonIndex<arrayCount(actionButtons); buttonIndex++)
+	{
+		if(actionButtons[buttonIndex].btn != None)
+			actionButtons[buttonIndex].btn.EnableRightMouseClick();
+	}
 
 	CreatePortraitButton();
 	CreateLeftArrowButton();
@@ -353,6 +362,15 @@ function bool ButtonActivated( Window buttonPressed )
 	return bHandled;
 }
 
+//-----------------------------------------------------------------------
+// 
+//-----------------------------------------------------------------------
+
+//function bool ButtonActivatedRight( Window buttonPressed )
+//{
+//	if(buttonPressed == 
+//}
+
 // ----------------------------------------------------------------------
 // ListRowActivated()
 // ----------------------------------------------------------------------
@@ -616,7 +634,7 @@ function ProcessAction(String actionKey)
 	localPlayer   = player;
 //	localStartMap = strStartMap;
 
-	if (actionKey == "START")
+	if (actionKey == "START" || actionKey == "STARTNOW")
 	{
 		// Make sure the name isn't blank
 		playerName = TrimSpaceS(editName.GetText());
@@ -629,11 +647,10 @@ function ProcessAction(String actionKey)
 		{
 			SaveSettings();
 
-			// DEUS_EX_DEMO
-			//
-			// Don't show the intro for the demo since that map is not available
-			localPlayer.ShowIntro(True);
-//			localPlayer.StartNewGame(localPlayer.strStartMap);
+			if(actionKey != "STARTNOW")
+				localPlayer.ShowIntro(True);
+			else
+				localPlayer.StartNewGame(localPlayer.strStartMap);
 		}
 	}
 }

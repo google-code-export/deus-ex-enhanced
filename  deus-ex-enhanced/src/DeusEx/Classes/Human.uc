@@ -8,6 +8,8 @@ var float mpGroundSpeed;
 var float mpWaterSpeed;
 var float humanAnimRate;
 
+var(Sounds) sound HitSound3; //So we can completely override any hit noises without overriding functions
+
 replication 
 {
 	reliable if (( Role == ROLE_Authority ) && bNetOwner )
@@ -37,7 +39,10 @@ function PlayTurning()
 {
 //	ClientMessage("PlayTurning()");
 	if (bForceDuck || bCrouchOn || IsLeaning())
-		TweenAnim('CrouchWalk', 0.1);
+	{
+		if(Mesh == LodMesh'DeusExCharacters.GM_Trench')
+			TweenAnim('CrouchWalk', 0.1);
+	}
 	else
 	{
 		if (HasTwoHandedWeapon())
@@ -51,7 +56,10 @@ function TweenToWalking(float tweentime)
 {
 //	ClientMessage("TweenToWalking()");
 	if (bForceDuck || bCrouchOn)
-		TweenAnim('CrouchWalk', tweentime);
+	{
+		if(Mesh == LodMesh'DeusExCharacters.GM_Trench')
+			TweenAnim('CrouchWalk', tweentime);
+	}
 	else
 	{
 		if (HasTwoHandedWeapon())
@@ -73,7 +81,10 @@ function PlayWalking()
 
 	//	ClientMessage("PlayWalking()");
 	if (bForceDuck || bCrouchOn)
-		LoopAnim('CrouchWalk', newhumanAnimRate);
+	{
+		if(Mesh == LodMesh'DeusExCharacters.GM_Trench')
+			LoopAnim('CrouchWalk', newhumanAnimRate);
+	}
 	else
 	{
 		if (HasTwoHandedWeapon())
@@ -162,7 +173,10 @@ function TweenToWaiting(float tweentime)
 			LoopAnim('Tread');
 	}
 	else if (IsLeaning() || bForceDuck)
-		TweenAnim('CrouchWalk', tweentime);
+	{
+		if(Mesh == LodMesh'DeusExCharacters.GM_Trench')
+			TweenAnim('CrouchWalk', tweentime);
+	}
 	else if (((AnimSequence == 'Pickup') && bAnimFinished) || ((AnimSequence != 'Pickup') && !IsFiring()))
 	{
 		if (HasTwoHandedWeapon())
@@ -183,7 +197,10 @@ function PlayWaiting()
 			LoopAnim('Tread');
 	}
 	else if (IsLeaning() || bForceDuck)
-		TweenAnim('CrouchWalk', 0.1);
+	{
+		if(Mesh == LodMesh'DeusExCharacters.GM_Trench')
+			TweenAnim('CrouchWalk', 0.1);
+	}
 	else if (!IsFiring())
 	{
 		if (HasTwoHandedWeapon())
@@ -231,7 +248,7 @@ function PlayDuck()
 		else
 			PlayAnim('Crouch',,0.1);
 	}
-	else
+	else if(Mesh == LodMesh'DeusExCharacters.GM_Trench')
 		TweenAnim('CrouchWalk', 0.1);
 }
 
@@ -246,7 +263,7 @@ function PlayCrawling()
 //	ClientMessage("PlayCrawling()");
 	if (IsFiring())
 		LoopAnim('CrouchShoot');
-	else
+	else if(Mesh == LodMesh'DeusExCharacters.GM_Trench')
 		LoopAnim('CrouchWalk');
 }
 
@@ -328,9 +345,19 @@ function Gasp()
 function PlayDyingSound()
 {
 	if (Region.Zone.bWaterZone)
-		PlaySound(sound'MaleWaterDeath', SLOT_Pain,,,, RandomPitch());
+	{
+		if(bIsFemale)
+			PlaySound(sound'FemaleWaterDeath', SLOT_Pain,,,, RandomPitch());
+		else
+			PlaySound(sound'MaleWaterDeath', SLOT_Pain,,,, RandomPitch());
+	}
 	else
-		PlaySound(sound'MaleDeath', SLOT_Pain,,,, RandomPitch());
+	{
+		if(bIsFemale)
+			PlaySound(sound'FemaleDeath', SLOT_Pain,,,, RandomPitch());
+		else
+			PlaySound(sound'MaleDeath', SLOT_Pain,,,, RandomPitch());
+	}
 }
 
 function PlayTakeHitSound(int Damage, name damageType, int Mult)
@@ -347,32 +374,75 @@ function PlayTakeHitSound(int Damage, name damageType, int Mult)
 		if (damageType == 'Drowned')
 		{
 			if (FRand() < 0.8)
-				PlaySound(sound'MaleDrown', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+			{
+				if(bIsFemale)
+					PlaySound(sound'FemaleDrown', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+				else
+					PlaySound(sound'MaleDrown', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+			}
 		}
 		else
-			PlaySound(sound'MalePainSmall', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+		{
+			if(HitSound1 != None)
+				PlaySound(HitSound1, SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+			else if(bIsFemale)
+				PlaySound(sound'FemalePainSmall', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+			else
+				PlaySound(sound'MalePainSmall', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+		}
 	}
 	else
 	{
 		// Body hit sound for multiplayer only
-		if (((damageType=='Shot') || (damageType=='AutoShot'))  && ( Level.NetMode != NM_Standalone ))
+		if (((damageType=='Shot') || (damageType=='AutoShot') || (damageType=='Shell'))  && ( Level.NetMode != NM_Standalone ))
 		{
 			PlaySound(sound'BodyHit', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
 		}
 
 		if ((damageType == 'TearGas') || (damageType == 'HalonGas'))
-			PlaySound(sound'MaleEyePain', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+		{
+//			if(bIsFemale)
+//				PlaySound(sound'FemaleEyePain', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+//			else
+				PlaySound(sound'MaleEyePain', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+		}
 		else if (damageType == 'PoisonGas')
-			PlaySound(sound'MaleCough', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+		{
+//			if(bIsFemale)
+//				PlaySound(sound'FemaleCough', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+//			else
+				PlaySound(sound'MaleCough', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+		}
 		else
 		{
 			rnd = FRand();
 			if (rnd < 0.33)
-				PlaySound(sound'MalePainSmall', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+			{
+				if(HitSound1 != None)
+					PlaySound(HitSound1, SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+				else if(bIsFemale)
+					PlaySound(sound'FemalePainSmall', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+				else
+					PlaySound(sound'MalePainSmall', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+			}
 			else if (rnd < 0.66)
-				PlaySound(sound'MalePainMedium', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+			{
+				if(HitSound3 != None)
+					PlaySound(HitSound3, SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+				else if(bIsFemale)
+					PlaySound(sound'FemalePainMedium', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+				else
+					PlaySound(sound'MalePainMedium', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+			}
 			else
-				PlaySound(sound'MalePainLarge', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+			{
+				if(HitSound2 != None)
+					PlaySound(HitSound2, SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+				else if(bIsFemale)
+					PlaySound(sound'FemalePainLarge', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+				else
+					PlaySound(sound'MalePainLarge', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
+			}
 		}
 		AISendEvent('LoudNoise', EAITYPE_Audio, FMax(Mult * TransientSoundVolume, Mult * 2.0));
 	}

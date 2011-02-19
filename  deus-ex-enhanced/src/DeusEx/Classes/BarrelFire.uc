@@ -5,6 +5,20 @@ class BarrelFire extends Containers;
 
 var float lastDamageTime;
 
+function bool Facelift(bool bOn)
+{
+	if(!Super.Facelift(bOn))
+		return false;
+
+	if(bOn)
+		Mesh = mesh(DynamicLoadObject("HDTPDecos.HDTPBarrelFire", class'mesh', True));
+
+	if(Mesh == None || !bOn)
+		Mesh = Default.Mesh;
+
+	return true;
+}
+
 function DamageOther(Actor Other)
 {
 	if ((Other != None) && !Other.IsA('ScriptedPawn'))

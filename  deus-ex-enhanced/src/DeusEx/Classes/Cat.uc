@@ -4,6 +4,7 @@
 class Cat extends Animal;
 
 var float time;
+var name LastStateName;
 
 function bool ShouldBeStartled(Pawn startler)
 {
@@ -17,7 +18,7 @@ function bool ShouldBeStartled(Pawn startler)
 	if (startler != None)
 	{
 		speed = VSize(startler.Velocity);
-		if (speed >= 20)
+		if (speed >= 20 && (startler.CollisionRadius * startler.CollisionHeight) > (CollisionRadius * CollisionHeight * 1.5))
 		{
 			dist = VSize(Location - startler.Location);
 			time = dist/speed;
@@ -33,10 +34,24 @@ function bool ShouldBeStartled(Pawn startler)
 	return bPh33r;
 }
 
+//== Kitties eat birds and rats, y'know
+function bool IsValidFood(Actor foodActor)
+{
+	if(foodActor.IsA('RatCarcass') || foodActor.IsA('SeagullCarcass') || foodActor.IsA('PigeonCarcass'))
+	{
+		return Super.IsValidFood(foodActor);
+	}
+	return False;
+}
 
 function Tick(float deltaTime)
 {
 	Super.Tick(deltaTime);
+
+	if(LastStateName != GetStateName())
+	{
+		LastStateName = GetStateName();
+	}
 
 	time += deltaTime;
 
@@ -49,23 +64,112 @@ function Tick(float deltaTime)
 	}
 }
 
+// ----------------------------------------------------------------------
+// CheckEnemyParams()  [internal use only]
+// ----------------------------------------------------------------------
+
+function CheckEnemyParams(Pawn checkPawn,
+                          out Pawn bestPawn, out int bestThreatLevel, out float bestDist)
+{
+	local int threatLevel;
+
+	if((!checkPawn.IsA('Animal') || checkPawn.IsA('Cat')) && CheckPawnAllianceType(checkPawn) != ALLIANCE_Hostile) //== Only go after the truly hostile
+		return;
+
+	if(checkPawn == Self) //Really now...
+		return;
+
+	if(checkPawn.Physics == PHYS_Flying && checkPawn != Enemy) //== Only track flying things if we're already watching them
+		return;
+
+	Super.CheckEnemyParams(checkPawn, bestPawn, bestThreatLevel, bestDist);
+
+	if(checkPawn.CollisionHeight * checkPawn.CollisionRadius <= CollisionHeight * CollisionRadius)
+		threatLevel = 4;
+
+	if(checkPawn.Physics == PHYS_Flying)
+	{
+		if(VSize(checkPawn.Location - Location) > 128 && checkPawn.Location.Z - Location.Z >= 16) //Flying things which are too far away get ignored
+			threatLevel = -1;
+		else
+			threatLevel /= 2;
+	}
+
+	if(threatLevel > bestThreatLevel)
+	{
+		bestPawn = checkPawn;
+		bestThreatLevel = threatLevel;
+		bestDist = VSize(checkPawn.Location - Location);
+	}
+}
+
 state Attacking
 {
 	function Tick(float deltaSeconds)
 	{
 		Super.Tick(deltaSeconds);
 		if (Enemy != None)
-			GotoState('Fleeing');
+		{
+			if(Enemy.CollisionRadius * Enemy.CollisionHeight > CollisionRadius * CollisionHeight * 1.2 && Weapon.IsA('WeaponCatScratch'))
+				GotoState('Fleeing');
+		}
 	}
+}
+
+state Alerting
+{
+ignores all;
+begin:
+	GoToState('Wandering');
+}
+
+function PlayTakingHit(EHitLocation hitPos)
+{
+	// nil
+}
+
+function PlayAttack()
+{
+	// nil
+}
+
+function TweenToAttack(float tweentime)
+{
+	// nil
+}
+
+function PlayEatingSound()
+{
+	PlaySound(sound'CatPurr', SLOT_None,,, 128);
+}
+
+function PlayStartEating()
+{
+	AmbientSound = Sound'DeusExSounds.Animal.CatPurr';
+}
+
+function PlayEating()
+{
+	LoopAnim('BreatheLight');
+}
+
+function PlayStopEating()
+{
+	AmbientSound = None;
 }
 
 defaultproperties
 {
      bPlayDying=True
+     FoodClass=Class'DeusEx.DeusExCarcass'
      bFleeBigPawns=True
      MinHealth=0.000000
      CarcassType=Class'DeusEx.CatCarcass'
      WalkingSpeed=0.111111
+     InitialAlliances(0)=(AllianceName=Rat,AllianceLevel=-1.000000,bPermanent=True)
+     InitialAlliances(1)=(AllianceName=Seagull,AllianceLevel=-1.000000,bPermanent=True)
+     InitialAlliances(2)=(AllianceName=Pigeon,AllianceLevel=-1.000000,bPermanent=True)
+     InitialAlliances(3)=(AllianceName=Fly,AllianceLevel=1.000000,bPermanent=True)
      InitialInventory(0)=(Inventory=Class'DeusEx.WeaponCatScratch')
      GroundSpeed=180.000000
      WaterSpeed=50.000000

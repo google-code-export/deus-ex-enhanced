@@ -32,6 +32,7 @@ function FirstFrame()
 	}
 }
 
+
 // ----------------------------------------------------------------------
 // PreTravel()
 // 
@@ -40,7 +41,103 @@ function FirstFrame()
 
 function PreTravel()
 {
+	local Inventory item;
+	local int c;
+	local name tname;
+
 	Super.PreTravel();
+
+	if(localURL == "01_NYC_UNATCOHQ")
+	{
+		if(!flags.GetBool('M01_AmmoDragon_Placed'))
+		{
+			if(spawn(class'AmmoDragon', None,, vect(836.209473, -1053.622070, -4.00)) != None)
+				flags.SetBool('M01_AmmoDragon_Placed',True);
+		}
+
+		c = 0;
+		foreach AllActors(class'Inventory', item)
+		{
+			//== Introducing JC's storage locker, AKA his office
+			if(item.Location.X <= 104.0000 && item.Location.X >= -432.0000 && item.Location.Y <= 1424.0000 && item.Location.Y >= 1018.0000 && item.Location.Z >= 232.0000 && item.Location.Z <= 400.0000 && !item.IsA('NanoKeyRing') && ScriptedPawn(item.Owner) == None && DeusExPlayer(item.Owner) == None)
+			{
+				tname = DeusExRootWindow(Player.rootWindow).StringToName("M01_JC_Item_"$ c);
+
+				//== For whatever reason, we have to set the flag like this
+				Player.flagBase.SetName(tname, item.Class.Name);
+				Player.flagBase.SetExpiration(tname, FLAG_Name, 4);
+
+				//== Check for heavy weapons left on the ground for snarky email purposes
+				if(item.invSlotsX * item.invSlotsY > 4 && item.Location.Z <= 270.000000 && item.Base == Level)
+					Player.flagBase.SetBool('M01_JC_LeftHeavyItemOnFloor', True,, 6);
+
+				if(item.IsA('DeusExWeapon'))
+				{
+					tname = DeusExRootWindow(Player.rootWindow).StringToName("M01_JC_Item_"$ c $"_bHasLaser");
+					Player.flagBase.SetBool(tname, True,, 4);
+					if(!DeusExWeapon(item).bCanHaveLaser)
+						Player.flagBase.DeleteFlag(tname, FLAG_Bool);
+
+					tname = DeusExRootWindow(Player.rootWindow).StringToName("M01_JC_Item_"$ c $"_bHasSilencer");
+					Player.flagBase.SetBool(tname, True,, 4);
+					if(!DeusExWeapon(item).bCanHaveSilencer)
+						Player.flagBase.DeleteFlag(tname, FLAG_Bool);
+
+					tname = DeusExRootWindow(Player.rootWindow).StringToName("M01_JC_Item_"$ c $"_bHasScope");
+					Player.flagBase.SetBool(tname, True,, 4);
+					if(!DeusExWeapon(item).bCanHaveScope)
+						Player.flagBase.DeleteFlag(tname, FLAG_Bool);
+
+					tname = DeusExRootWindow(Player.rootWindow).StringToName("M01_JC_Item_"$ c $"_ModBaseAccuracy");
+					Player.flagBase.SetFloat(tname, DeusExWeapon(item).ModBaseAccuracy,, 4);
+					if(!DeusExWeapon(item).bCanHaveModBaseAccuracy)
+						Player.flagBase.DeleteFlag(tname, FLAG_Float);
+
+					tname = DeusExRootWindow(Player.rootWindow).StringToName("M01_JC_Item_"$ c $"_ModReloadCount");
+					Player.flagBase.SetFloat(tname, DeusExWeapon(item).ModReloadCount,, 4);
+					if(!DeusExWeapon(item).bCanHaveModReloadCount)
+						Player.flagBase.DeleteFlag(tname, FLAG_Float);
+
+					tname = DeusExRootWindow(Player.rootWindow).StringToName("M01_JC_Item_"$ c $"_ModAccurateRange");
+					Player.flagBase.SetFloat(tname, DeusExWeapon(item).ModAccurateRange,, 4);
+					if(!DeusExWeapon(item).bCanHaveModAccurateRange)
+						Player.flagBase.DeleteFlag(tname, FLAG_Float);
+
+					tname = DeusExRootWindow(Player.rootWindow).StringToName("M01_JC_Item_"$ c $"_ModReloadTime");
+					Player.flagBase.SetFloat(tname, DeusExWeapon(item).ModReloadTime,, 4);
+					if(!DeusExWeapon(item).bCanHaveModReloadTime)
+						Player.flagBase.DeleteFlag(tname, FLAG_Float);
+
+					tname = DeusExRootWindow(Player.rootWindow).StringToName("M01_JC_Item_"$ c $"_ModRecoilStrength");
+					Player.flagBase.SetFloat(tname, DeusExWeapon(item).ModRecoilStrength,, 4);
+					if(!DeusExWeapon(item).bCanHaveModRecoilStrength)
+						Player.flagBase.DeleteFlag(tname, FLAG_Float);
+
+					tname = DeusExRootWindow(Player.rootWindow).StringToName("M01_JC_Item_"$ c $"_ModShotTime");
+					Player.flagBase.SetFloat(tname, DeusExWeapon(item).ModShotTime,, 4);
+					if(!DeusExWeapon(item).bCanHaveModShotTime)
+						Player.flagBase.DeleteFlag(tname, FLAG_Float);
+
+				}
+				else if(item.IsA('AugmentationCannister'))
+				{
+					tname = DeusExRootWindow(Player.rootWindow).StringToName("M01_JC_Item_"$ c $"_Aug1");
+					Player.flagBase.SetName(tname, AugmentationCannister(item).AddAugs[0]);
+					Player.flagBase.SetExpiration(tname, FLAG_Name, 4);
+
+					tname = DeusExRootWindow(Player.rootWindow).StringToName("M01_JC_Item_"$ c $"_Aug2");
+					Player.flagBase.SetName(tname, AugmentationCannister(item).AddAugs[1]);
+					Player.flagBase.SetExpiration(tname, FLAG_Name, 4);
+				}
+
+				c++;
+			}
+			//== Make a deliniating endpoint, in case someone comes back and takes/adds stuff
+			tname = DeusExRootWindow(Player.rootWindow).StringToName("M01_JC_Item_"$ c);
+			Player.flagBase.SetName(tname, '');
+			Player.flagBase.SetExpiration(tname, FLAG_Name, 4);
+		}
+	}
 }
 
 // ----------------------------------------------------------------------
@@ -62,6 +159,7 @@ function Timer()
 	local SecurityCamera cam;
 	local int count;
 	local Inventory item, nextItem;
+	local GuntherHermann gunther;
 
 	Super.Timer();
 
@@ -80,7 +178,7 @@ function Timer()
 			// there are 28 terrorists total on the island
 			foreach AllActors(class'TerroristCarcass', carc)
 			{
-				if ((carc.KillerBindName == "JCDenton") && (carc.itemName == "Unconscious"))
+				if ((carc.KillerBindName == "JCDenton") && (carc.bNotDead || carc.itemName == "Unconscious"))
 					count++;
 				else if (carc.KillerBindName != "JCDenton")
 					count++;
@@ -89,6 +187,29 @@ function Timer()
 			// if the player killed more than 5, set the flag
 			if (count < 23)
 				flags.SetBool('M01PlayerAggressive', True,, 6);		// don't expire until mission 6
+		}
+
+		if(flags.GetBool('GuntherRescued_Played'))
+		{
+			//== Gunther should always be equippable after we rescue him
+			if(!flags.GetBool('M01_GuntherEquippable'))
+			{
+				foreach AllActors(class'GuntherHermann', gunther)
+				{
+					gunther.bCanGiveWeapon = True;
+					flags.SetBool('M01_GuntherEquippable',True,,2);
+				}
+			}
+
+			if(flags.GetBool('GuntherHermann_Equipped') && !flags.GetBool('GuntherRespectsPlayer') && !flags.GetBool('M01_GuntherGiveConvoReduxPlayed'))
+			{
+				//== Once we've given Gunther a gun (and if he hates us) play the "thanks" part of the rescue convo
+				foreach AllActors(class'GuntherHermann', gunther)
+				{
+					if(Player.StartConversationByName('GuntherRescued', gunther, False, False, "GiveSpeech"))
+						flags.SetBool('M01_GuntherGiveConvoReduxPlayed',True,,2);
+				}
+			}
 		}
 
 		// check for the leader being killed
@@ -211,6 +332,10 @@ function Timer()
 				flags.SetBool('MS_ReadyForBriefing', True,, 2);
 			}
 		}
+
+		//== If we come back to the map, we might take more stuff, so let's clear out the relevant "heavy" flag
+		if(flags.GetBool('M01_JC_LeftHeavyItemOnFloor'))
+			flags.SetBool('M01_JC_LeftHeavyItemOnFloor', False);
 	}
 }
 

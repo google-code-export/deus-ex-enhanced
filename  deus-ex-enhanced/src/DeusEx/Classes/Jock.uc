@@ -10,6 +10,8 @@ defaultproperties
      bImportant=True
      bInvincible=True
      BaseAssHeight=-23.000000
+     InitialInventory(0)=(Inventory=Class'DeusEx.WeaponBoomstick')
+     InitialInventory(1)=(Inventory=Class'DeusEx.AmmoShell',Count=12)
      walkAnimMult=1.050000
      GroundSpeed=200.000000
      Mesh=LodMesh'DeusExCharacters.GM_Trench'

@@ -1,66 +1,12 @@
 //=============================================================================
 // WeaponEMPGrenade.
 //=============================================================================
-class WeaponEMPGrenade extends DeusExWeapon;
+class WeaponEMPGrenade extends WeaponGrenade;
 
-simulated function PreBeginPlay()
-{
-	Super.PreBeginPlay();
-
-	// If this is a netgame, then override defaults
-	if ( Level.NetMode != NM_StandAlone )
-	{
-		HitDamage = mpHitDamage;
-		BaseAccuracy = mpBaseAccuracy;
-		ReloadTime = mpReloadTime;
-		AccurateRange = mpAccurateRange;
-		MaxRange = mpMaxRange;
-	}
-}
-
-function PostBeginPlay()
-{
-   Super.PostBeginPlay();
-   bWeaponStay=False;
-}
-
+//== Minty's Mod needs this to work, because specified super(WeaponEMPGrenade).  DON'T DO THAT.
 function Fire(float Value)
 {
-	// if facing a wall, affix the EMPGrenade to the wall
-	if (Pawn(Owner) != None)
-	{
-		if (bNearWall)
-		{
-			bReadyToFire = False;
-			GotoState('NormalFire');
-			bPointing = True;
-			PlayAnim('Place',, 0.1);
-			return;
-		}
-	}
-
-	// otherwise, throw as usual
 	Super.Fire(Value);
-}
-
-function Projectile ProjectileFire(class<projectile> ProjClass, float ProjSpeed, bool bWarn)
-{
-	local Projectile proj;
-
-	proj = Super.ProjectileFire(ProjClass, ProjSpeed, bWarn);
-
-	if (proj != None)
-		proj.PlayAnim('Open');
-}
-
-// Become a pickup
-// Weapons that carry their ammo with them don't vanish when dropped
-function BecomePickup()
-{
-	Super.BecomePickup();
-   if (Level.NetMode != NM_Standalone)
-      if (bTossedOut)
-         Lifespan = 0.0;
 }
 
 // ----------------------------------------------------------------------
@@ -70,7 +16,7 @@ function BecomePickup()
 
 simulated function bool TestMPBeltSpot(int BeltSpot)
 {
-   return (BeltSpot == 4);
+   return (BeltSpot == 7);
 }
 
 defaultproperties

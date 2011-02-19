@@ -8,6 +8,7 @@ var int chargeRefreshTime;
 var int mpChargeRefreshTime;
 var int mpChargeAmount;
 var Float lastchargeTime;
+var Float lastTickTime;
 
 // ----------------------------------------------------------------------
 // Network replication
@@ -39,6 +40,18 @@ function PostBeginPlay()
       bAlwaysRelevant = True;
 
    lastChargeTime = -chargeRefreshTime;
+}
+
+function Tick(float deltaTime)
+{
+	//== Track the time shift from pausing
+	if(DeusExGameInfo(Level.Game) != None)
+		if(lastTickTime <= DeusExGameInfo(Level.Game).PauseStartTime)
+			lastChargeTime += (DeusExGameInfo(Level.Game).PauseEndTime - DeusExGameInfo(Level.Game).PauseStartTime);
+
+	lastTickTime = Level.TimeSeconds;
+
+	Super.Tick(deltaTime);
 }
 
 // ----------------------------------------------------------------------

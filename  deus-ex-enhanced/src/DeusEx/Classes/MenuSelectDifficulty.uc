@@ -23,6 +23,9 @@ event WindowReady()
 {
 	// Set focus to the Medium button
 	SetFocusWindow(winButtons[1]);
+
+	//== Enable right click for realistic button
+	winButtons[3].EnableRightMouseClick();
 }
 
 // ----------------------------------------------------------------------
@@ -48,6 +51,37 @@ function ProcessCustomMenuButton(string key)
 		case "REALISTIC":
 			InvokeNewGameScreen(4.0);
 			break;
+
+		case "UNREALISTIC":
+			InvokeNewGameScreen(4.1);
+			break;
+	}
+}
+
+//-----------------------------------------------------------------------
+// 
+//-----------------------------------------------------------------------
+
+function bool ButtonActivatedRight( Window buttonPressed )
+{
+	local int i;
+
+	if(buttonPressed == winButtons[3])
+	{
+		if(buttonDefaults[3].Key == "REALISTIC")
+		{
+			winButtons[3].SetButtonText("Unrealistic");
+			buttonDefaults[3].Key = "UNREALISTIC";
+			PlaySound(Sound'Menu_Press', 0.25);
+			return True;
+		}
+		else if(buttonDefaults[3].Key == "UNREALISTIC")
+		{
+			winButtons[3].SetButtonText(ButtonNames[3]);
+			buttonDefaults[3].Key = "REALISTIC";
+			PlaySound(Sound'Menu_Press', 0.25);
+			return True;
+		}
 	}
 }
 

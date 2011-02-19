@@ -18,7 +18,7 @@ auto state Active
 	function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, name DamageType)
 	{
 		Super.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType);
-		if ((DamageType == 'Shot') || (DamageType == 'Exploded'))
+		if ((DamageType == 'Shot') || (DamageType == 'Exploded') || (DamageType == 'Shell'))
 			SpawnBlood(HitLocation, Damage);
 	}
 }

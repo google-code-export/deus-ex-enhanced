@@ -18,6 +18,8 @@ var localized String msgNoText;
 var Bool bFirstParagraph;
 var localized String ImageLabel;
 var localized String AddedToDatavaultLabel;
+var String SpecialText;					// Special, script-given text
+var bool bUnmovable;						// Truly needs to be unmovable
 
 // ----------------------------------------------------------------------
 // Destroyed()
@@ -69,6 +71,9 @@ function Tick(float deltaTime)
 	if ((aReader != None) && (infoWindow != None))
 		if (aReader.FrobTarget != Self)
 			DestroyWindow();
+
+	if(bPushable != Default.bPushable && DeusExPlayer(Base) == None && infoWindow == None && (imageClass != None || textTag != '' || specialText != ""))
+		bPushable = Default.bPushable;
 }
 
 // ----------------------------------------------------------------------
@@ -98,6 +103,10 @@ function Frob(Actor Frobber, Inventory frobWith)
 			}
 			else
 				player.ClientMessage(msgNoText);
+
+			//== Once we've read it, we can pick it up
+			if(!Default.bPushable && !bUnmovable)
+				bPushable = True;
 		}
 		else
 		{
@@ -140,6 +149,13 @@ function CreateInfoWindow()
 			while(parser.ProcessText())
 				ProcessTag(parser);
 
+			//== Special stuff.  Append the SpecialText string to this if specified by script
+			if(SpecialText != "" && winText != None)
+			{
+				winText.AppendText(SpecialText);
+				vaultString = vaultString $ SpecialText;
+			}
+
 			parser.CloseText();
 
 			// Check to see if we need to save this string in the 
@@ -158,6 +174,28 @@ function CreateInfoWindow()
 			}
 		}
 		CriticalDelete(parser);
+	}
+
+	if ( SpecialText != "" && textTag == '' && aReader != None)
+	{
+		infoWindow = rootWindow.hud.ShowInfoWindow();
+		infoWindow.ClearTextWindows();
+
+		winText = infoWindow.AddTextWindow();
+		winText.SetText(SpecialText);
+
+		if (bAddToVault)
+		{
+			note = aReader.GetNote(textTag);
+
+			if (note == None)
+			{
+				note = aReader.AddNote(SpecialText,, True);
+				note.SetTextTag(textTag);
+			}
+
+			vaultString = "";
+		}
 	}
 
 	// do we have any image data to give the player?

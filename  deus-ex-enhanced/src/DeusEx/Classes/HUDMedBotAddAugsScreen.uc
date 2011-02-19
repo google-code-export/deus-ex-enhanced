@@ -9,14 +9,22 @@ var MedicalBot medBot;
 var PersonaActionButtonWindow btnInstall;
 var TileWindow winAugsTile;
 var Bool bSkipAnimation;
+var Bool bInstallPending;
+var HUDMedBotAugItemButton buttontemp;
 
 var Localized String AvailableAugsText;
 var Localized String MedbotInterfaceText;
 var Localized String InstallButtonLabel;
+var Localized String UpgradeButtonLabel;
 var Localized String NoCansAvailableText;
 var Localized String AlreadyHasItText;
 var Localized String SlotFullText;
 var Localized String SelectAnotherText;
+var Localized String MayUpgradeText;
+var Localized String CannotUpgradeText;
+var Localized String SelectReplaceText;
+var Localized String InstalledText;
+var Localized String UpgradedText;
 
 // ----------------------------------------------------------------------
 // InitWindow()
@@ -207,16 +215,56 @@ function PopulateAugCanList()
 function bool ButtonActivated(Window buttonPressed)
 {
 	local bool bHandled;
+	local int level;
+	local int hkey;
+	local Augmentation anAug;
 
 	bHandled   = True;
+
+	if(bInstallPending)
+	{
+		anAug = Augmentation(buttonPressed.GetClientObject());
+		if(anAug != None && anAug.bHasIt)
+		{
+			if(anAug.AugmentationLocation == selectedAug.AugmentationLocation)
+			{
+				level = anAug.CurrentLevel;
+				anAug.CurrentLevel = 0;
+				anAug.bHasIt = false;
+				hkey = anAug.HotKeyNum;
+				player.RemoveAugmentationDisplay(anAug);
+				player.AugmentationSystem.AugLocs[anAug.AugmentationLocation].augCount--;
+				anAug.HotKeyNum = -1;
+				bInstallPending = false;
+				winInfo.Clear();
+				winInfo.SetTitle(selectedAug.AugmentationName);
+				winInfo.SetText(selectedAug.AugmentationName$" installed at Level "$ level + 1 $".");
+				selectedAug.HotKeyNum = hkey;
+				InstallAugmentation(level);
+				selectedAug.HotKeyNum = hkey;
+				Super.CreateAugmentationButtons();
+				selectedAug = None;
+				selectedAugButton = None;
+				EnableButtons();
+				return true;
+			}
+		}
+		else
+			bInstallPending = false;
+	}
 
 	switch(buttonPressed)
 	{
 		case btnInstall:
+			bInstallPending = false;
+			if(player.AugmentationSystem.AreSlotsFull(selectedAug))
+				bInstallPending = true;
+
 			InstallAugmentation();
 			break;
 
 		default:
+			bInstallPending = false;
 			bHandled = False;
 			break;
 	}
@@ -232,6 +280,9 @@ function bool ButtonActivated(Window buttonPressed)
 // ----------------------------------------------------------------------
 // SelectAugmentation()
 // ----------------------------------------------------------------------
+
+//Y|yukichigai -- Modified so you can now upgrade augmentations you already have using
+// Augmentation Cannisters for the existing augs
 
 function SelectAugmentation(PersonaItemButton buttonPressed)
 {
@@ -251,27 +302,47 @@ function SelectAugmentation(PersonaItemButton buttonPressed)
 			winInfo.Clear();
 			winInfo.SetTitle(selectedAug.AugmentationName);
 			winInfo.SetText(AlreadyHasItText);
-			winInfo.SetText(SelectAnotherText); 
-			selectedAug = None;
-			selectedAugButton = None;
+			if(selectedAug.CurrentLevel < selectedAug.MaxLevel)
+			{
+				winInfo.SetText(MayUpgradeText);
+				selectedAug.UsingMedBot(True);
+				selectedAug.AppendInfo(winInfo);
+			}
+			else
+			{
+				winInfo.SetText(CannotUpgradeText);
+				winInfo.SetText(SelectAnotherText); 
+				selectedAug = None;
+				selectedAugButton = None;
+			}
 		}
 		else if (HUDMedBotAugItemButton(buttonPressed).bSlotFull) 
 		{
 			winInfo.Clear();
 			winInfo.SetTitle(selectedAug.AugmentationName);
 			winInfo.SetText(SlotFullText);
-			winInfo.SetText(SelectAnotherText); 
-			selectedAug = None;
-			selectedAugButton = None;
+			selectedAug.UsingMedBot(True);
+			selectedAug.AppendInfo(winInfo);
+//			winInfo.SetText("In order to install this augmentation you must replace an existing one.");
+//			winInfo.SetText(SelectAnotherText); 
+//			selectedAug = None;
+//			selectedAugButton = None;
 		}
 		else
 		{
 			selectedAug.UsingMedBot(True);
-			selectedAug.UpdateInfo(winInfo);
-			selectedAugButton.SelectButton(True);
+			if(!HUDMedBotAugItemButton(buttonPressed).bHasIt)
+				selectedAug.UpdateInfo(winInfo);
 		}
 
+		if(selectedAugButton != None)
+			selectedAugButton.SelectButton(True);
+
 		EnableButtons();
+		if(HUDMedBotAugItemButton(buttonPressed).bHasIt)
+			btnInstall.SetButtonText(UpgradeButtonLabel);
+		else
+			btnInstall.SetButtonText(InstallButtonLabel);
 	}
 }
 
@@ -279,13 +350,21 @@ function SelectAugmentation(PersonaItemButton buttonPressed)
 // InstallAugmentation()
 // ----------------------------------------------------------------------
 
-function InstallAugmentation()
+function InstallAugmentation(optional int level)
 {
 	local AugmentationCannister augCan;
 	local Augmentation aug;
 
 	if (HUDMedBotAugItemButton(selectedAugButton) == None)
 		return;
+
+	if(bInstallPending)
+	{
+		winInfo.Clear();
+		winInfo.SetTitle(selectedAug.AugmentationName);
+		winInfo.SetText(Sprintf(SelectReplaceText,selectedAug.AugLocsText[selectedAug.AugmentationLocation]));
+		return;
+	}
 		
 	// Get pointers to the AugmentationCannister and the 
 	// Augmentation Class
@@ -298,7 +377,21 @@ function InstallAugmentation()
 	// the augmentation and that there's enough space were done when the 
 	// AugmentationAddButtons were created)
 
+	winInfo.Clear();
+	winInfo.setTitle(selectedAug.AugmentationName);
+
+	if(selectedAug.bHasIt)
+		winInfo.setText(Sprintf(UpgradedText, (selectedAug.CurrentLevel + 2) ));
+	else
+		winInfo.setText(InstalledText);
+
 	player.AugmentationSystem.GivePlayerAugmentation(aug.class);
+
+	while(level >= 1)
+	{
+		player.AugmentationSystem.GivePlayerAugmentation(aug.class);
+		level--;
+	}
 
 	// play a cool animation
 	medBot.PlayAnim('Scan');
@@ -317,6 +410,10 @@ function InstallAugmentation()
 
 	// Need to update the aug list
 	PopulateAugCanList();
+
+	//Added this in because of my upgrade stuff -- Y|yukichigai
+	btnInstall.SetButtonText(InstallButtonLabel);
+	EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -390,10 +487,16 @@ defaultproperties
      AvailableAugsText="Available Augmentations"
      MedbotInterfaceText="MEDBOT INTERFACE"
      InstallButtonLabel="|&Install"
+     UpgradeButtonLabel="|&Upgrade"
      NoCansAvailableText="No Augmentation Cannisters Available!"
      AlreadyHasItText="You already have this augmentation, therefore you cannot install it a second time."
-     SlotFullText="The slot that this augmentation occupies is already full, therefore you cannot install it."
+     SlotFullText="The slot that this augmentation occupies is already full. To install you must replace an exisiting augmentation."
      SelectAnotherText="Please select another augmentation to install."
+     MayUpgradeText="You may upgrade this augmentation instead."
+     CannotUpgradeText="This augmentation is at its maximum level and cannot be upgraded."
+     SelectReplaceText="Select the augmentation to replace.  The augmentation must be in the %s slot."
+     InstalledText="Augmentation installed."
+     UpgradedText="Augmentation upgraded to level %d."
      clientTextures(0)=Texture'DeusExUI.UserInterface.HUDMedbotBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.HUDMedbotBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.HUDMedbotBackground_3'

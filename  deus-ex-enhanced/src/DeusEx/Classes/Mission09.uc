@@ -34,6 +34,20 @@ function FirstFrame()
 				}
 			}
 		}
+		if(!flags.getBool('M09_10mmEX_Placed'))
+		{
+			spawn(class'Ammo10mmEX',None,, vect(2963.25, 454.47, 760.12), rot(0,12648,0));
+			spawn(class'Ammo10mmEX',None,, vect(2963.25, 480.25, 772.87), rot(0,12648,0));
+			spawn(class'Ammo10mmEX',None,, vect(2963.25, 454.47, 736.22), rot(0,12648,0));
+			spawn(class'VialVirus',None,, vect(2668.00, 498.70, 517.99));
+			flags.setBool('M09_10mmEX_Placed',True,,10);
+		}
+
+		if(!flags.getBool('M09_PrototypePlaced'))
+		{
+			if(spawn(Class'WeaponPrototypeSwordC', None,, vect(2640.00, 168.00, 933.200012), rot(0, -4800, 0)) != None);
+				flags.setBool('M09_PrototypePlaced', True,, 10);
+		}
 	}
 	else if (localURL == "09_NYC_DOCKYARD")
 	{

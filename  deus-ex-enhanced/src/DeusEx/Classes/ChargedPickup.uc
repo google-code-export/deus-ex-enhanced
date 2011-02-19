@@ -1,6 +1,9 @@
 //=============================================================================
 // ChargedPickup.
 //=============================================================================
+
+//Modified -- Y|yukichigai
+
 class ChargedPickup extends DeusExPickup
 	abstract;
 
@@ -238,9 +241,11 @@ state Activated
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 
+
+//No longer One-use by default
+
 defaultproperties
 {
-     bOneUseOnly=True
      ActivateSound=Sound'DeusExSounds.Pickup.PickupActivate'
      DeActivateSound=Sound'DeusExSounds.Pickup.PickupDeactivate'
      ChargeRemainingLabel="Charge remaining:"

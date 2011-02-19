@@ -20,7 +20,7 @@ simulated function PreBeginPlay()
 
 simulated function bool TestMPBeltSpot(int BeltSpot)
 {
-   return (BeltSpot == 7);
+   return (BeltSpot == 9);
 }
 
 defaultproperties

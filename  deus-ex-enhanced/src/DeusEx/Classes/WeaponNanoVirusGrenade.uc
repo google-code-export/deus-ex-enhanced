@@ -1,36 +1,14 @@
 //=============================================================================
 // WeaponNanoVirusGrenade.
 //=============================================================================
-class WeaponNanoVirusGrenade extends DeusExWeapon;
+class WeaponNanoVirusGrenade extends WeaponGrenade;
 
-function Fire(float Value)
+simulated function bool TestCycleable()
 {
-	// if facing a wall, affix the NanoVirusGrenade to the wall
-	if (Pawn(Owner) != None)
-	{
-		if (bNearWall)
-		{
-			bReadyToFire = False;
-			GotoState('NormalFire');
-			bPointing = True;
-			PlayAnim('Place',, 0.1);
-			return;
-		}
-	}
-
-	// otherwise, throw as usual
-	Super.Fire(Value);
+	return (Level.NetMode == NM_Standalone);
 }
 
-function Projectile ProjectileFire(class<projectile> ProjClass, float ProjSpeed, bool bWarn)
-{
-	local Projectile proj;
-
-	proj = Super.ProjectileFire(ProjClass, ProjSpeed, bWarn);
-
-	if (proj != None)
-		proj.PlayAnim('Open');
-}
+//     MultiSkins(4)=FireTexture'Effects.liquid.Virus_SFX'
 
 defaultproperties
 {

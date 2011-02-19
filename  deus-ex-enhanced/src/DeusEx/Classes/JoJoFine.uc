@@ -7,9 +7,10 @@ defaultproperties
 {
      CarcassType=Class'DeusEx.JoJoFineCarcass'
      WalkingSpeed=0.296000
+     bLikesNeutral=False
      bImportant=True
      SprintRate=1.000000
-     InitialInventory(0)=(Inventory=Class'DeusEx.WeaponStealthPistol')
+     InitialInventory(0)=(Inventory=Class'DeusEx.WeaponLoBruto')
      InitialInventory(1)=(Inventory=Class'DeusEx.Ammo10mm',Count=12)
      InitialInventory(2)=(Inventory=Class'DeusEx.WeaponCrowbar')
      walkAnimMult=0.750000

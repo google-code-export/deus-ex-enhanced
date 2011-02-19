@@ -148,10 +148,12 @@ function DrawBorder(GC gc)
 function UpdateInHand()
 {
 	local int slotIndex;
+	local bool bPressed;
 	
 	// highlight the slot and unhighlight the other slots
 	if ((player != None) && (!bInteractive))
 	{
+		bPressed = False;
 		for (slotIndex=0; slotIndex<ArrayCount(objects); slotIndex++)
 		{
 			// Highlight the object in the player's hand
@@ -160,9 +162,13 @@ function UpdateInHand()
 			else
 				objects[slotIndex].HighlightSelect(False);
 
+			//== We only want to actually activate one of these buttons for multi-slot items in MP
 			if ((player.inHandPending != None) && //(player.inHandPending != player.inHand) &&
-			    (objects[slotIndex].item == player.inHandPending))
+			    (objects[slotIndex].item == player.inHandPending) && !bPressed)
+			{
 				objects[slotIndex].SetToggle(true);
+				bPressed = True;
+			}
 			else
 				objects[slotIndex].SetToggle(false);
 		}
@@ -222,8 +228,13 @@ function ClearBelt()
 function RemoveObjectFromBelt(Inventory item)
 {
 	local int i;
-   local int StartPos;
+	local int j;
+	local int StartPos;
 
+	local Inventory itemp;
+
+
+	j = 0;
    StartPos = 1;
    if ( (Player != None) && (Player.Level.NetMode != NM_Standalone) && (Player.bBeltIsMPInventory) )
       StartPos = 0;
@@ -235,8 +246,46 @@ function RemoveObjectFromBelt(Inventory item)
 			objects[i].SetItem(None);
 			item.bInObjectBelt = False;
 			item.beltPos = -1;
+			if(Player.Level.NetMode != NM_Standalone && Player.bBeltIsMPInventory)
+			{
+				if(i == 7)
+				{
+					if(DeusExWeapon(Player.FindInventoryType(Class'DeusEx.WeaponEMPGrenade')).AmmoType.AmmoAmount > 0)
+						AddObjectToBelt(Player.FindInventoryType(Class'DeusEx.WeaponEMPGrenade'),i,false);
 
-			break;
+					else if(DeusExWeapon(Player.FindInventoryType(Class'DeusEx.WeaponGasGrenade')).AmmoType.AmmoAmount > 0)
+						AddObjectToBelt(Player.FindInventoryType(Class'DeusEx.WeaponGasGrenade'),i,false);
+
+					else if(DeusExWeapon(Player.FindInventoryType(Class'DeusEx.WeaponLAM')).AmmoType.AmmoAmount > 0)
+						AddObjectToBelt(Player.FindInventoryType(Class'DeusEx.WeaponLAM'),i,false);
+				}
+				if(i == 8)
+				{
+					if(DeusExPickup(Player.FindInventoryType(Class'DeusEx.Medkit')).NumCopies > 0)
+						AddObjectToBelt(Player.FindInventoryType(Class'DeusEx.Medkit'),i,false);
+					else if(DeusExPickup(Player.FindInventoryType(Class'DeusEx.BioelectricCell')).NumCopies > 0)
+						AddObjectToBelt(Player.FindInventoryType(Class'DeusEx.BioelectricCell'),i,false);
+				}
+				j++;
+				if(j > 9)
+					break;
+			}
+			else
+			{
+				if(item.IsA('LockPick') && DeusExPickup(Player.FindInventoryType(Class'DeusEx.Lockpick')).NumCopies <= 0)
+				{
+					itemp = Player.FindInventoryType(Class'DeusEx.Multitool');
+					if(DeusExPickup(itemp).NumCopies > 0 && (itemp.beltPos == -1 || itemp.beltPos == i))
+						AddObjectToBelt(itemp,i,false);
+				}
+				else if(item.IsA('Multitool') && DeusExPickup(Player.FindInventoryType(Class'DeusEx.Multitool')).NumCopies <= 0)
+				{
+					itemp = Player.FindInventoryType(Class'DeusEx.Lockpick');
+					if(DeusExPickup(itemp).NumCopies > 0 && (itemp.beltPos == -1 || itemp.beltPos == i))
+						AddObjectToBelt(itemp,i,false);
+				}
+				break;
+			}
 		}
 	}
 }
@@ -259,6 +308,9 @@ function UpdateObjectText(int pos)
 function bool AddObjectToBelt(Inventory newItem, int pos, bool bOverride)
 {
 	local int  i;
+	local int j;
+	local int MPsize;
+	local int counter;
    local int FirstPos;
 	local bool retval;
 
@@ -273,6 +325,22 @@ function bool AddObjectToBelt(Inventory newItem, int pos, bool bOverride)
 			pos = 0;
 		}
 
+		//Y|yukichigai -- Okay, test to see if this is a category weapon and if the slot is filled
+		for(i = 7; i <= 9; i++)
+		{
+			if(newItem.testMPBeltSpot(i) && Player.Level.NetMode != NM_Standalone)
+			{
+				if(objects[i].GetItem() != None)
+				{
+					ClearPosition(i);
+					pos = i;
+				}
+//				else
+//					return false;
+					
+			}
+		}
+
 		if (  (!IsValidPos(pos)) || 
             (  (Player.Level.NetMode != NM_Standalone) && 
                (Player.bBeltIsMPInventory) && 
@@ -282,16 +350,20 @@ function bool AddObjectToBelt(Inventory newItem, int pos, bool bOverride)
          if ((Player.Level.NetMode != NM_Standalone) && (Player.bBeltIsMPInventory))
             FirstPos = 0;
 			for (i=FirstPos; IsValidPos(i); i++)
-         {
+      	   		{
 				if ((objects[i].GetItem() == None) && ( (Player.Level.NetMode == NM_Standalone) || (!Player.bBeltIsMPInventory) || (newItem.TestMPBeltSpot(i))))
-            {
+            			{
 					break;
-            }
-         }
+            			}
+         		}
 			if (!IsValidPos(i))
 			{
-				if (bOverride)
-					pos = 1;
+				if(!newItem.IsA('Lockpick') && !newItem.IsA('Multitool') && !newItem.IsA('Medkit') && !newItem.IsA('BioelectricCell')
+				   && !newItem.IsA('WeaponGasGrenade') && !newItem.IsA('WeaponEMPGrenade') && !newItem.IsA('WeaponLAM'))
+				{
+					if (bOverride)
+						pos = 1;
+				}
 			}
 			else
 			{
@@ -303,9 +375,48 @@ function bool AddObjectToBelt(Inventory newItem, int pos, bool bOverride)
 		{
 			// If there's already an object here, remove it
 			if ( objects[pos].GetItem() != None )
+			{
 				RemoveObjectFromBelt(objects[pos].GetItem());
+			}
 
-			objects[pos].SetItem(newItem);
+			//=== Add in some more hairy stuff for the new Deus Ex MP -- Y|yukichigai
+			MPSize = Player.MPBeltSizer(newItem);
+			if ((Player.Level.NetMode != NM_Standalone) && (Player.bBeltIsMPInventory) && MPSize > 1)
+			{
+				i = pos;
+				for(j = 1; j < 7; j++)
+				{
+					if(objects[i].GetItem() == None)
+						counter++;
+					if(counter == MPSize)
+						break;
+					i++;
+					if(i > 6)
+						i = 1;
+				}
+				i = pos;
+				if(counter == MPSize)
+				{
+					counter = 0;
+					for(j = 1; j < 7; j++)
+					{
+						if(objects[i].GetItem() == None)
+						{
+							objects[i].SetItem(newItem);
+							counter++;
+						}
+						if(counter == MPSize)
+							break;
+						i++;
+						if(i > 6)
+							i = 1;
+					}
+				}
+				else
+					retval = false;
+			}
+			else
+				objects[pos].SetItem(newItem);
 		}
 		else
 		{

@@ -137,9 +137,17 @@ function Tick(float deltaTime)
    if (Level.NetMode != NM_Standalone)
       bLockedOut = False;
 
+	if(DeusExGameInfo(Level.Game) != None)
+		if(lockoutTime < DeusExGameInfo(Level.Game).PauseStartTime) //== Pause time offset
+			lockoutTime += (DeusExGameInfo(Level.Game).PauseEndTime - DeusExGameInfo(Level.Game).PauseStartTime);
+
 	// shut off the alarm if the timeout has expired
 	if (lastAlarmTime != 0)
 	{
+		if(DeusExGameInfo(Level.Game) != None)
+			if(lastAlarmTime < DeusExGameInfo(Level.Game).PauseStartTime) //== Pause time offset
+				lastAlarmTime += (DeusExGameInfo(Level.Game).PauseEndTime - DeusExGameInfo(Level.Game).PauseStartTime);
+
 		if (Level.TimeSeconds - lastAlarmTime >= alarmTimeout)
 			EndAlarm();
 	}

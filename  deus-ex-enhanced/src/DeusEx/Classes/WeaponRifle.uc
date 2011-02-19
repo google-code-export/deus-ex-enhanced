@@ -53,6 +53,7 @@ defaultproperties
      bCanHaveModAccurateRange=True
      bCanHaveModReloadTime=True
      bCanHaveModRecoilStrength=True
+     bCanHaveModShotTime=True
      AmmoName=Class'DeusEx.Ammo3006'
      ReloadCount=6
      PickupAmmoCount=6

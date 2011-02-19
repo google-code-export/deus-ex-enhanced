@@ -3,6 +3,26 @@
 //=============================================================================
 class CrateBreakableMedCombat extends Containers;
 
+function bool Facelift(bool bOn)
+{
+	if(!Super.Facelift(bOn))
+		return false;
+
+	if(bOn)
+	{
+		Mesh = mesh(DynamicLoadObject("HDTPDecos.HDTPCrateBreakableMed", class'mesh', True));
+		Skin = Texture(DynamicLoadObject("HDTPDecos.Skins.HDTPCrateBreakableTex3", class'Texture', True));
+	}
+
+	if(Mesh == None || Skin == None || !bOn)
+	{
+		Mesh = Default.Mesh;
+		Skin = Default.Skin;
+	}
+
+	return true;
+}
+
 defaultproperties
 {
      HitPoints=10

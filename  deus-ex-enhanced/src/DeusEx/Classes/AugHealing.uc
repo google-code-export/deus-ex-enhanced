@@ -13,11 +13,13 @@ Loop:
 	Sleep(1.0);
 
 	if (Player.Health < 100)
+	{
 		Player.HealPlayer(Int(LevelValues[CurrentLevel]), False);
-	else
-		Deactivate();
+//	else
+//		Deactivate();
 
-	Player.ClientFlash(0.5, vect(0, 0, 500));
+		Player.ClientFlash(0.5, vect(0, 0, 500));
+	}
 	Goto('Loop');
 }
 
@@ -52,6 +54,7 @@ defaultproperties
      LevelValues(1)=15.000000
      LevelValues(2)=25.000000
      LevelValues(3)=40.000000
+     LevelValues(4)=55.000000
      AugmentationLocation=LOC_Torso
      MPConflictSlot=2
 }

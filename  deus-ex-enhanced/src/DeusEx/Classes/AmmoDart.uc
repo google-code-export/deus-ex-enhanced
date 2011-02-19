@@ -1,6 +1,9 @@
 //=============================================================================
 // AmmoDart.
 //=============================================================================
+
+//Modified -- Y|yukichigai
+
 class AmmoDart extends DeusExAmmo;
 
 simulated function PreBeginPlay()
@@ -15,6 +18,7 @@ simulated function PreBeginPlay()
 defaultproperties
 {
      bShowInfo=True
+     bIsNonStandard=True
      AmmoAmount=4
      MaxAmmo=60
      ItemName="Darts"

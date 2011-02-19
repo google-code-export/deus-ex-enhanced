@@ -18,6 +18,10 @@ function Deactivate()
 {
 	Player.RunSilentValue = 1.0;
 	Super.Deactivate();
+
+	//== Just to be safe, for when we drop out of wall-walk
+	if(Player.Physics == PHYS_Spider)
+		Player.SetPhysics(PHYS_Falling);
 }
 
 simulated function PreBeginPlay()

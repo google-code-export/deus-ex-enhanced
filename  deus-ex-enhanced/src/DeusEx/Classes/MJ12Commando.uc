@@ -72,6 +72,31 @@ function GotoDisabledState(name damageType, EHitLocation hitPos)
 		GotoNextState();
 }
 
+function Carcass SpawnCarcass()
+{
+	local DeusExCarcass carc;
+	local Inventory item;
+
+	carc = DeusExCarcass(Super.SpawnCarcass());
+
+
+	//Since the MJ12 Rocket weapon is a native weapon, the ammo
+	// doesn't transfer.  Instead we have to manually give the
+	// MJ12 corpse ammo
+	if(carc != none)
+	{
+		item = Spawn(Class'AmmoRocketMini', carc);
+		if(item != None)
+		{
+			item.InitialState='Idle2';
+			item.GiveTo(Self);
+			item.SetBase(Self);
+			DeleteInventory(item);
+			carc.AddInventory(item);
+		}
+	}
+}
+
 defaultproperties
 {
      MinHealth=0.000000

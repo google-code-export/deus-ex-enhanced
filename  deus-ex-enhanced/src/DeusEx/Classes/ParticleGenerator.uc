@@ -23,6 +23,9 @@ var() bool bAmbientSound;		// play the ambient sound?
 var() int numPerSpawn;			// number of particles to spawn per puff
 var() name attachTag;			// attach us to this actor
 var() bool bInitiallyOn;		// if triggered, start on instead of off
+//var() bool bDiesInWater;		// Do we die in water?
+//var() bool bOnlyInWater;		// Do we only survive in water?
+//var() texture waterTexture;		// texture to use when underwater
 var bool bSpewing;				// am I spewing?
 var bool bFrozen;				// are we out of the player's sight?
 var float time;
@@ -198,6 +201,9 @@ simulated function SetProxyData()
 	if (proxy != None)
 	{
 		proxy.bUnlit = bParticlesUnlit;
+		proxy.bHighDetail = bHighDetail;
+//		proxy.bDiesInWater = bDiesInWater;
+//		proxy.bOnlyInWater = bOnlyInWater;
 
 		if (bModulated)
 			proxy.Style = STY_Modulated;
@@ -207,7 +213,14 @@ simulated function SetProxyData()
 			proxy.Style = STY_Masked;
 
 		if (particleTexture != None)
+		{
 			proxy.Texture = particleTexture;
+//			if(waterTexture != None)
+//			{
+//				proxy.waterTexture = waterTexture;
+//				proxy.normalTexture = particleTexture;
+//			}
+		}
 	}
 }
 

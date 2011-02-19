@@ -121,6 +121,10 @@ event DrawWindow(GC gc)
 	local float			fromX, toX;
 	local float			fromY, toY;
 	local float			scopeWidth, scopeHeight;
+	local bool			test;
+	local Texture			oldSkins[9];
+	local Actor			A;
+	local vector			loc;
 
 	Super.DrawWindow(gc);
 
@@ -146,12 +150,65 @@ event DrawWindow(GC gc)
 	// Draw the black borders
 	gc.SetTileColorRGB(0, 0, 0);
 	gc.SetStyle(DSTY_Normal);
-	if ( Player.Level.NetMode == NM_Standalone )	// Only block out screen real estate in single player
+	if ( Player.Level.NetMode == NM_Standalone)	// Only block out screen real estate in single player
 	{
-		gc.DrawPattern(0, 0, width, fromY, 0, 0, Texture'Solid');
-		gc.DrawPattern(0, toY, width, fromY, 0, 0, Texture'Solid');
-		gc.DrawPattern(0, fromY, fromX, scopeHeight, 0, 0, Texture'Solid');
-		gc.DrawPattern(toX, fromY, fromX, scopeHeight, 0, 0, Texture'Solid');
+		test = true;
+
+		if(DeusExWeapon(Player.inHand) != None) // Check to see if the target aug is doing the zooming, rather than the weapon
+		{
+			if(!DeusExWeapon(Player.inHand).bHasScope)
+				test = false;
+
+			else if(desiredFOV == Int(30.000000 + (100.000000 * Player.AugmentationSystem.GetAugLevelValue(class'AugTarget'))))
+				test = false;
+
+			if(WeaponPrecisionRifle(Player.inHand) != None || WeaponRailgun(Player.inHand) != None)
+			{
+				test = true;
+				gc.SetStyle(DSTY_Translucent);
+
+				loc = Player.Location;
+				loc.Z += Player.BaseEyeHeight;
+
+				foreach Player.AllActors(class'Actor', A)
+				{
+					if(A.bVisionImportant && DeusExRootWindow(player.rootWindow).hud.augDisplay.IsHeatSource(A))
+					{
+						if( ( VSize(loc - A.Location) <= DeusExWeapon(Player.inHand).maxRange && WeaponRailgun(Player.inHand) != None) || Player.LineOfSightTo(A,true))
+						{
+							DeusExRootWindow(Player.rootWindow).hud.augDisplay.VisionTargetStatus = DeusExRootWindow(Player.rootWindow).hud.augDisplay.GetVisionTargetStatus(A);               
+							DeusExRootWindow(Player.rootWindow).hud.augDisplay.SetSkins(A, oldSkins);
+							gc.DrawActor(A, False, False, True, 1.0, 2.0, None);
+							DeusExRootWindow(Player.rootWindow).hud.augDisplay.ResetSkins(A, oldSkins);
+						}
+					}
+				}
+				gc.SetStyle(DSTY_Normal);
+			}
+		}
+		if(test)
+		{
+			if(WeaponRailgun(Player.inHand) != None)
+			{
+			      gc.SetStyle(DSTY_Modulated);
+			      gc.DrawPattern(fromX, fromY, scopeWidth, scopeHeight, 0, 0, Texture'SolidGreen');
+			      gc.DrawPattern(fromX, fromY, scopeWidth, scopeHeight, 0, 0, Texture'SolidGreen');
+			      gc.SetStyle(DSTY_Normal);
+			}
+
+			if(WeaponPrecisionRifle(Player.inHand) != None)
+			{
+			      gc.SetStyle(DSTY_Modulated);
+			      gc.DrawPattern(fromX, fromY, scopeWidth, scopeHeight, 0, 0, Texture'VisionBlue');
+			      gc.DrawPattern(fromX, fromY, scopeWidth, scopeHeight, 0, 0, Texture'VisionBlue');
+			      gc.SetStyle(DSTY_Normal);
+			}
+
+			gc.DrawPattern(0, 0, width, fromY, 0, 0, Texture'Solid');
+			gc.DrawPattern(0, toY, width, fromY, 0, 0, Texture'Solid');
+			gc.DrawPattern(0, fromY, fromX, scopeHeight, 0, 0, Texture'Solid');
+			gc.DrawPattern(toX, fromY, fromX, scopeHeight, 0, 0, Texture'Solid');
+		}
 	}
 	// Draw the center scope bitmap
 	// Use the Header Text color 
@@ -171,10 +228,13 @@ event DrawWindow(GC gc)
 	else
 	{
 		// Crosshairs - Use new scope in multiplayer, keep the old in single player
-		if ( Player.Level.NetMode == NM_Standalone )
+		if ( Player.Level.NetMode == NM_Standalone)
 		{
-			gc.SetStyle(DSTY_Modulated);
-			gc.DrawTexture(fromX, fromY, scopeWidth, scopeHeight, 0, 0, Texture'HUDScopeView');
+			if(test)
+			{
+				gc.SetStyle(DSTY_Modulated);
+				gc.DrawTexture(fromX, fromY, scopeWidth, scopeHeight, 0, 0, Texture'HUDScopeView');
+			}
 			gc.SetTileColor(colLines);
 			gc.SetStyle(DSTY_Masked);
 			gc.DrawTexture(fromX, fromY, scopeWidth, scopeHeight, 0, 0, Texture'HUDScopeCrosshair');

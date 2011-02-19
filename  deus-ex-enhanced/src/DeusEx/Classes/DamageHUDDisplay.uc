@@ -72,6 +72,7 @@ event InitWindow()
 	iconInfo[5].color.B = 0;
 	iconInfo[6].damageType[0] = 'Shot';
 	iconInfo[6].damageType[1] = 'Sabot';
+	iconInfo[6].damageType[2] = 'Shell';
 	iconInfo[6].icon = None;
 	iconInfo[6].color.R = 255;
 	iconInfo[6].color.G = 0;

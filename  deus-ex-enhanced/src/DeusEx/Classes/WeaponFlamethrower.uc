@@ -34,6 +34,7 @@ defaultproperties
      mpBurnTime=15
      mpBurnDamage=2
      LowAmmoWaterMark=50
+     AltAmmoUseModifier=50
      GoverningSkill=Class'DeusEx.SkillWeaponHeavy'
      EnviroEffective=ENVEFF_Air
      bAutomatic=True
@@ -43,6 +44,8 @@ defaultproperties
      maxRange=320
      AccurateRange=320
      BaseAccuracy=0.900000
+     FireSound2=Sound'DeusExSounds.Weapons.FlamethrowerReloadEnd'
+     bHasAltFire=True
      bHasMuzzleFlash=False
      mpReloadTime=0.500000
      mpHitDamage=5
@@ -57,6 +60,7 @@ defaultproperties
      PickupAmmoCount=100
      FireOffset=(Y=10.000000,Z=10.000000)
      ProjectileClass=Class'DeusEx.Fireball'
+     AltProjectileClass=Class'DeusEx.NapalmBomb'
      shakemag=10.000000
      FireSound=Sound'DeusExSounds.Weapons.FlamethrowerFire'
      AltFireSound=Sound'DeusExSounds.Weapons.FlamethrowerReloadEnd'

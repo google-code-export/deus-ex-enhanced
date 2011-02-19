@@ -3,6 +3,19 @@
 //=============================================================================
 class BoneSkull extends DeusExDecoration;
 
+function bool Facelift(bool bOn)
+{
+	if(!Super.Facelift(bOn))
+		return false;
+
+	if(bOn)
+		Skin = Texture(DynamicLoadObject("HDTPDecos.Skins.HDTPBoneSkull", class'Texture', True));
+	else
+		Skin = None;
+
+	return true;
+}
+
 defaultproperties
 {
      FragType=Class'DeusEx.WoodFragment'

@@ -85,6 +85,7 @@ defaultproperties
      MapSizes(2)="(8-14)"
      MapSizes(3)="(12-16)"
      MapSizes(4)="(2-6)"
+     MapNum=4
      CycleNames(0)="Repeat map"
      CycleNames(1)="Random map"
      CycleNames(2)="Loop maps"

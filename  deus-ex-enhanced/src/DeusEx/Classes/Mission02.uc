@@ -12,6 +12,11 @@ class Mission02 expands MissionScript;
 function FirstFrame()
 {
 	local ScriptedPawn pawn;
+	local FlagTrigger ftrig;
+	local Phone amach;
+	local ConversationTrigger contrig;
+	local ConListItem conList;
+	local DataCube dCube;
 
 	Super.FirstFrame();
 
@@ -91,6 +96,66 @@ function FirstFrame()
 			flags.SetBool('SchickThankedPlayer', True);
 		}
 	}
+	else if (localURL == "02_NYC_UNDERGROUND")
+	{
+		//== Fix the duration that the FordSchickRescued flag is relevant
+		if(!flags.GetBool('M02_Rescue_Flag_Fixed'))
+		{
+			foreach AllActors(class'FlagTrigger', ftrig)
+			{
+				if(ftrig.FlagName == 'FordSchickRescued')
+				{
+					ftrig.flagExpiration = 9;
+					flags.SetBool('M02_Rescue_Flag_Fixed',True);
+				}
+			}
+		}
+	}
+	else if (localURL == "02_NYC_HOTEL")
+	{
+		if (!flags.GetBool('M02_Ans_Mach_Placed'))
+		{
+			amach = Spawn(class'Phone',None,, vect(-613.23, -3236.47, 117.19));
+
+			if(amach != None)
+			{
+				contrig = Spawn(class'ConversationTrigger',None,, vect(0,0,-40));
+				if(contrig != None)
+				{
+					contrig.conversationTag = 'M03AnsweringMachineMessage';
+					contrig.BindName = "AnsweringMachine";
+					contrig.Tag = 'PlayAnsweringMachineMessage';
+					contrig.bTriggerOnceOnly = False;
+				}
+
+				amach.Event = 'PlayAnsweringMachineMessage';
+				amach.BindName = "AnsweringMachine";
+				amach.bUsing = True;
+				conList = New class'ConListItem';
+				conList.con = Conversation(DynamicLoadObject("DeusExConText.Conversation354",class'Conversation')); //Took me forever to find this
+				amach.ConListItems = conList;
+				amach.ringFreq = 0.0;
+
+				flags.SetBool('M02_Ans_Mach_Placed', True,, 3);
+			}
+		}
+
+		//== If the player's been all non-violent and crap, give him an extra tool to continue doing so
+		if(!flags.GetBool('M02_Blackjack_Placed') && !flags.GetBool('M01PlayerAggressive') && !flags.GetBool('BatteryParkSlaughter'))
+		{
+			foreach AllActors(class'Datacube', dCube)
+			{
+				if(dCube.textTag == '02_Datacube07')
+				{
+					dCube.SpecialText = emailString[0];
+					break;
+				}
+			}
+
+			if(spawn(class'WeaponBlackjack', None,, (dCube.Location + vect(0,0,4)), rot(0,16383,0)) != None)
+				flags.SetBool('M02_Blackjack_Placed', True,, 9); //== Further placements of the blackjack are sorta moot
+		}
+	}
 }
 
 // ----------------------------------------------------------------------
@@ -101,6 +166,10 @@ function FirstFrame()
 
 function PreTravel()
 {
+	local MJ12Troop mj12;
+	local int count;
+	local FordSchick ford;
+
 	if (localURL == "02_NYC_BATTERYPARK")
 	{
 		// if you leave without finishing, set some flags and remove the terrorists
@@ -115,12 +184,34 @@ function PreTravel()
 	}
 	else if (localURL == "02_NYC_UNDERGROUND")
 	{
+		foreach allActors(class'FordSchick', ford)
+		{
+			flags.SetBool('FordSchick_Dead', False);
+
+			if(flags.GetBool('ShickThankedPlayer'))//== If ford has thanked us, he's rescued
+				flags.SetBool('FordSchickRescued', True,, 9);
+		}
+
 		// if you leave the level with Ford Schick, set a flag
 		if (flags.GetBool('MS_FordFollowing') &&
 			!flags.GetBool('FordSchick_Dead'))
 		{
 			flags.SetBool('FordSchickRescued', True,, 9);
 		}
+		//== If nobody's guarding Ford we can assume he won't die
+		else if(!flags.GetBool('FordSchick_Dead'))
+		{
+			count = 0;
+			foreach AllActors(Class'MJ12Troop', mj12)
+				count++;
+
+			if(count <= 0)
+				flags.SetBool('FordSchickRescued', True,, 9);
+		}
+
+		//== Make sure the flag duration is set long enough
+		if(flags.GetBool('FordSchickRescued'))
+			flags.SetBool('FordSchickRescued', True,, 9);
 	}
 
 	Super.PreTravel();
@@ -149,13 +240,15 @@ function Timer()
 	local Actor A;
 	local SandraRenton Sandra;
 	local int count;
+	local ComputerPublic compPub;
+	local Pillow fluffy;
 
 	Super.Timer();
 
 	if (localURL == "02_NYC_BATTERYPARK")
 	{
 		// after terrorists are dead, set guards to wandering
-		if (!flags.GetBool('BatteryParkSlaughter'))
+		if (!flags.GetBool('BatteryParkSlaughter') && !flags.GetBool('CastleClintonCleared'))
 		{
 			count = 0;
 
@@ -163,15 +256,25 @@ function Timer()
 			foreach AllActors(class'Terrorist', T, 'ClintonTerrorist')
 				count++;
 
+			// one way or another, the castle has been cleared
+			if(count == 0)
+			{
+				// nothing to do here anymore, so wander
+				foreach AllActors(class'UNATCOTroop', guard, 'ClintonGuard')
+					guard.SetOrders('Wandering', '', True);
+
+				flags.SetBool('CastleClintonCleared', True,, 3);
+			}
+
 			// count the number of unconscious terrorists
 			foreach AllActors(class'TerroristCarcass', carc, 'ClintonTerrorist')
-				if (carc.itemName == "Unconscious")
+				if (carc.bNotDead || carc.KillerBindName != "JCDenton" || carc.itemName == "Unconscious")
 					count++;
 
-			// there are 5 total, player must have killed 2 or more, so
-			// check to see if there are fewer than 3 still alive or unconscious
-			if (count <= 3)
+			// if there are less than four, then the player killed at least two.  For shame.
+			if (count <= 3 && !flags.GetBool('BatteryParkSlaughter'))
 			{
+				// free up the guards so they can kill 'em
 				foreach AllActors(class'UNATCOTroop', guard, 'ClintonGuard')
 					guard.SetOrders('Wandering', '', True);
 
@@ -410,10 +513,25 @@ function Timer()
 			count = 0;
 
 			foreach AllActors(class'DeusExCarcass', carc2)
-				count++;
+			{
+				if(carc2.KillerBindName == "JCDenton")
+					count++;
+			}
 
 			if (count > 0)
 				flags.SetBool('M02ViolenceInBar', True,, 4);
+		}
+
+		if (!flags.GetBool('M02_Bar_Warning_Placed'))
+		{
+			foreach AllActors(class'ComputerPublic', compPub)
+			{
+				compPub.bulletinTitles[0] = "A warning from Project Mayhem";
+				compPub.bulletinText[0] = "If you are reading this then this warning is for you. Every word you read of this useless fine print is another second of your life. Don't you have other things to do?";
+				compPub.bulletinText[0] = compPub.bulletinText[0] $ " Is your life so empty that you honestly can't think of a better way to spend these moments? Or are you so impressed with authority that you give respect and credence to all who claim it?";
+				compPub.bulletinText[0] = compPub.bulletinText[0] $ " Do you think everything you're supposed to think? Buy what you're told you should want? Get out of your apartment. Meet a member of the opposite sex.";
+				compPub.bulletinText[0] = compPub.bulletinText[0] $ " Stop excessive shopping and masturbation. Quit your job. Start a fight. Prove you're alive. If you don't claim your humanity you will become a statistic. You have been warned......Tyler";
+			}
 		}
 	}
 	else if (localURL == "02_NYC_HOTEL")
@@ -430,6 +548,7 @@ function Timer()
 			if (count == 0)
 				flags.SetBool('M02HostagesRescued', True,, 3);
 		}
+
 	}
 	else if (localURL == "02_NYC_UNDERGROUND")
 	{
@@ -439,6 +558,20 @@ function Timer()
 			flags.SetBool('FordSchickRescueDone', True,, 9);
 		}
 	}
+	else if (localURL == "02_NYC_SMUG")
+	{
+		if(!flags.GetBool('M02_ToxinBladeAdded'))
+		{
+			foreach AllActors(Class'Pillow', fluffy)
+			{
+				if(spawn(Class'WeaponToxinBlade', None,, fluffy.Location, rot(0,16383,0) + fluffy.Rotation) != None)
+				{
+					flags.setBool('M02_ToxinBladeAdded', True,, 3);
+					break;
+				}
+			}
+		}
+	}
 }
 
 // ----------------------------------------------------------------------
@@ -446,4 +579,5 @@ function Timer()
 
 defaultproperties
 {
+     emailString(0)="|n|nP.S. You've managed to keep the casualties to a minimum so far, but I know it hasn't been easy.  I've left you a baton I modified that should make the use of minimal force less challenging."
 }

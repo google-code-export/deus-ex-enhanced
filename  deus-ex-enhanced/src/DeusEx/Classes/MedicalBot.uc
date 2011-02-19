@@ -7,6 +7,7 @@ var int healAmount;
 var int healRefreshTime;
 var int mphealRefreshTime;
 var Float lastHealTime;
+var Float lastTickTime;
 
 // ----------------------------------------------------------------------
 // Network replication
@@ -16,6 +17,38 @@ replication
 	// MBCODE: Replicate the last time healed to the server
 	reliable if ( Role < ROLE_Authority )
 		lastHealTime, healRefreshTime;
+}
+
+// ----------------------------------------------------------------------
+// PreBeginPlay()
+// ----------------------------------------------------------------------
+
+//== Because TNM's medbots have the Upgrade Aug feature but NOT the Overwrite
+//==  feature we need to completely replace all instances of their medbots
+//==  with the Shifter-ized ones to get both features.
+function PreBeginPlay()
+{
+	local MedicalBot medbot;
+
+	if(String(Class.Name) == "TNM_Medbot")
+	{
+		medbot = spawn(Class'DeusEx.MedicalBot', Owner);
+
+		//== Only delete the old medbot if there's a new one
+		if(medbot != None)
+		{
+			//== Oy vey.  Make sure there aren't any tags we're messing up
+			medbot.FamiliarName = FamiliarName;
+			medbot.UnfamiliarName = UnfamiliarName;
+			medbot.BindName = BindName;
+			medbot.Tag = Tag;
+		
+			Destroy();
+			return;
+		}
+	}
+
+	Super.PreBeginPlay();
 }
 
 // ----------------------------------------------------------------------
@@ -35,6 +68,18 @@ function PostBeginPlay()
       bAlwaysRelevant = True;
 
 	lastHealTime = -healRefreshTime;
+}
+
+function Tick(float deltaTime)
+{
+	//== Track the time shift from pausing
+	if(DeusExGameInfo(Level.Game) != None)
+		if(lastTickTime <= DeusExGameInfo(Level.Game).PauseStartTime)
+			lastHealTime += (DeusExGameInfo(Level.Game).PauseEndTime - DeusExGameInfo(Level.Game).PauseStartTime);
+
+	lastTickTime = Level.TimeSeconds;
+
+	Super.Tick(deltaTime);
 }
 
 // ----------------------------------------------------------------------

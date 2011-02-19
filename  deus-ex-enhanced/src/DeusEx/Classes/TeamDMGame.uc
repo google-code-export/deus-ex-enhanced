@@ -768,11 +768,6 @@ defaultproperties
      TimeLimitString1="Objective: Score the most kills before the clock ( "
      TimeLimitString2=" ) runs out!"
      TeamScoreString=" Team Score:"
-     SkillsTotal=5000
-     SkillsAvail=5000
-     SkillsPerKill=0
-     InitialAugs=0
-     AugsPerKill=0
      bAutoInstall=False
      bTeamGame=True
      DefaultPlayerClass=Class'DeusEx.Mpunatco'

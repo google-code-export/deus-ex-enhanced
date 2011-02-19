@@ -8,6 +8,7 @@ defaultproperties
 {
      bInvincible=True
      bHighlight=False
+     ItemName="Landscape"
      bPushable=False
      bStatic=True
      Physics=PHYS_None

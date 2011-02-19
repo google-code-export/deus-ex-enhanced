@@ -48,6 +48,21 @@ function GotoDisabledState(name damageType, EHitLocation hitPos)
 		GotoNextState();
 }
 
+function InitializeInventory()
+{
+	local DeusExLevelInfo info;
+	info = DeusExPlayer(GetPlayerPawn()).GetLevelInfo();
+
+	if(caps(info.mapName) == "15_AREA51_BUNKER")
+	{
+		InitialInventory[0].Inventory = Class'WeaponRailgun';
+		InitialInventory[1].Inventory = Class'AmmoPlasma';
+		InitialInventory[1].Count = 40;
+	}
+
+	Super.InitializeInventory();
+}
+
 defaultproperties
 {
      CarcassType=Class'DeusEx.WaltonSimonsCarcass'

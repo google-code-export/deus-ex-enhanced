@@ -21,6 +21,31 @@ var float lockoutTime;				// time when ATM was locked out
 var float lastHackTime;				// last time the ATM was hacked
 var localized String msgLockedOut;
 var bool bSuckedDryByHack;
+var float lastTickTime;
+
+simulated function PreBeginPlay()
+{
+	Super.PreBeginPlay();
+
+	Mesh = mesh(DynamicLoadObject("HDTPDecos.HDTPATM", class'mesh', True));
+
+	if(Mesh == None)
+		Mesh = Default.Mesh;
+}
+
+function Tick(float deltaTime)
+{
+	if(DeusExGameInfo(Level.Game) != None)
+		if(lastTickTime <= DeusExGameInfo(Level.Game).PauseStartTime) //== Pause time offset
+		{
+			lastHackTime += (DeusExGameInfo(Level.Game).PauseEndTime - DeusExGameInfo(Level.Game).PauseStartTime);
+			lockoutTime += (DeusExGameInfo(Level.Game).PauseEndTime - DeusExGameInfo(Level.Game).PauseStartTime);
+		}
+
+	Super.Tick(deltaTime);
+
+	lastTickTime = Level.TimeSeconds;
+}
 
 // ----------------------------------------------------------------------
 // Frob()

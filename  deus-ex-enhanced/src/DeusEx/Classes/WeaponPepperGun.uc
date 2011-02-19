@@ -1,6 +1,9 @@
 //=============================================================================
 // WeaponPepperGun.
 //=============================================================================
+
+//Modified - Y|yukichigai
+
 class WeaponPepperGun extends DeusExWeapon;
 
 simulated function PreBeginPlay()
@@ -27,16 +30,16 @@ defaultproperties
      EnviroEffective=ENVEFF_AirVacuum
      Concealability=CONC_Visual
      bAutomatic=True
-     ShotTime=0.075000
+     ShotTime=0.100000
      reloadTime=4.000000
      HitDamage=0
      maxRange=100
      AccurateRange=100
      BaseAccuracy=0.700000
-     AreaOfEffect=AOE_Sphere
      bPenetrating=False
      StunDuration=15.000000
      bHasMuzzleFlash=False
+     AIMinRange=7.000000
      mpReloadTime=4.000000
      mpBaseAccuracy=0.700000
      mpAccurateRange=100

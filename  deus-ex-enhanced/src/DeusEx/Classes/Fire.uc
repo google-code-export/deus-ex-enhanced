@@ -8,6 +8,8 @@ var ParticleGenerator fireGen;
 var Actor origBase;
 var vector BaseOffset; //Where we are relative to Base, so that we can stay synced in mp.
 var Actor PrevBase;
+var() float livetime;
+var() float livecounter;
 
 #exec OBJ LOAD FILE=Ambient
 #exec OBJ LOAD FILE=Effects
@@ -15,6 +17,13 @@ var Actor PrevBase;
 simulated function Tick(float deltaTime)
 {
 	Super.Tick(deltaTime);
+
+	if(livetime > 0.000000)
+	{
+		livecounter += deltaTime;
+		if(livecounter > livetime)
+			Destroy();
+	}
 
    if ((Base != PrevBase) && (Base != None))
       SetOffset();

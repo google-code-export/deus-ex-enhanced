@@ -26,7 +26,6 @@ defaultproperties
      Land=Sound'DeusExSounds.Player.MaleLand'
      Die=Sound'DeusExSounds.Player.MaleDeath'
      Texture=Texture'DeusExItems.Skins.PinkMaskTex'
-     Mesh=LodMesh'MPCharacters.mp_jumpsuit'
      MultiSkins(0)=Texture'DeusExCharacters.Skins.TerroristTex0'
      MultiSkins(1)=Texture'DeusExCharacters.Skins.TerroristTex2'
      MultiSkins(2)=Texture'DeusExCharacters.Skins.TerroristTex1'

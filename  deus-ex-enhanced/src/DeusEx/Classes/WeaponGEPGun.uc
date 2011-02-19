@@ -18,7 +18,7 @@ simulated function PreBeginPlay()
 		AccurateRange = mpAccurateRange;
 		MaxRange = mpMaxRange;
 		ReloadCount = mpReloadCount;
-      bHasScope = True;
+		bHasScope = True;
 	}
 }
 
@@ -29,6 +29,20 @@ function PostBeginPlay()
 	// don't let NPC geps lock on to targets
 	if ((Owner != None) && !Owner.IsA('DeusExPlayer'))
 		bCanTrack = False;
+}
+
+function GiveTo(Pawn Other)
+{
+	//== Ensure that NPCs can't lock on to targets
+	if(Other != None)
+	{
+		if(Other.IsA('DeusExPlayer'))
+			bCanTrack = True;
+		else
+			bCanTrack = False;
+	}
+
+	Super.GiveTo(Other);
 }
 
 defaultproperties
@@ -48,6 +62,7 @@ defaultproperties
      LockTime=2.000000
      LockedSound=Sound'DeusExSounds.Weapons.GEPGunLock'
      TrackingSound=Sound'DeusExSounds.Weapons.GEPGunTrack'
+     FireSound2=Sound'DeusExSounds.Weapons.GEPGunFireWP'
      AmmoNames(0)=Class'DeusEx.AmmoRocket'
      AmmoNames(1)=Class'DeusEx.AmmoRocketWP'
      ProjectileNames(0)=Class'DeusEx.Rocket'

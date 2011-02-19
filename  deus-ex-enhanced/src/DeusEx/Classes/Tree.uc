@@ -27,6 +27,7 @@ function PostBeginPlay()
 defaultproperties
 {
      soundFreq=0.200000
+     ItemName="Tree"
      bStatic=False
      Mass=2000.000000
      Buoyancy=5.000000

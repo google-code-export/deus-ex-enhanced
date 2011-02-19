@@ -2,8 +2,8 @@
 // MissionScript.
 //=============================================================================
 class MissionScript extends Info
-	transient
-	abstract;
+	transient;
+//	abstract; //== No longer abstract since we need to spawn it if no Mission Script is specified for a level
 
 //
 // State machine for each mission
@@ -16,6 +16,12 @@ var DeusExPlayer Player;
 var FlagBase flags;
 var string localURL;
 var DeusExLevelInfo dxInfo;
+
+var String emailFrom[25];
+var String emailTo[25];
+var String emailCC[25];
+var localized String emailSubject[25];
+var localized String emailString[25];
 
 // ----------------------------------------------------------------------
 // PostPostBeginPlay()
@@ -38,6 +44,7 @@ function PostPostBeginPlay()
 function InitStateMachine()
 {
 	local DeusExLevelInfo info;
+	local int i;
 
 	Player = DeusExPlayer(GetPlayerPawn());
 
@@ -66,7 +73,15 @@ function InitStateMachine()
 
 			localURL = Caps(dxInfo.mapName);
 
-			log("**** InitStateMachine() -"@player@"started mission state machine for"@localURL);
+			for(i = 0; emailSubject[i] != ""; i++)
+			{
+				dxInfo.emailSubject[i] = emailSubject[i];
+				dxInfo.emailFrom[i] = emailFrom[i];
+				dxInfo.emailTo[i] = emailTo[i];
+				dxInfo.emailString[i] = emailString[i];
+			}
+
+			log("**** InitStateMachine() -"@player@" started mission state machine for "@localURL);
 		}
 		else
 		{
@@ -90,12 +105,35 @@ function FirstFrame()
 	local name flagName;
 	local ScriptedPawn P;
 	local int i;
+	local bool skillon;
 
 	flags.DeleteFlag('PlayerTraveling', FLAG_Bool);
+	flags.DeleteFlag('NPCInventoryChecked', FLAG_Bool);
+
+	if(!flags.GetBool('SkillPointsPendingCurrent'))
+	{
+		i = flags.GetInt('PendingSkillPoints');
+		if(i > 0)
+		{
+			Player.ClientMessage("Calculating cumulative stealth bonus for previous mission");
+			Player.SkillPointsAdd(i);
+		}
+
+		flags.SetBool('SkillPointsPendingCurrent',True,, dxInfo.MissionNumber + 1);
+
+		i = 0;
+	}
+	else
+		i = flags.GetInt('PendingSkillPoints');
 
 	// Check to see which NPCs should be dead from prevous missions
 	foreach AllActors(class'ScriptedPawn', P)
 	{
+		//== Also handle pending skill points for stealth bonuses
+		if(P.PendingSkillPoints > 0 && i > 0)
+		{
+			i -= P.PendingSkillPoints;
+		}
 		if (P.bImportant)
 		{
 			flagName = Player.rootWindow.StringToName(P.BindName$"_Dead");
@@ -103,6 +141,8 @@ function FirstFrame()
 				P.Destroy();
 		}
 	}
+
+	flags.SetInt('PendingSkillPoints', i,, 0);
 
 	// print the mission startup text only once per map
 	flagName = Player.rootWindow.StringToName("M"$Caps(dxInfo.mapName)$"_StartupText");
@@ -113,6 +153,9 @@ function FirstFrame()
 		DeusExRootWindow(Player.rootWindow).hud.startDisplay.StartMessage();
 		flags.SetBool(flagName, True);
 	}
+
+	if(flags.GetFloat('Travel_GameSpeed') > 0.0)
+		Level.Game.SetGameSpeed(flags.GetFloat('Travel_GameSpeed'));
 
 	flagName = Player.rootWindow.StringToName("M"$dxInfo.MissionNumber$"MissionStart");
 	if (!flags.GetBool(flagName))
@@ -136,8 +179,23 @@ function FirstFrame()
 
 function PreTravel()
 {
+	local int points;
+	local ScriptedPawn pawn;
+
 	// turn off the timer
 	SetTimer(0, False);
+
+	points = flags.getInt('PendingSkillPoints');
+
+	foreach allActors(class'ScriptedPawn', pawn)
+	{
+		if(pawn.PendingSkillPoints > 0)
+			points += pawn.PendingSkillPoints;
+	}
+
+	flags.SetInt('PendingSkillPoints', points,, 0);
+
+	flags.SetFloat('Travel_GameSpeed', Level.Game.GameSpeed);
 
 	// zero the flags so FirstFrame() gets executed at load
 	flags = None;
@@ -164,6 +222,7 @@ function Timer()
 
 // ----------------------------------------------------------------------
 // GetPatrolPoint()
+// Y|y: Fixed to actually do something
 // ----------------------------------------------------------------------
 
 function PatrolPoint GetPatrolPoint(Name patrolTag, optional bool bRandom)
@@ -172,12 +231,18 @@ function PatrolPoint GetPatrolPoint(Name patrolTag, optional bool bRandom)
 
 	aPoint = None;
 
-	foreach AllActors(class'PatrolPoint', aPoint, patrolTag)
+	while(aPoint == None)
 	{
-		if (bRandom && (FRand() < 0.5))
-			break;
-		else
-			break;
+		foreach AllActors(class'PatrolPoint', aPoint, patrolTag)
+		{
+			if (bRandom)
+			{
+				if(FRand() < 0.5)
+					break;
+			}
+			else
+				break;
+		}
 	}
 
 	return aPoint;
@@ -185,6 +250,7 @@ function PatrolPoint GetPatrolPoint(Name patrolTag, optional bool bRandom)
 
 // ----------------------------------------------------------------------
 // GetSpawnPoint()
+// Y|y: Fixed to actually do something
 // ----------------------------------------------------------------------
 
 function SpawnPoint GetSpawnPoint(Name spawnTag, optional bool bRandom)
@@ -193,12 +259,18 @@ function SpawnPoint GetSpawnPoint(Name spawnTag, optional bool bRandom)
 
 	aPoint = None;
 
-	foreach AllActors(class'SpawnPoint', aPoint, spawnTag)
+	while(aPoint == None)
 	{
-		if (bRandom && (FRand() < 0.5))
-			break;
-		else
-			break;
+		foreach AllActors(class'SpawnPoint', aPoint, spawnTag)
+		{
+			if (bRandom)
+			{
+				if(FRand() < 0.5)
+					break;
+			}
+			else
+				break;
+		}
 	}
 
 	return aPoint;

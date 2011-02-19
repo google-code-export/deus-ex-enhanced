@@ -3,6 +3,10 @@
 //=============================================================================
 class TechGoggles extends ChargedPickup;
 
+var() bool bVisionActive;
+var() int visionLevel;
+var() int visionLevelValue;
+
 // ----------------------------------------------------------------------
 // ChargedPickupBegin()
 // ----------------------------------------------------------------------
@@ -12,6 +16,9 @@ function ChargedPickupBegin(DeusExPlayer Player)
 	Super.ChargedPickupBegin(Player);
 
 	DeusExRootWindow(Player.rootWindow).hud.augDisplay.activeCount++;
+	bVisionActive = DeusExRootWindow(Player.rootWindow).hud.augDisplay.bVisionActive;
+	visionLevel = DeusExRootWindow(Player.rootWindow).hud.augDisplay.visionLevel;
+	visionLevelValue = DeusExRootWindow(Player.rootWindow).hud.augDisplay.visionLevelValue;
 	UpdateHUDDisplay(Player);
 }
 
@@ -25,8 +32,8 @@ function UpdateHUDDisplay(DeusExPlayer Player)
 		DeusExRootWindow(Player.rootWindow).hud.augDisplay.activeCount++;
 	
 	DeusExRootWindow(Player.rootWindow).hud.augDisplay.bVisionActive = True;
-	DeusExRootWindow(Player.rootWindow).hud.augDisplay.visionLevel = 0;
-	DeusExRootWindow(Player.rootWindow).hud.augDisplay.visionLevelValue = 0;
+	DeusExRootWindow(Player.rootWindow).hud.augDisplay.visionLevel = 3;
+	DeusExRootWindow(Player.rootWindow).hud.augDisplay.visionLevelValue = 300;
 }
 
 // ----------------------------------------------------------------------
@@ -39,6 +46,9 @@ function ChargedPickupEnd(DeusExPlayer Player)
 
 	if (--DeusExRootWindow(Player.rootWindow).hud.augDisplay.activeCount == 0)
 		DeusExRootWindow(Player.rootWindow).hud.augDisplay.bVisionActive = False;
+
+	DeusExRootWindow(Player.rootWindow).hud.augDisplay.visionLevelValue = visionLevelValue;
+	DeusExRootWindow(Player.rootWindow).hud.augDisplay.visionLevel = visionLevel;
 }
 
 // ----------------------------------------------------------------------
