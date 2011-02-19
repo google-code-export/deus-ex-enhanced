@@ -61,7 +61,7 @@ event bool ScalePositionChanged(Window scale, int newTickPosition,
 
 defaultproperties
 {
-     numTicks=21
+     numTicks=101
      endValue=1.000000
      defaultValue=0.500000
      choiceControlPosX=290
