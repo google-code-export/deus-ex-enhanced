@@ -901,8 +901,9 @@ function DrawTargetAugmentation(GC gc)
 
 				// scale based on screen resolution - default is 640x480
 				//mult = FClamp(weapon.currentAccuracy * 80.0 * (width/640.0), corner, 80.0);
-				mult = FClamp(weapon.currentAccuracy * 64.0 * dxEnhancedGUIScaleMultiplier * (width / 640), corner, 64.0 * dxEnhancedGUIScaleMultiplier);				
-
+				// DJ: 80 was original, 60 is shifter
+				// DJ: With the following values, the cross squares @1680x1050 match up with how vanilla looked @640x480!  Win!
+				mult = FClamp(weapon.currentAccuracy * 66.0 * (width / 640), corner, 66.0 * dxEnhancedGUIScaleMultiplier);	
 				// make sure it's not too close to the center unless you have a perfect accuracy
 				if (weapon.currentAccuracy == 0.0)
 				{
@@ -910,8 +911,8 @@ function DrawTargetAugmentation(GC gc)
 				} 
 				else 
 				{
-					mult = FMax(mult, corner + (4.0 * dxEnhancedGUIScaleMultiplier));
-				}
+					mult = FMax(mult, corner + (4.0 * dxEnhancedGUIScaleMultiplier));				
+				}				
 
 				// draw the drop shadowed reticle
 				gc.SetTileColorRGB(0,0,0);

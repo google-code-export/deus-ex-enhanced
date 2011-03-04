@@ -1,15 +1,17 @@
+	2.0.0
+
+	 - Doubled GUI resolution (lots of files had to be edited)
+	 - Accuracy fixes (reticule size looks the same @1680x1050 as @640x480)
+	 - Fixed corrupted string in Mission03 (an email from Dan the janitor)
+
+
+	1.0.1:
+
+	 - No changes to source code, just textures.
 
 	1.0.0:
 
 	 - Increased rifle scope and binocular viewing area by 100%.
 	 - Increased fine granularity of in-game brighting control setting.
 
-	1.0.1:
-
-	 - No changes to source code, just textures.
-
-	2.0.0
-
-	 - Doubled GUI resolution (lots of files had to be edited)
-	 - Reversed Shifter changes to base weapon accuracy (they seemed unintentional)
-	 - Fixed corrupted string in Mission03 (an email from Dan the janitor)
+	
