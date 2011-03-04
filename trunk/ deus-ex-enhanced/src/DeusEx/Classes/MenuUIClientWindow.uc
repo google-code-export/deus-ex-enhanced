@@ -4,6 +4,8 @@
 
 class MenuUIClientWindow extends Window;
 
+const dxEnhancedGUIScaleMultiplier = 2; 					// DJ: Added
+
 var Texture clientTextures[6];
 var int texturePosX[6];
 var int texturePosY[6];
@@ -94,8 +96,8 @@ function CalculateTexturePositions()
 	{
 		for(colIndex=0; colIndex<textureCols; colIndex++)
 		{
-			texturePosX[textureCount] = colIndex * 256;
-			texturePosY[textureCount] = rowIndex * 256;
+			texturePosX[textureCount] = colIndex * (256 * dxEnhancedGUIScaleMultiplier);
+			texturePosY[textureCount] = rowIndex * (256 * dxEnhancedGUIScaleMultiplier);
 			textureCount++;
 		}
 	}

@@ -72,7 +72,7 @@ function CreateControls()
 {
 	Super.CreateControls();
 
-	CreateTitleWindow(9, 5, AugmentationsTitleText);
+	CreateTitleWindow(9 * dxEnhancedGUIScaleMultiplier, 5 * dxEnhancedGUIScaleMultiplier, AugmentationsTitleText);
 	CreateInfoWindow();
 	CreateButtons();
 	CreateAugmentationLabels();
@@ -95,7 +95,7 @@ function CreateControls()
 function CreateStatusWindow()
 {
 	winStatus = PersonaStatusLineWindow(winClient.NewChild(Class'PersonaStatusLineWindow'));
-	winStatus.SetPos(348, 240);
+	winStatus.SetPos(348 * dxEnhancedGUIScaleMultiplier, 240 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -107,8 +107,8 @@ function CreateButtons()
 	local PersonaButtonBarWindow winActionButtons;
 
 	winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(13, 407);
-	winActionButtons.SetWidth(187);
+	winActionButtons.SetPos(13 * dxEnhancedGUIScaleMultiplier, 407 * dxEnhancedGUIScaleMultiplier);
+	winActionButtons.SetWidth(187 * dxEnhancedGUIScaleMultiplier);
 	winActionButtons.FillAllSpace(False);
 
 	btnUpgrade = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
@@ -118,8 +118,8 @@ function CreateButtons()
 	btnActivate.SetButtonText(ActivateButtonLabel);
 
 	winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(346, 387);
-	winActionButtons.SetWidth(97);
+	winActionButtons.SetPos(346 * dxEnhancedGUIScaleMultiplier, 387 * dxEnhancedGUIScaleMultiplier);
+	winActionButtons.SetWidth(97 * dxEnhancedGUIScaleMultiplier);
 	winActionButtons.FillAllSpace(False);
 
 	btnUseCell = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
@@ -133,7 +133,7 @@ function CreateButtons()
 function CreateBodyWindow()
 {
 	winBody = PersonaAugmentationBodyWindow(winClient.NewChild(Class'PersonaAugmentationBodyWindow'));
-	winBody.SetPos(72, 28);
+	winBody.SetPos(72 * dxEnhancedGUIScaleMultiplier, 28 * dxEnhancedGUIScaleMultiplier);
 	winBody.Lower();
 }
 
@@ -144,7 +144,7 @@ function CreateBodyWindow()
 function CreateOverlaysWindow()
 {
 	winOverlays = PersonaAugmentationOverlaysWindow(winClient.NewChild(Class'PersonaAugmentationOverlaysWindow'));
-	winOverlays.SetPos(72, 28);
+	winOverlays.SetPos(72 * dxEnhancedGUIScaleMultiplier, 28 * dxEnhancedGUIScaleMultiplier);
 	winOverlays.Lower();
 }
 
@@ -155,8 +155,8 @@ function CreateOverlaysWindow()
 function CreateInfoWindow()
 {
 	winInfo = PersonaInfoWindow(winClient.NewChild(Class'PersonaInfoWindow'));
-	winInfo.SetPos(348, 14);
-	winInfo.SetSize(238, 218);
+	winInfo.SetPos(348 * dxEnhancedGUIScaleMultiplier, 14 * dxEnhancedGUIScaleMultiplier);
+	winInfo.SetSize(238 * dxEnhancedGUIScaleMultiplier, 218 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -183,10 +183,10 @@ function CreateLabel(int posX, int posY, String strLabel)
 	local PersonaNormalTextWindow winLabel;
 
 	winLabel = PersonaNormalTextWindow(winClient.NewChild(Class'PersonaNormalTextWindow'));
-	winLabel.SetPos(posX, posY);
-	winLabel.SetSize(52, 11);
+	winLabel.SetPos(posX * dxEnhancedGUIScaleMultiplier, posY * dxEnhancedGUIScaleMultiplier);
+	winLabel.SetSize(52 * dxEnhancedGUIScaleMultiplier, 11 * dxEnhancedGUIScaleMultiplier);
 	winLabel.SetText(strLabel);
-	winLabel.SetTextMargins(2, 1);
+	winLabel.SetTextMargins(2 * dxEnhancedGUIScaleMultiplier, 1 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -195,9 +195,13 @@ function CreateLabel(int posX, int posY, String strLabel)
 
 function CreateAugCanWindow()
 {
+	local int iconWindowHeight;	// DJ: Added
+	iconWindowHeight = 60;	
+	
 	winAugCans = PersonaItemDetailWindow(winClient.NewChild(Class'PersonaItemDetailWindow'));
-	winAugCans.SetPos(346, 274);
-	winAugCans.SetWidth(242);
+	winAugCans.SetPos(346 * dxEnhancedGUIScaleMultiplier, 274 * dxEnhancedGUIScaleMultiplier);
+	winAugCans.SetWidth(242 * dxEnhancedGUIScaleMultiplier);
+	winAugCans.SetHeight(iconWindowHeight * dxEnhancedGUIScaleMultiplier); // DJ: Added
 	winAugCans.SetIcon(Class'AugmentationUpgradeCannister'.Default.LargeIcon);
 	winAugCans.SetIconSize(
 		Class'AugmentationUpgradeCannister'.Default.largeIconWidth,
@@ -212,9 +216,13 @@ function CreateAugCanWindow()
 
 function CreateBioCellWindow()
 {
+	local int iconWindowHeight;	// DJ: Added
+	iconWindowHeight = 60;	
+	
 	winBioCells = PersonaItemDetailWindow(winClient.NewChild(Class'PersonaItemDetailWindow'));
-	winBioCells.SetPos(346, 332);
-	winBioCells.SetWidth(242);
+	winBioCells.SetPos(346 * dxEnhancedGUIScaleMultiplier, 332 * dxEnhancedGUIScaleMultiplier);
+	winBioCells.SetWidth(242 * dxEnhancedGUIScaleMultiplier);
+	winBioCells.SetHeight(iconWindowHeight * dxEnhancedGUIScaleMultiplier); // DJ: Added
 	winBioCells.SetIcon(Class'BioelectricCell'.Default.LargeIcon);
 	winBioCells.SetIconSize(
 		Class'BioelectricCell'.Default.largeIconWidth,
@@ -231,8 +239,8 @@ function CreateBioCellBar()
 {
 	winBioEnergy = ProgressBarWindow(winClient.NewChild(Class'ProgressBarWindow'));
 
-	winBioEnergy.SetPos(446, 389);
-	winBioEnergy.SetSize(140, 12);
+	winBioEnergy.SetPos(446 * dxEnhancedGUIScaleMultiplier, 389 * dxEnhancedGUIScaleMultiplier);
+	winBioEnergy.SetSize(140 * dxEnhancedGUIScaleMultiplier, 12 * dxEnhancedGUIScaleMultiplier);
 	winBioEnergy.SetValues(0, 100);
 	winBioEnergy.UseScaledColor(True);
 	winBioEnergy.SetVertical(False);
@@ -241,8 +249,8 @@ function CreateBioCellBar()
 	winBioEnergy.SetBackColor(colBarBack);
 
 	winBioEnergyText = TextWindow(winClient.NewChild(Class'TextWindow'));
-	winBioEnergyText.SetPos(446, 391);
-	winBioEnergyText.SetSize(140, 12);
+	winBioEnergyText.SetPos(446 * dxEnhancedGUIScaleMultiplier, 391 * dxEnhancedGUIScaleMultiplier);
+	winBioEnergyText.SetSize(140 * dxEnhancedGUIScaleMultiplier, 12 * dxEnhancedGUIScaleMultiplier);
 	winBioEnergyText.SetTextMargins(0, 0);
 	winBioEnergyText.SetTextAlignments(HALIGN_Center, VALIGN_Center);
 	winBioEnergyText.SetFont(Font'FontMenuSmall_DS');
@@ -366,8 +374,8 @@ function Window CreateHighlight(
 
 	newHighlight = winClient.NewChild(Class'Window');
 
-	newHighlight.SetPos(posX, posY);
-	newHighlight.SetSize(sizeX, sizeY);
+	newHighlight.SetPos(posX * dxEnhancedGUIScaleMultiplier, posY * dxEnhancedGUIScaleMultiplier);
+	newHighlight.SetSize(sizeX * dxEnhancedGUIScaleMultiplier, sizeY * dxEnhancedGUIScaleMultiplier);
 	newHighlight.SetBackground(texHighlight);
 	newHighlight.SetBackgroundStyle(DSTY_Masked);
 	newHighlight.Hide();
@@ -451,7 +459,7 @@ function PersonaAugmentationItemButton CreateAugButton(Augmentation anAug, int a
 	local PersonaAugmentationItemButton newButton;
 
 	newButton = PersonaAugmentationItemButton(winClient.NewChild(Class'PersonaAugmentationItemButton'));
-	newButton.SetPos(augX, augY);
+	newButton.SetPos(augX, augY); // DJ: Do not double these
 	newButton.SetClientObject(anAug);
 	newButton.SetIcon(anAug.icon);
 
@@ -740,25 +748,26 @@ function EnableButtons()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled all values except last 4
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     AugLocs(0)=(X=56,Y=38)
-     AugLocs(1)=(X=211,Y=38)
-     AugLocs(2)=(X=246,Y=120)
-     AugLocs(3)=(X=18,Y=114)
-     AugLocs(4)=(X=246,Y=322)
-     AugLocs(5)=(X=18,Y=198)
-     AugLocs(6)=(X=18,Y=341)
+     AugLocs(0)=(X=112,Y=76)
+     AugLocs(1)=(X=422,Y=76)
+     AugLocs(2)=(X=492,Y=240)
+     AugLocs(3)=(X=36,Y=228)
+     AugLocs(4)=(X=492,Y=644)
+     AugLocs(5)=(X=36,Y=396)
+     AugLocs(6)=(X=36,Y=682)
      augHighlightTextures(0)=Texture'DeusExUI.UserInterface.AugmentationsLocationCerebral'
      augHighlightTextures(1)=Texture'DeusExUI.UserInterface.AugmentationsLocationEyes'
      augHighlightTextures(2)=Texture'DeusExUI.UserInterface.AugmentationsLocationTorso'
      augHighlightTextures(3)=Texture'DeusExUI.UserInterface.AugmentationsLocationArms'
      augHighlightTextures(4)=Texture'DeusExUI.UserInterface.AugmentationsLocationLegs'
      augHighlightTextures(5)=Texture'DeusExUI.UserInterface.AugmentationsLocationSubdermal'
-     augSlotSpacingX=53
-     augSlotSpacingY=59
+     augSlotSpacingX=106
+     augSlotSpacingY=118
      AugmentationsTitleText="Augmentations"
      UpgradeButtonLabel="|&Upgrade"
      ActivateButtonLabel="Acti|&vate"
@@ -773,11 +782,11 @@ defaultproperties
      AugLocationLegs="Legs"
      AugLocationTorso="Torso"
      AugLocationSubdermal="Subdermal"
-     clientBorderOffsetY=32
-     ClientWidth=596
-     ClientHeight=427
-     clientOffsetX=25
-     clientOffsetY=5
+     clientBorderOffsetY=64
+     ClientWidth=1192
+     ClientHeight=854
+     clientOffsetX=50
+     clientOffsetY=10
      clientTextures(0)=Texture'DeusExUI.UserInterface.AugmentationsBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.AugmentationsBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.AugmentationsBackground_3'

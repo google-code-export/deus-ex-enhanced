@@ -10,6 +10,8 @@ struct S_MenuUIBorderButtonTextures
 	var int     width;
 };
 
+const dxEnhancedGUIScaleMultiplier = 2;
+
 var DeusExPlayer player;
 
 var String buttonText;
@@ -184,7 +186,7 @@ function SetButtonMetrics()
 		if (bButtonPressed)				// button pressed
 		{
 			textureIndex = 1;
-			textOffset = 1;
+			textOffset = 1 * dxEnhancedGUIScaleMultiplier;
 			textColorIndex = 2;
 		}
 		else if (IsFocusWindow())		// focus
@@ -252,6 +254,7 @@ event StyleChanged()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -261,11 +264,11 @@ defaultproperties
      colText(1)=(R=255,G=255,B=255)
      colText(2)=(R=255,G=255,B=255)
      colText(3)=(R=50,G=50,B=50)
-     leftMargin=6
-     fontBaseLine=1
-     fontAcceleratorLineHeight=1
+     leftMargin=12
+     fontBaseLine=2
+     fontAcceleratorLineHeight=2
      fontButtonText=Font'DeusExUI.FontMenuHeaders'
-     verticalTextMargin=1
-     maxTextWidth=200
+     verticalTextMargin=2
+     maxTextWidth=400
      bUseTextOffset=True
 }

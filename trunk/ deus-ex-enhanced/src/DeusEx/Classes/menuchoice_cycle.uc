@@ -92,12 +92,13 @@ function ResetToDefault()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     defaultInfoWidth=243
-     defaultInfoPosX=203
+     defaultInfoWidth=486
+     defaultInfoPosX=406
      HelpText="Determines how the server picks the next map when the current map is done"
      actionText="Map Cycling"
      configSetting="DXMapList CycleType"

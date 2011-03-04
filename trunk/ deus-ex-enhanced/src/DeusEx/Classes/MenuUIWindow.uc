@@ -935,7 +935,7 @@ function MenuUIEditWindow CreateMenuEditWindow(int posX, int posY, int editWidth
 	clipName = ClipWindow(winClient.newChild(Class'ClipWindow'));
 	clipName.SetWidth(editWidth - 8);
 	clipName.ForceChildSize(False, True);
-	clipName.SetPos(posX + 4, posY + 5);
+	clipName.SetPos(posX + 4, posY + 5);		// DJ: Hmmm...
 
 	newEdit = MenuUIEditWindow(clipName.NewChild(Class'MenuUIEditWindow'));
 	newEdit.SetMaxSize(maxChars);
@@ -1058,19 +1058,20 @@ event StyleChanged()
 
 	colCursor = theme.GetColorFromName('MenuColor_Cursor');
 
-	SetDefaultCursor(Texture'DeusExCursor1', Texture'DeusExCursor1_Shadow', 32, 32, colCursor);
+	SetDefaultCursor(Texture'DeusExCursor1', Texture'DeusExCursor1_Shadow', 32 * dxEnhancedGUIScaleMultiplier, 32 * dxEnhancedGUIScaleMultiplier, colCursor);
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      bUsesHelpWindow=True
      bEscapeSavesSettings=True
-     defaultHelpLeftOffset=7
-     defaultHelpHeight=27
-     defaultHelpClientDiffY=21
+     defaultHelpLeftOffset=14
+     defaultHelpHeight=54
+     defaultHelpClientDiffY=42
      btnLabelOK="|&OK"
      btnLabelCancel="|&Cancel"
      btnLabelPrevious="|&Previous"

@@ -78,6 +78,7 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled value defaultInfoWidth
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -88,7 +89,7 @@ defaultproperties
      enumText(1)="22050Hz"
      enumText(2)="44100Hz"
      defaultValue=44100
-     defaultInfoWidth=83
+     defaultInfoWidth=166
      HelpText="Lower sample rates result in less CPU overhead, but also lower sound quality"
      actionText="S|&ample Rate"
      configSetting="ini:Engine.Engine.AudioDevice OutputRate"

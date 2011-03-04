@@ -23,12 +23,13 @@ function SaveSetting()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled value defaultInfoWidth
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      defaultValue=1
-     defaultInfoWidth=83
+     defaultInfoWidth=166
      HelpText="Enables Dolby Surround Sound support.  Requires a Dolby Pro-Logic Surround Sound Processor."
      actionText="|&Dolby Surround Sound"
      configSetting="ini:Engine.Engine.AudioDevice UseSurround"

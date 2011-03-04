@@ -43,7 +43,7 @@ function CreateControls()
 {
 	Super.CreateControls();
 
-	CreateTitleWindow(9, 5, ConversationsTitleText);
+	CreateTitleWindow(9 * dxEnhancedGUIScaleMultiplier, 5 * dxEnhancedGUIScaleMultiplier, ConversationsTitleText);
 
 	CreateConversationWindow();
 	CreateHistoryListWindow();
@@ -62,17 +62,17 @@ function CreateHistoryListWindow()
 	bSortReverse = False;
 
 	winScroll = CreateScrollAreaWindow(winClient);
-	winScroll.SetPos(16, 38);
-	winScroll.SetSize(395, 133);
+	winScroll.SetPos(16 * dxEnhancedGUIScaleMultiplier, 38 * dxEnhancedGUIScaleMultiplier);
+	winScroll.SetSize(395 * dxEnhancedGUIScaleMultiplier, 133 * dxEnhancedGUIScaleMultiplier);
 
 	lstCons = PersonaListWindow(winScroll.clipWindow.NewChild(Class'PersonaListWindow'));
 	lstCons.EnableMultiSelect(False);
-	lstCons.SetNumColumns(3);
+	lstCons.SetNumColumns(3 * dxEnhancedGUIScaleMultiplier);
 	lstCons.SetSortColumn(sortColumn, bSortReverse);
 	lstCons.EnableAutoSort(False);
-	lstCons.SetColumnWidth(0, 161);
-	lstCons.SetColumnWidth(1, 194);
-	lstCons.SetColumnWidth(2, 40);
+	lstCons.SetColumnWidth(0, 161 * dxEnhancedGUIScaleMultiplier);
+	lstCons.SetColumnWidth(1, 194 * dxEnhancedGUIScaleMultiplier);
+	lstCons.SetColumnWidth(2, 40 * dxEnhancedGUIScaleMultiplier);
 	lstCons.SetColumnFont(2, Font'FontHUDWingDings');
 	lstCons.SetColumnAlignment(2, HALIGN_Center);
 }
@@ -112,7 +112,8 @@ function PopulateConversations()
 
 function CreateConversationWindow()
 {
-	conWindow = CreateScrollTileWindow(16, 190, 394, 204);
+	conWindow = CreateScrollTileWindow(16 * dxEnhancedGUIScaleMultiplier, 190 * dxEnhancedGUIScaleMultiplier, 
+									  394 * dxEnhancedGUIScaleMultiplier, 204 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -124,13 +125,13 @@ function CreateButtons()
 	local PersonaButtonBarWindow winButtonBar;
 
 	winButtonBar = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
-	winButtonBar.SetPos(14, 19);
-	winButtonBar.SetWidth(402);
+	winButtonBar.SetPos(14 * dxEnhancedGUIScaleMultiplier, 19 * dxEnhancedGUIScaleMultiplier);
+	winButtonBar.SetWidth(402 * dxEnhancedGUIScaleMultiplier);
 	winButtonBar.FillAllSpace(False);
 
-	btnType     = CreateBarButton(winButtonBar,  46, TypeButtonLabel);
-	btnLocation = CreateBarButton(winButtonBar, 194, LocationButtonLabel);
-	btnActor    = CreateBarButton(winButtonBar, 162, ActorButtonLabel);
+	btnType     = CreateBarButton(winButtonBar,  46 * dxEnhancedGUIScaleMultiplier, TypeButtonLabel);
+	btnLocation = CreateBarButton(winButtonBar, 194 * dxEnhancedGUIScaleMultiplier, LocationButtonLabel);
+	btnActor    = CreateBarButton(winButtonBar, 162 * dxEnhancedGUIScaleMultiplier, ActorButtonLabel);
 }
 
 // ----------------------------------------------------------------------
@@ -192,19 +193,19 @@ function DisplayHistory(ConHistory history)
 	{
 		// First create a window for the name
 		txtName = PersonaHeaderTextWindow(conWindow.NewChild(Class'PersonaHeaderTextWindow'));
-		txtName.SetTextMargins(5, 2);
+		txtName.SetTextMargins(5 * dxEnhancedGUIScaleMultiplier, 2 * dxEnhancedGUIScaleMultiplier);
 		txtName.SetText(event.conSpeaker);
 
 		// Now create a window for the text
 		txtSpeech = PersonaNormalTextWindow(conWindow.NewChild(Class'PersonaNormalTextWindow'));
-		txtSpeech.SetTextMargins(10, 2);
+		txtSpeech.SetTextMargins(10 * dxEnhancedGUIScaleMultiplier, 2 * dxEnhancedGUIScaleMultiplier);
 		txtSpeech.SetText(event.speech);
 
 		// If there's another event, create an empty window for spacing
 		if (event.next != None)
 		{
 			txtSpeech = PersonaNormalTextWindow(conWindow.NewChild(Class'PersonaNormalTextWindow'));
-			txtSpeech.SetSize(10, 5);
+			txtSpeech.SetSize(10 * dxEnhancedGUIScaleMultiplier, 5 * dxEnhancedGUIScaleMultiplier);
 			txtSpeech.SetSensitivity(False);		// Can't be selected
 		}
 
@@ -270,6 +271,7 @@ function SetSortColumn(int newSortColumn)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values, except last 4
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -278,10 +280,10 @@ defaultproperties
      ActorButtonLabel="Contact"
      LocationButtonLabel="Location"
      TypeButtonLabel="Type"
-     ClientWidth=426
-     ClientHeight=407
-     clientOffsetX=105
-     clientOffsetY=17
+     ClientWidth=852
+     ClientHeight=814
+     clientOffsetX=210
+     clientOffsetY=34
      clientTextures(0)=Texture'DeusExUI.UserInterface.ConversationsBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.ConversationsBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.ConversationsBackground_3'

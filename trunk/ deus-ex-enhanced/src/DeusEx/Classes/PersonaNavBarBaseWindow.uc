@@ -32,7 +32,7 @@ event InitWindow()
 	// Get a pointer to the root window
 	root = DeusExRootWindow(GetRootWindow());
 
-	SetSize(640, 64);
+	SetSize(640 * dxEnhancedGUIScaleMultiplier, 64 * dxEnhancedGUIScaleMultiplier);
 
 	CreateButtonWindows();
 	CreateButtons();
@@ -46,9 +46,12 @@ function DrawBackground(GC gc)
 {
 	gc.SetStyle(backgroundDrawStyle);
 	gc.SetTileColor(colBackground);
-	gc.DrawTexture(backgroundOffsetX,       backgroundOffsetY, 256, 21, 0, 0, texBackgrounds[0]);
-	gc.DrawTexture(backgroundOffsetX + 256, backgroundOffsetY, 256, 21, 0, 0, texBackgrounds[1]);
-	gc.DrawTexture(backgroundOffsetX + 512, backgroundOffsetY,  97, 21, 0, 0, texBackgrounds[2]);
+	gc.DrawTexture(backgroundOffsetX,       backgroundOffsetY, 
+				   256 * dxEnhancedGUIScaleMultiplier, 21 * dxEnhancedGUIScaleMultiplier, 0, 0, texBackgrounds[0]);
+	gc.DrawTexture(backgroundOffsetX + (256 * dxEnhancedGUIScaleMultiplier), backgroundOffsetY, 
+				   256 * dxEnhancedGUIScaleMultiplier, 21 * dxEnhancedGUIScaleMultiplier, 0, 0, texBackgrounds[1]);
+	gc.DrawTexture(backgroundOffsetX + (512 * dxEnhancedGUIScaleMultiplier), backgroundOffsetY,  
+				   97 * dxEnhancedGUIScaleMultiplier,  21 * dxEnhancedGUIScaleMultiplier, 0, 0, texBackgrounds[2]);
 }
 
 // ----------------------------------------------------------------------
@@ -61,9 +64,10 @@ function DrawBorder(GC gc)
 	{
 		gc.SetStyle(borderDrawStyle);
 		gc.SetTileColor(colBorder);
-		gc.DrawTexture(  0, 0, 256, height, 0, 0, texBorders[0]);
-		gc.DrawTexture(256, 0, 256, height, 0, 0, texBorders[1]);
-		gc.DrawTexture(512, 0, 175, height, 0, 0, texBorders[2]);
+		
+		gc.DrawTexture(  0, 0, 256 * dxEnhancedGUIScaleMultiplier, height, 0, 0, texBorders[0]);
+		gc.DrawTexture(256 * dxEnhancedGUIScaleMultiplier, 0, 256 * dxEnhancedGUIScaleMultiplier, height, 0, 0, texBorders[1]);
+		gc.DrawTexture(512 * dxEnhancedGUIScaleMultiplier, 0, 175 * dxEnhancedGUIScaleMultiplier, height, 0, 0, texBorders[2]);
 	}
 }
 
@@ -76,15 +80,15 @@ function CreateButtonWindows()
 	// Create the Inventory Items window
 	winNavButtons = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindow'));
 
-	winNavButtons.SetPos(23, 8);
-	winNavButtons.SetSize(534, 16);
+	winNavButtons.SetPos(  23 * dxEnhancedGUIScaleMultiplier,  8 * dxEnhancedGUIScaleMultiplier);
+	winNavButtons.SetSize(534 * dxEnhancedGUIScaleMultiplier, 16 * dxEnhancedGUIScaleMultiplier);
 	winNavButtons.Lower();
 
 	// Create the Inventory Items window
 	winNavExit = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindow'));
 
-	winNavExit.SetPos(573, 8);
-	winNavExit.SetSize(48, 16);
+	winNavExit.SetPos(573 * dxEnhancedGUIScaleMultiplier, 8 * dxEnhancedGUIScaleMultiplier);
+	winNavExit.SetSize(48 * dxEnhancedGUIScaleMultiplier, 16 * dxEnhancedGUIScaleMultiplier);
 	winNavExit.Lower();
 }
 
@@ -140,6 +144,7 @@ function bool ButtonActivated( Window buttonPressed )
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -150,7 +155,7 @@ defaultproperties
      texBorders(0)=Texture'DeusExUI.UserInterface.PersonaNavBarBorder_1'
      texBorders(1)=Texture'DeusExUI.UserInterface.PersonaNavBarBorder_2'
      texBorders(2)=Texture'DeusExUI.UserInterface.PersonaNavBarBorder_3'
-     backgroundOffsetX=17
-     backgroundOffsetY=6
+     backgroundOffsetX=34
+     backgroundOffsetY=12
      ExitButtonLabel="E|&xit"
 }

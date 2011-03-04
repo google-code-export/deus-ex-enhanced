@@ -41,6 +41,8 @@ function bool UseAmmo(int AmountNeeded)
 	return False;
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      bShowInfo=True
@@ -50,8 +52,8 @@ defaultproperties
      ItemArticle="some"
      PickupViewMesh=LodMesh'DeusExItems.Ammo3006'
      Icon=Texture'DeusExUI.Icons.BeltIconAmmo3006'
-     largeIconWidth=43
-     largeIconHeight=31
+     largeIconWidth=86
+     largeIconHeight=62
      Description="Its high velocity and accuracy have made sniper rifles using the 30.06 round the preferred tool of individuals requiring 'one shot, one kill' for over fifty years."
      beltDescription="3006 AMMO"
      Mesh=LodMesh'DeusExItems.Ammo3006'

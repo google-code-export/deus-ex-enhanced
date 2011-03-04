@@ -74,7 +74,7 @@ function CreateControls()
 	CreateClientBorderWindow();
 	CreateClientWindow();
 
-	CreateTitleWindow(9, 5, AugmentationsTitleText);
+	CreateTitleWindow(9 * dxEnhancedGUIScaleMultiplier, 5 * dxEnhancedGUIScaleMultiplier, AugmentationsTitleText);
 	CreateInfoWindow();
 	CreateButtons();
 	CreateAugmentationLabels();
@@ -106,8 +106,8 @@ function CreateButtons()
 	local PersonaButtonBarWindow winActionButtons;
 
 	winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(346, 371);
-	winActionButtons.SetWidth(96);
+	winActionButtons.SetPos(346 * dxEnhancedGUIScaleMultiplier, 371 * dxEnhancedGUIScaleMultiplier);
+	winActionButtons.SetWidth(96 * dxEnhancedGUIScaleMultiplier);
 
 	btnInstall = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
 	btnInstall.SetButtonText(InstallButtonLabel);
@@ -120,8 +120,8 @@ function CreateButtons()
 function CreateInfoWindow()
 {
 	winInfo = PersonaInfoWindow(winClient.NewChild(Class'PersonaInfoWindow'));
-	winInfo.SetPos(348, 158);
-	winInfo.SetSize(238, 210);
+	winInfo.SetPos(348 * dxEnhancedGUIScaleMultiplier, 158 * dxEnhancedGUIScaleMultiplier);
+	winInfo.SetSize(238 * dxEnhancedGUIScaleMultiplier, 210 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -130,7 +130,7 @@ function CreateInfoWindow()
 
 function CreateAugsLabel()
 {
-	CreatePersonaHeaderText(349, 15, AvailableAugsText, winClient);
+	CreatePersonaHeaderText(349 * dxEnhancedGUIScaleMultiplier, 15 * dxEnhancedGUIScaleMultiplier, AvailableAugsText, winClient);
 }
 
 // ----------------------------------------------------------------------
@@ -142,8 +142,8 @@ function CreateMedbotLabel()
 	local PersonaHeaderTextWindow txtLabel;
 
 	txtLabel = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
-	txtLabel.SetPos(305, 9);
-	txtLabel.SetSize(250, 16);
+	txtLabel.SetPos(305 * dxEnhancedGUIScaleMultiplier, 9 * dxEnhancedGUIScaleMultiplier);
+	txtLabel.SetSize(250 * dxEnhancedGUIScaleMultiplier, 16 * dxEnhancedGUIScaleMultiplier);
 	txtLabel.SetTextAlignments(HALIGN_Right, VALIGN_Center);
 	txtLabel.SetText(MedbotInterfaceText);
 }
@@ -158,13 +158,13 @@ function CreateAugCanList()
 
 	// First create the scroll window
 	winScroll = PersonaScrollAreaWindow(winClient.NewChild(Class'PersonaScrollAreaWindow'));
-	winScroll.SetPos(348, 34);
-	winScroll.SetSize(238, 116);
+	winScroll.SetPos(348 * dxEnhancedGUIScaleMultiplier, 34 * dxEnhancedGUIScaleMultiplier);
+	winScroll.SetSize(238 * dxEnhancedGUIScaleMultiplier, 116 * dxEnhancedGUIScaleMultiplier);
 
 	winAugsTile = TileWindow(winScroll.ClipWindow.NewChild(Class'TileWindow'));
 	winAugsTile.MakeWidthsEqual(False);
 	winAugsTile.MakeHeightsEqual(False);
-	winAugsTile.SetMinorSpacing(1);
+	winAugsTile.SetMinorSpacing(1 * dxEnhancedGUIScaleMultiplier);
 	winAugsTile.SetMargins(0, 0);
 	winAugsTile.SetOrder(ORDER_Down);
 }
@@ -203,7 +203,7 @@ function PopulateAugCanList()
 	{
 		txtNoCans = PersonaNormalTextWindow(winAugsTile.NewChild(Class'PersonaNormalTextWindow'));
 		txtNoCans.SetText(NoCansAvailableText);
-		txtNoCans.SetTextMargins(4, 4);
+		txtNoCans.SetTextMargins(4 * dxEnhancedGUIScaleMultiplier, 4 * dxEnhancedGUIScaleMultiplier);
 		txtNoCans.SetTextAlignments(HALIGN_Left, VALIGN_Center);
 	}
 }

@@ -13,6 +13,8 @@ simulated function bool TestMPBeltSpot(int BeltSpot)
    return (BeltSpot == 7);
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      LowAmmoWaterMark=2
@@ -54,8 +56,8 @@ defaultproperties
      ThirdPersonMesh=LodMesh'DeusExItems.GasGrenade3rd'
      Icon=Texture'DeusExUI.Icons.BeltIconGasGrenade'
      largeIcon=Texture'DeusExUI.Icons.LargeIconGasGrenade'
-     largeIconWidth=23
-     largeIconHeight=46
+     largeIconWidth=46
+     largeIconHeight=92
      Description="Upon detonation, the gas grenade releases a large amount of CS (a military-grade 'tear gas' agent) over its area of effect. CS will cause irritation to all exposed mucous membranes leading to temporary blindness and uncontrolled coughing. Like a LAM, gas grenades can be attached to any surface."
      beltDescription="GAS GREN"
      Mesh=LodMesh'DeusExItems.GasGrenadePickup'

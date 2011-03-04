@@ -94,7 +94,7 @@ function CreateControls()
 {
 	Super.CreateControls();
 
-	CreateTitleWindow(9, 5, InventoryTitleText);
+	CreateTitleWindow(9 * dxEnhancedGUIScaleMultiplier, 5 * dxEnhancedGUIScaleMultiplier, InventoryTitleText);
 	CreateInfoWindow();
 	CreateCreditsWindow();
 	CreateObjectBelt();
@@ -113,7 +113,7 @@ function CreateControls()
 function CreateStatusWindow()
 {
 	winStatus = PersonaStatusLineWindow(winClient.NewChild(Class'PersonaStatusLineWindow'));
-	winStatus.SetPos(337, 243);
+	winStatus.SetPos(337 * dxEnhancedGUIScaleMultiplier, 243 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -125,8 +125,8 @@ function CreateButtons()
 	local PersonaButtonBarWindow winActionButtons;
 
 	winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(9, 339);
-	winActionButtons.SetWidth(267);
+	winActionButtons.SetPos(9 * dxEnhancedGUIScaleMultiplier, 339 * dxEnhancedGUIScaleMultiplier);
+	winActionButtons.SetWidth(267 * dxEnhancedGUIScaleMultiplier);
 
 	btnChangeAmmo = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
 	btnChangeAmmo.SetButtonText(ChangeAmmoButtonLabel);
@@ -148,8 +148,8 @@ function CreateButtons()
 function CreateInfoWindow()
 {
 	winInfo = PersonaInventoryInfoWindow(winClient.NewChild(Class'PersonaInventoryInfoWindow'));
-	winInfo.SetPos(337, 17);
-	winInfo.SetSize(238, 218);
+	winInfo.SetPos(337 * dxEnhancedGUIScaleMultiplier, 17 * dxEnhancedGUIScaleMultiplier);
+	winInfo.SetSize(238 * dxEnhancedGUIScaleMultiplier, 218 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -171,20 +171,25 @@ function CreateObjectBelt()
 function CreateCreditsWindow()
 {
 	winCredits = PersonaInventoryCreditsWindow(winClient.NewChild(Class'PersonaInventoryCreditsWindow'));
-	winCredits.SetPos(165, 3);
-	winCredits.SetWidth(108);
+	winCredits.SetPos(165 * dxEnhancedGUIScaleMultiplier, 3 * dxEnhancedGUIScaleMultiplier);
+	winCredits.SetWidth(108 * dxEnhancedGUIScaleMultiplier);
 	winCredits.SetCredits(Player.Credits);
 }
 
 // ----------------------------------------------------------------------
 // CreateNanoKeyRingWindow()
+// DJ: This creates the nanokey button window in the persona inventory screen
 // ----------------------------------------------------------------------
 
 function CreateNanoKeyRingWindow()
 {
+	local int iconWindowHeight;
+	iconWindowHeight = 60;											  		   // DJ: Added.
+	
 	winNanoKeyRing = PersonaItemDetailWindow(winClient.NewChild(Class'PersonaItemDetailWindow'));
-	winNanoKeyRing.SetPos(335, 285);
-	winNanoKeyRing.SetWidth(121);
+	winNanoKeyRing.SetPos(335 * dxEnhancedGUIScaleMultiplier, 285 * dxEnhancedGUIScaleMultiplier);
+	winNanoKeyRing.SetWidth(121 * dxEnhancedGUIScaleMultiplier);
+	winNanoKeyRing.SetHeight(iconWindowHeight * dxEnhancedGUIScaleMultiplier); // DJ: Added.
 	winNanoKeyRing.SetIcon(Class'NanoKeyRing'.Default.LargeIcon);
 	winNanoKeyRing.SetItem(player.KeyRing);
 	winNanoKeyRing.SetText(NanoKeyRingInfoText);
@@ -195,14 +200,19 @@ function CreateNanoKeyRingWindow()
 }
 
 // ----------------------------------------------------------------------
-// CreateAmmoWindow()
+// CreateAmmoWindow() 
+// DJ: This creates the ammo button window in the persona inventory screen
 // ----------------------------------------------------------------------
 
 function CreateAmmoWindow()
 {
+	local int iconWindowHeight;
+	iconWindowHeight = 60;											  		      // DJ: Added. 
+	
 	winAmmo = PersonaItemDetailWindow(winClient.NewChild(Class'PersonaItemDetailWindow'));
-	winAmmo.SetPos(456, 285);
-	winAmmo.SetWidth(120);
+	winAmmo.SetPos(456 * dxEnhancedGUIScaleMultiplier, 285 * dxEnhancedGUIScaleMultiplier);
+	winAmmo.SetWidth(120 * dxEnhancedGUIScaleMultiplier);
+	winAmmo.SetHeight(iconWindowHeight * dxEnhancedGUIScaleMultiplier); 		  // DJ: Added.
 	winAmmo.SetIcon(Class'AmmoShell'.Default.LargeIcon);
 	winAmmo.SetIconSize(Class'AmmoShell'.Default.largeIconWidth, Class'AmmoShell'.Default.largeIconHeight);
 	winAmmo.SetText(AmmoInfoText);
@@ -218,8 +228,8 @@ function CreateAmmoWindow()
 function CreateItemsWindow()
 {
 	winItems = winClient.NewChild(Class'Window');
-	winItems.SetPos(9, 19);
-	winItems.SetSize(266, 319);
+	winItems.SetPos(9 * dxEnhancedGUIScaleMultiplier, 19 * dxEnhancedGUIScaleMultiplier);
+	winItems.SetSize(266 * dxEnhancedGUIScaleMultiplier, 319 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -1800,14 +1810,15 @@ function ClearSpecialHighlights()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled all values, except last 4
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     invButtonWidth=53
-     invButtonHeight=53
-     smallInvWidth=40
-     smallInvHeight=35
+     invButtonWidth=106
+     invButtonHeight=106
+     smallInvWidth=80
+     smallInvHeight=70
      InventoryTitleText="Inventory"
      EquipButtonLabel="|&Equip"
      UnequipButtonLabel="Un|&equip"
@@ -1823,11 +1834,11 @@ defaultproperties
      AmmoInfoText="Click icon to see a list of Ammo."
      AmmoTitleLabel="Ammunition"
      NoAmmoLabel="No Ammo Available"
-     clientBorderOffsetY=33
-     ClientWidth=585
-     ClientHeight=361
-     clientOffsetX=33
-     clientOffsetY=10
+     clientBorderOffsetY=66
+     ClientWidth=1170
+     ClientHeight=722
+     clientOffsetX=66
+     clientOffsetY=20
      clientTextures(0)=Texture'DeusExUI.UserInterface.InventoryBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.InventoryBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.InventoryBackground_3'

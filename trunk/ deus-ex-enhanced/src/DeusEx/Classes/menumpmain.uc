@@ -49,6 +49,7 @@ function ProcessCustomMenuButton(string key)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values, except texturecols
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -59,18 +60,18 @@ defaultproperties
      ButtonNames(3)="Augmentations"
      ButtonNames(4)="Disconnect"
      ButtonNames(5)="Previous Menu"
-     buttonXPos=7
-     buttonWidth=245
-     buttonDefaults(0)=(Y=13,Action=MA_MenuScreen,Invoke=Class'DeusEx.menuscreenjoininternet')
-     buttonDefaults(1)=(Y=49,Action=MA_MenuScreen,Invoke=Class'DeusEx.menuscreenjoinlan')
-     buttonDefaults(2)=(Y=85,Action=MA_MenuScreen,Invoke=Class'DeusEx.menuscreenplayersetup')
-     buttonDefaults(3)=(Y=121,Action=MA_MenuScreen,Invoke=Class'DeusEx.menuscreenaugsetup')
-     buttonDefaults(4)=(Y=157,Action=MA_Custom,Key="DISCONNECT")
-     buttonDefaults(5)=(Y=215,Action=MA_Previous)
+     buttonXPos=14
+     buttonWidth=490
+     buttonDefaults(0)=(Y=26,Action=MA_MenuScreen,Invoke=Class'DeusEx.menuscreenjoininternet')
+     buttonDefaults(1)=(Y=98,Action=MA_MenuScreen,Invoke=Class'DeusEx.menuscreenjoinlan')
+     buttonDefaults(2)=(Y=170,Action=MA_MenuScreen,Invoke=Class'DeusEx.menuscreenplayersetup')
+     buttonDefaults(3)=(Y=242,Action=MA_MenuScreen,Invoke=Class'DeusEx.menuscreenaugsetup')
+     buttonDefaults(4)=(Y=314,Action=MA_Custom,Key="DISCONNECT")
+     buttonDefaults(5)=(Y=430,Action=MA_Previous)
      Title="Multiplayer Main Menu"
-     ClientWidth=258
-     ClientHeight=257
-     verticalOffset=2
+     ClientWidth=516
+     ClientHeight=514
+     verticalOffset=4
      clientTextures(0)=Texture'DeusExUI.UserInterface.MenuMultiplayerBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.MenuMultiplayerBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.MenuMultiplayerBackground_3'

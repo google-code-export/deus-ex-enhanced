@@ -289,6 +289,8 @@ Begin:
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      NoKeys="No Nano Keys Available!"
@@ -303,8 +305,8 @@ defaultproperties
      ThirdPersonMesh=LodMesh'DeusExItems.NanoKeyRing'
      Icon=Texture'DeusExUI.Icons.BeltIconNanoKeyRing'
      largeIcon=Texture'DeusExUI.Icons.LargeIconNanoKeyRing'
-     largeIconWidth=47
-     largeIconHeight=44
+     largeIconWidth=94
+     largeIconHeight=88
      Description="A nanokey ring can read and store the two-dimensional molecular patterns from different nanokeys, and then recreate those patterns on demand."
      beltDescription="KEY RING"
      bHidden=True

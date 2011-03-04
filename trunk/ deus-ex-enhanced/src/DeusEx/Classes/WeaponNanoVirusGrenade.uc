@@ -10,6 +10,8 @@ simulated function bool TestCycleable()
 
 //     MultiSkins(4)=FireTexture'Effects.liquid.Virus_SFX'
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      LowAmmoWaterMark=2
@@ -43,8 +45,8 @@ defaultproperties
      ThirdPersonMesh=LodMesh'DeusExItems.NanoVirusGrenade3rd'
      Icon=Texture'DeusExUI.Icons.BeltIconWeaponNanoVirus'
      largeIcon=Texture'DeusExUI.Icons.LargeIconWeaponNanoVirus'
-     largeIconWidth=24
-     largeIconHeight=49
+     largeIconWidth=48
+     largeIconHeight=98
      Description="The detonation of a GUARDIAN scramble grenade broadcasts a short-range, polymorphic broadband assault on the command frequencies used by almost all bots manufactured since 2028. The ensuing electronic storm causes bots within its radius of effect to indiscriminately attack other bots until command control can be re-established. Like a LAM, scramble grenades can be attached to any surface."
      beltDescription="SCRM GREN"
      Mesh=LodMesh'DeusExItems.NanoVirusGrenadePickup'

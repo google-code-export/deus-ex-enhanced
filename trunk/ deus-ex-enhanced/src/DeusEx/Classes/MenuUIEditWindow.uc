@@ -103,10 +103,11 @@ event StyleChanged()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      fontText=Font'DeusExUI.FontMenuSmall'
-     maxHeight=11
+     maxHeight=22
 }

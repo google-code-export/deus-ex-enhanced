@@ -4,6 +4,7 @@
 
 class MenuUITabButtonWindow expands ButtonWindow;
 
+const dxEnhancedGUIScaleMultiplier = 2; 				// DJ: Added
 var DeusExPlayer player;
 
 var String buttonText;
@@ -28,7 +29,7 @@ event InitWindow()
 
 	EnableTextAsAccelerator(false);
 
-	SetSize(70, 17);
+	SetSize(70 * dxEnhancedGUIScaleMultiplier, 17 * dxEnhancedGUIScaleMultiplier);
 	SetFont(fontText);
 	SetBackgroundStyle(DSTY_Masked);
 	SetButtonTextures(
@@ -60,7 +61,7 @@ event DrawWindow(GC gc)
 
 	// If the button is pressed, draw the text down and to the right
 	if ( bButtonPressed )
-		gc.DrawText(1, 1, width, height, buttonText);
+		gc.DrawText(1, 1, width, height, buttonText); // DJ: Hmm...
 	else
 		gc.DrawText(0, 0, width, height, buttonText);
 }
@@ -96,6 +97,7 @@ event StyleChanged()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Hmmm...
 // ----------------------------------------------------------------------
 
 defaultproperties

@@ -15,18 +15,20 @@ var String hotKeyString;
 // DrawHotKey()
 // ----------------------------------------------------------------------
 
-function DrawHotKey(GC gc)
+function DrawHotKey(GC gc) // DJ: Not sure precisely what this is for yet
 {
 	gc.SetAlignments(HALIGN_Right, VALIGN_Top);
 	gc.SetFont(Font'FontTiny');
 	
 	// Draw Dropshadow
 	gc.SetTextColor(colBlack);
-	gc.DrawText(16, 1, 15, 8, hotKeyString);
+	gc.DrawText(16 * dxEnhancedGUIScaleMultiplier, 1 * dxEnhancedGUIScaleMultiplier, 
+				15 * dxEnhancedGUIScaleMultiplier, 8 * dxEnhancedGUIScaleMultiplier, hotKeyString);
 
 	// Draw Dropshadow
 	gc.SetTextColor(colText);
-	gc.DrawText(17, 0, 15, 8, hotKeyString);
+	gc.DrawText(17 * dxEnhancedGUIScaleMultiplier, 0, 15 * dxEnhancedGUIScaleMultiplier, 
+				 8 * dxEnhancedGUIScaleMultiplier, hotKeyString);
 }
 
 // ----------------------------------------------------------------------

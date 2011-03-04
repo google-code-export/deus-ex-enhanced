@@ -244,6 +244,7 @@ event StyleChanged()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled last 2 values
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -256,7 +257,7 @@ defaultproperties
      fontBaseLine=1
      fontAcceleratorLineHeight=1
      fontButtonText=Font'DeusExUI.FontMenuSmall'
-     verticalTextMargin=1
-     maxTextWidth=200
+     verticalTextMargin=2
+     maxTextWidth=400
      bUseTextOffset=True
 }

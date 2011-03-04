@@ -4,6 +4,8 @@
 
 class MenuUITitleWindow extends Window;
 
+const dxEnhancedGUIScaleMultiplier = 2; 			// DJ: Added
+
 var DeusExPlayer player;
 
 var Window winIcon;
@@ -76,6 +78,7 @@ event DrawWindow(GC gc)
 	gc.DrawTexture(0, 0, leftWidth, titleHeight, 0, 0, titleTexture_Left);
 
 	// Left bottom
+	// DJ: Hmmm...
 	gc.DrawTexture(0, titleHeight - 1, leftBottomWidth, leftBottomHeight, 0, 0, titleTexture_LeftBottom);
 
 	// Center
@@ -144,8 +147,8 @@ event ParentRequestedPreferredSize(bool bWidthSpecified, out float preferredWidt
 function CreateIconWindow()
 {
 	winIcon = NewChild(Class'Window');
-	winIcon.SetPos(12, 3);
-	winIcon.SetSize(16, 16);
+	winIcon.SetPos(12 * dxEnhancedGUIScaleMultiplier, 3 * dxEnhancedGUIScaleMultiplier);
+	winIcon.SetSize(16 * dxEnhancedGUIScaleMultiplier, 16 * dxEnhancedGUIScaleMultiplier);
 	winIcon.SetBackground(textureAppIcon);
 }
 
@@ -187,15 +190,16 @@ event StyleChanged()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     titleHeight=23
-     minTitleWidth=200
-     titleLeftMargin=31
-     titleRightMargin=45
-     maxTextWidth=400
+     titleHeight=46
+     minTitleWidth=400
+     titleLeftMargin=62
+     titleRightMargin=90
+     maxTextWidth=800
      textureAppIcon=Texture'DeusExUI.UserInterface.MenuIcon_DeusEx'
      fontTitle=Font'DeusExUI.FontMenuTitle'
      colTitle=(R=255,G=255,B=255)
@@ -208,9 +212,9 @@ defaultproperties
      titleBubble_Left=Texture'DeusExUI.UserInterface.MenuTitleBubble_Left'
      titleBubble_Center=Texture'DeusExUI.UserInterface.MenuTitleBubble_Center'
      titleBubble_Right=Texture'DeusExUI.UserInterface.MenuTitleBubble_Right'
-     leftWidth=87
-     rightWidth=100
-     CenterWidth=8
-     leftBottomWidth=10
-     leftBottomHeight=53
+     leftWidth=174
+     rightWidth=200
+     CenterWidth=16
+     leftBottomWidth=20
+     leftBottomHeight=106
 }

@@ -45,6 +45,8 @@ function GiveTo(Pawn Other)
 	Super.GiveTo(Other);
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      ShortName="GEP Gun"
@@ -94,8 +96,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.DropLargeWeapon'
      Icon=Texture'DeusExUI.Icons.BeltIconGEPGun'
      largeIcon=Texture'DeusExUI.Icons.LargeIconGEPGun'
-     largeIconWidth=203
-     largeIconHeight=77
+     largeIconWidth=406
+     largeIconHeight=154
      invSlotsX=4
      invSlotsY=2
      Description="The GEP gun is a relatively recent invention in the field of armaments: a portable, shoulder-mounted launcher that can fire rockets and laser guide them to their target with pinpoint accuracy. While suitable for high-threat combat situations, it can be bulky for those agents who have not grown familiar with it."

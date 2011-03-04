@@ -5,6 +5,8 @@
 class MenuUIChoice extends Window
 	abstract;
 
+const dxEnhancedGUIScaleMultiplier = 2;	
+	
 var MenuUIChoiceButton btnAction;
 var DeusExPlayer player;				// Used for saving/loading/default
 
@@ -30,7 +32,7 @@ event InitWindow()
 
 	player = DeusExPlayer(DeusExRootWindow(GetRootWindow()).parentPawn);
 
-	SetSize(540, 21);
+	SetSize(540 * dxEnhancedGUIScaleMultiplier, 21 * dxEnhancedGUIScaleMultiplier);
 
 	CreateActionButton();
 }
@@ -176,11 +178,12 @@ function SaveMenuSettings()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled value
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     choiceControlPosX=270
+     choiceControlPosX=540
      actionText="Choice"
      FalseTrue(0)="False"
      FalseTrue(1)="True"

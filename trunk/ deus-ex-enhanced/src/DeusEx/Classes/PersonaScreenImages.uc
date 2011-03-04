@@ -44,7 +44,7 @@ function CreateControls()
 {
 	Super.CreateControls();
 
-	CreateTitleWindow(9, 5, ImagesTitleText);
+	CreateTitleWindow(9 * dxEnhancedGUIScaleMultiplier, 5 * dxEnhancedGUIScaleMultiplier, ImagesTitleText);
 	CreateImageWindow();
 	CreateImagesList();
 	CreateImageTitle();
@@ -60,7 +60,7 @@ function CreateControls()
 function CreateImageWindow()
 {
 	winImage = PersonaImageWindow(winClient.NewChild(Class'PersonaImageWindow'));
-	winImage.SetPos(15, 20);
+	winImage.SetPos(15 * dxEnhancedGUIScaleMultiplier, 20 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -70,8 +70,8 @@ function CreateImageWindow()
 function CreateImageTitle()
 {
 	winImageTitle = PersonaHeaderTextWindow(winClient.NewChild(Class'PersonaHeaderTextWindow'));
-	winImageTitle.SetPos(214, 6);
-	winImageTitle.SetWidth(200);
+	winImageTitle.SetPos(214 * dxEnhancedGUIScaleMultiplier, 6 * dxEnhancedGUIScaleMultiplier);
+	winImageTitle.SetWidth(200 * dxEnhancedGUIScaleMultiplier);
 	winImageTitle.SetTextAlignments(HALIGN_Right, VALIGN_Center);
 }
 
@@ -82,8 +82,8 @@ function CreateImageTitle()
 function CreateImagesList()
 {
 	winScroll = CreateScrollAreaWindow(winClient);
-	winScroll.SetPos(417, 21);
-	winScroll.SetSize(184, 398);
+	winScroll.SetPos(417 * dxEnhancedGUIScaleMultiplier, 21 * dxEnhancedGUIScaleMultiplier);
+	winScroll.SetSize(184 * dxEnhancedGUIScaleMultiplier, 398 * dxEnhancedGUIScaleMultiplier);
 
 	lstImages = PersonaListWindow(winScroll.clipWindow.NewChild(Class'PersonaListWindow'));
 	lstImages.EnableMultiSelect(False);
@@ -92,8 +92,8 @@ function CreateImagesList()
 	lstImages.HideColumn(2, True);
 	lstImages.SetSortColumn(0, True);
 	lstImages.EnableAutoSort(False);
-	lstImages.SetColumnWidth(0, 150);
-	lstImages.SetColumnWidth(1, 34);
+	lstImages.SetColumnWidth(0, 150 * dxEnhancedGUIScaleMultiplier);
+	lstImages.SetColumnWidth(1, 34 * dxEnhancedGUIScaleMultiplier);
 	lstImages.SetColumnType(2, COLTYPE_Float);
 	lstImages.SetColumnFont(1, Font'FontHUDWingDings');
 }
@@ -107,8 +107,8 @@ function CreateButtons()
 	local PersonaButtonBarWindow winActionButtons;
 
 	winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(10, 422);
-	winActionButtons.SetWidth(259);
+	winActionButtons.SetPos(10 * dxEnhancedGUIScaleMultiplier, 422 * dxEnhancedGUIScaleMultiplier);
+	winActionButtons.SetWidth(259 * dxEnhancedGUIScaleMultiplier);
 	winActionButtons.FillAllSpace(False);
 
 	btnAddNote = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
@@ -126,7 +126,7 @@ function CreateShowNotesCheckbox()
 {
 	chkShowNotes = PersonaCheckBoxWindow(winClient.NewChild(Class'PersonaCheckBoxWindow'));
 
-	chkShowNotes.SetWindowAlignments(HALIGN_Right, VALIGN_Top, 203, 424);
+	chkShowNotes.SetWindowAlignments(HALIGN_Right, VALIGN_Top, 203 * dxEnhancedGUIScaleMultiplier, 424 * dxEnhancedGUIScaleMultiplier);
 	chkShowNotes.SetText(ShowNotesLabel);
 	chkShowNotes.SetToggle(True);
 }
@@ -140,7 +140,7 @@ function CreateNewLegendLabel()
 	local PersonaImageNewLegendLabel newLabel;
 
 	newLabel = PersonaImageNewLegendLabel(winClient.NewChild(Class'PersonaImageNewLegendLabel'));
-	newLabel.SetWindowAlignments(HALIGN_Right, VALIGN_Top, 13, 424);
+	newLabel.SetWindowAlignments(HALIGN_Right, VALIGN_Top, 13 * dxEnhancedGUIScaleMultiplier, 424 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -379,6 +379,7 @@ function DestroyImages()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -387,11 +388,11 @@ defaultproperties
      DeleteNoteButtonLabel="|&Delete Note"
      AddNoteButtonLabel="Add |&Note"
      ShowNotesLabel="Show N|&otes"
-     clientBorderOffsetY=35
-     ClientWidth=617
-     ClientHeight=439
-     clientOffsetX=11
-     clientOffsetY=2
+     clientBorderOffsetY=70
+     ClientWidth=1234
+     ClientHeight=878
+     clientOffsetX=22
+     clientOffsetY=4
      clientTextures(0)=Texture'DeusExUI.UserInterface.ImagesBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.ImagesBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.ImagesBackground_3'

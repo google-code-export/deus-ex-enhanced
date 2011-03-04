@@ -11,7 +11,7 @@ struct BodyPart
 	var int    displayedHealth;
 	var float  damageCounter;
 	var float  healCounter;
-   var float  refreshCounter;
+    var float  refreshCounter;
 };
 
 var BodyPart head;
@@ -22,26 +22,26 @@ var BodyPart legLeft;
 var BodyPart legRight;
 var BodyPart armor;
 
-var Color    colArmor;
+var Color	colArmor;
 
-var float    damageFlash;
-var float    healFlash;
+var float	damageFlash;
+var float	healFlash;
 
 var Bool			bVisible;
 var DeusExPlayer	player;
 
 // Breathing underwater bar
-var ProgressBarWindow winBreath;
-var bool	bUnderwater;
-var float	breathPercent;
+var ProgressBarWindow 	winBreath;
+var bool				bUnderwater;
+var float				breathPercent;
 
 // Energy bar
-var ProgressBarWindow winEnergy;
-var float	energyPercent;
+var ProgressBarWindow 	winEnergy;
+var float				energyPercent;
 
 // Used by DrawWindow
-var Color colBar;
-var int ypos;
+var Color 	colBar;
+var int 	ypos;
 
 // Defaults
 var Texture texBackground;
@@ -66,24 +66,43 @@ event InitWindow()
 
 	player = DeusExPlayer(DeusExRootWindow(GetRootWindow()).parentPawn);
 
-	SetSize(84, 106);
+	SetSize(84 * dxEnhancedGUIScaleMultiplier, 106 * dxEnhancedGUIScaleMultiplier);
 
-	CreateBodyPart(head,     Texture'HUDHitDisplay_Head',     39, 17,  4,  7);
-	CreateBodyPart(torso,    Texture'HUDHitDisplay_Torso',    36, 25, 10,  23);
-	CreateBodyPart(armLeft,  Texture'HUDHitDisplay_ArmLeft',  46, 27, 10,  23);
-	CreateBodyPart(armRight, Texture'HUDHitDisplay_ArmRight', 26, 27, 10,  23);
-	CreateBodyPart(legLeft,  Texture'HUDHitDisplay_LegLeft',  41, 44,  8,  36);
-	CreateBodyPart(legRight, Texture'HUDHitDisplay_LegRight', 33, 44,  8,  36);
+	CreateBodyPart(head,     Texture'HUDHitDisplay_Head',     39 * dxEnhancedGUIScaleMultiplier, 
+															  17 * dxEnhancedGUIScaleMultiplier,  
+															   4 * dxEnhancedGUIScaleMultiplier,  
+															   7 * dxEnhancedGUIScaleMultiplier);
+	CreateBodyPart(torso,    Texture'HUDHitDisplay_Torso',	  36 * dxEnhancedGUIScaleMultiplier, 
+															  25 * dxEnhancedGUIScaleMultiplier, 
+															  10 * dxEnhancedGUIScaleMultiplier, 
+															  23 * dxEnhancedGUIScaleMultiplier);
+	CreateBodyPart(armLeft,  Texture'HUDHitDisplay_ArmLeft',  46 * dxEnhancedGUIScaleMultiplier, 
+															  27 * dxEnhancedGUIScaleMultiplier, 
+															  10 * dxEnhancedGUIScaleMultiplier, 
+															  23 * dxEnhancedGUIScaleMultiplier);
+	CreateBodyPart(armRight, Texture'HUDHitDisplay_ArmRight', 26 * dxEnhancedGUIScaleMultiplier, 
+															  27 * dxEnhancedGUIScaleMultiplier, 
+															  10 * dxEnhancedGUIScaleMultiplier, 
+															  23 * dxEnhancedGUIScaleMultiplier);
+	CreateBodyPart(legLeft,  Texture'HUDHitDisplay_LegLeft',  41 * dxEnhancedGUIScaleMultiplier, 
+															  44 * dxEnhancedGUIScaleMultiplier,  
+															  8  * dxEnhancedGUIScaleMultiplier, 
+															  36 * dxEnhancedGUIScaleMultiplier);
+	CreateBodyPart(legRight, Texture'HUDHitDisplay_LegRight', 33 * dxEnhancedGUIScaleMultiplier, 
+															  44 * dxEnhancedGUIScaleMultiplier,  
+															   8 * dxEnhancedGUIScaleMultiplier, 
+															  36 * dxEnhancedGUIScaleMultiplier);
 
 	bodyWin = NewChild(Class'Window');
 	bodyWin.SetBackground(Texture'HUDHitDisplay_Body');
 	bodyWin.SetBackgroundStyle(DSTY_Translucent);
-	bodyWin.SetConfiguration(24, 15, 34, 68);
+	bodyWin.SetConfiguration(24 * dxEnhancedGUIScaleMultiplier, 15 * dxEnhancedGUIScaleMultiplier, 
+							 34 * dxEnhancedGUIScaleMultiplier, 68 * dxEnhancedGUIScaleMultiplier);
 	bodyWin.SetTileColor(colArmor);
 	bodyWin.Lower();
 
-	winEnergy = CreateProgressBar(15, 20);
-	winBreath = CreateProgressBar(61, 20);
+	winEnergy = CreateProgressBar(15 * dxEnhancedGUIScaleMultiplier, 20 * dxEnhancedGUIScaleMultiplier);
+	winBreath = CreateProgressBar(61 * dxEnhancedGUIScaleMultiplier, 20 * dxEnhancedGUIScaleMultiplier);
 
 	damageFlash = 0.4;  // seconds
 	healFlash   = 1.0;  // seconds
@@ -99,8 +118,8 @@ function ProgressBarWindow CreateProgressBar(int posX, int posY)
 
 	winProgress = ProgressBarWindow(NewChild(Class'ProgressBarWindow'));
 	winProgress.UseScaledColor(True);
-	winProgress.SetSize(5, 55);
-	winProgress.SetPos(posX, posY);
+	winProgress.SetSize(5 * dxEnhancedGUIScaleMultiplier, 55 * dxEnhancedGUIScaleMultiplier);
+	winProgress.SetPos(posX - dxEnhancedGUIScaleMultiplier, posY); // DJ: so it lines up better
 	winProgress.SetValues(0, 100);
 	winProgress.SetCurrentValue(0);
 	winProgress.SetVertical(True);
@@ -129,7 +148,7 @@ function CreateBodyPart(out BodyPart part, texture tx, float newX, float newY,
 	part.healHealth      = 0;
 	part.damageCounter   = 0;
 	part.healCounter     = 0;
-   part.refreshCounter  = 0;
+    part.refreshCounter  = 0;
 }
 
 // ----------------------------------------------------------------------
@@ -214,7 +233,8 @@ event DrawWindow(GC gc)
 	// Draw energy bar
 	gc.SetFont(Font'FontTiny');
 	gc.SetTextColor(winEnergy.GetBarColor());
-	gc.DrawText(13, 74, 8, 8, EnergyText);
+	gc.DrawText(13 * dxEnhancedGUIScaleMultiplier, 74 * dxEnhancedGUIScaleMultiplier, 
+				 8 * dxEnhancedGUIScaleMultiplier,  8 * dxEnhancedGUIScaleMultiplier, EnergyText);
 
 	// If we're underwater draw the breathometer
 	if (bUnderwater)
@@ -235,7 +255,8 @@ event DrawWindow(GC gc)
 		}
 
 		gc.SetTextColor(colBar);
-		gc.DrawText(61, 74, 8, 8, O2Text);
+		gc.DrawText(61 * dxEnhancedGUIScaleMultiplier, 74 * dxEnhancedGUIScaleMultiplier, 
+					 8 * dxEnhancedGUIScaleMultiplier,  8 * dxEnhancedGUIScaleMultiplier, O2Text);
 	}
 }
 
@@ -247,7 +268,8 @@ function DrawBackground(GC gc)
 {
 	gc.SetStyle(backgroundDrawStyle);
 	gc.SetTileColor(colBackground);
-	gc.DrawTexture(11, 11, 60, 76, 0, 0, texBackground);
+	gc.DrawTexture( 11 * dxEnhancedGUIScaleMultiplier, 11 * dxEnhancedGUIScaleMultiplier, 
+					60 * dxEnhancedGUIScaleMultiplier, 76 * dxEnhancedGUIScaleMultiplier, 0, 0, texBackground);
 }
 
 // ----------------------------------------------------------------------
@@ -260,7 +282,7 @@ function DrawBorder(GC gc)
 	{
 		gc.SetStyle(borderDrawStyle);
 		gc.SetTileColor(colBorder);
-		gc.DrawTexture(0, 0, 84, 106, 0, 0, texBorder);
+		gc.DrawTexture(0, 0, 84 * dxEnhancedGUIScaleMultiplier, 106 * dxEnhancedGUIScaleMultiplier, 0, 0, texBorder);
 	}
 }
 

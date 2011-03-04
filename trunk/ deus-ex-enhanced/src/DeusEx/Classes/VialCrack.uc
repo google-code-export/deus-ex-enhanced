@@ -46,6 +46,8 @@ state Activated
 Begin:
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      drugEffect=-14.000000
@@ -61,8 +63,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.GlassHit1'
      Icon=Texture'DeusExUI.Icons.BeltIconVial_Crack'
      largeIcon=Texture'DeusExUI.Icons.LargeIconVial_Crack'
-     largeIconWidth=24
-     largeIconHeight=43
+     largeIconWidth=48
+     largeIconHeight=86
      Description="A vial of zyme, brewed up in some basement lab.|n|n<UNATCO OPS FILE NOTE JR127-VIOLET>Zyme was once considered for distribution to agents in the field as an emergency ability-booster, but the significant after-effects were determined to be too prolonged for Zyme to be effective for in-field use. -- Jaime Reyes <END NOTE>"
      beltDescription="ZYME"
      Mesh=LodMesh'DeusExItems.VialCrack'

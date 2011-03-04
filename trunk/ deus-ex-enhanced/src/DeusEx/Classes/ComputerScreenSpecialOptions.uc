@@ -60,8 +60,8 @@ function CreateSpecialInfoWindow()
 {
 	winSpecialInfo = MenuUISmallLabelWindow(winClient.NewChild(Class'MenuUISmallLabelWindow'));
 
-	winSpecialInfo.SetPos(10, 97);
-	winSpecialInfo.SetSize(315, 25);
+	winSpecialInfo.SetPos(  10 * dxEnhancedGUIScaleMultiplier, 97 * dxEnhancedGUIScaleMultiplier);
+	winSpecialInfo.SetSize(315 * dxEnhancedGUIScaleMultiplier, 25 * dxEnhancedGUIScaleMultiplier);
 	winSpecialInfo.SetTextAlignments(HALIGN_Left, VALIGN_Center);
 	winSpecialInfo.SetTextMargins(0, 0);
 }
@@ -120,7 +120,7 @@ function CreateOptionButtons()
 				winButton.SetPos(buttonLeftMargin, firstButtonPosY + (numOptions * MiddleTextureHeight));
 				winButton.SetButtonText(Computers(compOwner).specialOptions[specialIndex].Text);
 				winButton.SetSensitivity(!Computers(compOwner).specialOptions[specialIndex].bAlreadyTriggered);
-				winButton.SetWidth(273);
+				winButton.SetWidth(273 * dxEnhancedGUIScaleMultiplier);
 
 				optionButtons[numOptions].specialIndex = specialIndex;
 				optionButtons[numOptions].btnSpecial   = winButton;
@@ -133,8 +133,10 @@ function CreateOptionButtons()
 	ComputerUIScaleClientWindow(winClient).SetNumMiddleTextures(numOptions);
 
 	// Update the location of the Special Info window and the Status window
-	winSpecialInfo.SetPos(10, specialOffsetY + TopTextureHeight + (MiddleTextureHeight * numOptions));
+	
+	winSpecialInfo.SetPos(10 * dxEnhancedGUIScaleMultiplier, specialOffsetY + TopTextureHeight + (MiddleTextureHeight * numOptions));
 	statusPosY = statusPosYOffset + TopTextureHeight + (MiddleTextureHeight * numOptions);
+	
 	AskParentForReconfigure();
 }
 
@@ -237,23 +239,24 @@ function ActivateSpecialOption(MenuUIChoiceButton buttonPressed)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values except textureCols
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     buttonLeftMargin=25
-     firstButtonPosY=17
-     specialOffsetY=16
-     statusPosYOffset=50
-     TopTextureHeight=12
-     MiddleTextureHeight=30
-     BottomTextureHeight=75
+     buttonLeftMargin=50
+     firstButtonPosY=34
+     specialOffsetY=32
+     statusPosYOffset=100
+     TopTextureHeight=24
+     MiddleTextureHeight=60
+     BottomTextureHeight=150
      SecurityButtonLabel="|&Security"
      EmailButtonLabel="|&Email"
      classClient=Class'DeusEx.ComputerUIScaleClientWindow'
      escapeAction="LOGOUT"
      Title="Special Options"
-     ClientWidth=331
+     ClientWidth=662
      clientTextures(0)=Texture'DeusExUI.UserInterface.ComputerSpecialOptionsBackgroundTop_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.ComputerSpecialOptionsBackgroundTop_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.ComputerSpecialOptionsBackgroundMiddle_1'

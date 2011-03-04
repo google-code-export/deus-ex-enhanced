@@ -19,6 +19,9 @@ simulated function PreBeginPlay()
 	}
 }
 
+
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      LowAmmoWaterMark=6
@@ -59,17 +62,17 @@ defaultproperties
      CockingSound=Sound'DeusExSounds.Weapons.PistolReload'
      SelectSound=Sound'DeusExSounds.Weapons.PistolSelect'
      InventoryGroup=2
-     ItemName="Pistol"
+     ItemName="PISTOL"
      PlayerViewOffset=(X=22.000000,Y=-10.000000,Z=-14.000000)
      PlayerViewMesh=LodMesh'DeusExItems.Glock'
      PickupViewMesh=LodMesh'DeusExItems.GlockPickup'
      ThirdPersonMesh=LodMesh'DeusExItems.Glock3rd'
      Icon=Texture'DeusExUI.Icons.BeltIconPistol'
      largeIcon=Texture'DeusExUI.Icons.LargeIconPistol'
-     largeIconWidth=46
-     largeIconHeight=28
+     largeIconWidth=92
+     largeIconHeight=56
      Description="A standard 10mm pistol."
-     beltDescription="PISTOL"
+     beltDescription="Pistol"
      Mesh=LodMesh'DeusExItems.GlockPickup'
      CollisionRadius=7.000000
      CollisionHeight=1.000000

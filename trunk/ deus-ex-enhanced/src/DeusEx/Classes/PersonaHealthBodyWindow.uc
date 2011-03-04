@@ -4,6 +4,8 @@
 
 class PersonaHealthBodyWindow extends Window;
 
+const dxEnhancedGUIScaleMultiplier = 2;
+
 var Texture bodyTextures[2];
 
 // ----------------------------------------------------------------------
@@ -16,7 +18,7 @@ event InitWindow()
 {
 	Super.InitWindow();
 
-	SetSize(219, 357);
+	SetSize(219 * dxEnhancedGUIScaleMultiplier, 357 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -28,8 +30,8 @@ event DrawWindow(GC gc)
 	// Draw window background
 	gc.SetStyle(DSTY_Masked);
 
-	gc.DrawTexture(0,   0, 219, 256, 0, 0, bodyTextures[0]);
-	gc.DrawTexture(0, 256, 219, 101, 0, 0, bodyTextures[1]);
+	gc.DrawTexture(0,   0, 219 * dxEnhancedGUIScaleMultiplier, 256 * dxEnhancedGUIScaleMultiplier, 0, 0, bodyTextures[0]);
+	gc.DrawTexture(0, 256 * dxEnhancedGUIScaleMultiplier, 219 * dxEnhancedGUIScaleMultiplier, 101 * dxEnhancedGUIScaleMultiplier, 0, 0, bodyTextures[1]);
 }
 
 // ----------------------------------------------------------------------

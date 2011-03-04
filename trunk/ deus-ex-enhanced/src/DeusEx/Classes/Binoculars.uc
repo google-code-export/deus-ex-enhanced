@@ -69,6 +69,8 @@ function RefreshScopeDisplay(DeusExPlayer player, optional bool bInstant)
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      bActivatable=True
@@ -81,8 +83,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.PaperHit2'
      Icon=Texture'DeusExUI.Icons.BeltIconBinoculars'
      largeIcon=Texture'DeusExUI.Icons.LargeIconBinoculars'
-     largeIconWidth=49
-     largeIconHeight=34
+     largeIconWidth=98
+     largeIconHeight=68
      Description="A pair of military binoculars."
      beltDescription="BINOCS"
      Mesh=LodMesh'DeusExItems.Binoculars'

@@ -39,13 +39,14 @@ function DrawBorder(GC gc)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled Values
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     MinHeight=40
-     TopMargin=13
-     BottomMargin=10
+     MinHeight=80
+     TopMargin=26
+     BottomMargin=20
      texBackgrounds(0)=Texture'DeusExUI.UserInterface.HUDWindowBackground_TL'
      texBackgrounds(1)=Texture'DeusExUI.UserInterface.HUDWindowBackground_TR'
      texBackgrounds(2)=Texture'DeusExUI.UserInterface.HUDWindowBackground_BL'

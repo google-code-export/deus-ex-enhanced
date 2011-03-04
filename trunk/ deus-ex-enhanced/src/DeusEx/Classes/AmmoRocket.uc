@@ -3,6 +3,8 @@
 //=============================================================================
 class AmmoRocket extends DeusExAmmo;
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      bShowInfo=True
@@ -14,8 +16,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.WoodHit2'
      Icon=Texture'DeusExUI.Icons.BeltIconAmmoRockets'
      largeIcon=Texture'DeusExUI.Icons.LargeIconAmmoRockets'
-     largeIconWidth=46
-     largeIconHeight=36
+     largeIconWidth=92
+     largeIconHeight=72
      Description="A gyroscopically stabilized rocket with limited onboard guidance systems for in-flight course corrections. Engineered for use with the GEP gun."
      beltDescription="ROCKET"
      Mesh=LodMesh'DeusExItems.GEPAmmo'

@@ -270,13 +270,14 @@ event ParentRequestedPreferredSize(bool bWidthSpecified, out float preferredWidt
 	preferredHeight = (iconHeight + iconMargin) * ArrayCount(iconInfo) + arrowiconHeight;
 }
 
+// DJ: Doubled Values
 defaultproperties
 {
-     IconWidth=24
-     IconHeight=24
-     iconMargin=2
-     arrowiconWidth=64
-     arrowiconHeight=64
+     IconWidth=48
+     IconHeight=48
+     iconMargin=4
+     arrowiconWidth=128
+     arrowiconHeight=128
      fadeTime=2.000000
      msgAbsorbed="%d%% Absorb"
 }

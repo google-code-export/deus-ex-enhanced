@@ -38,24 +38,24 @@ function CreateControls()
 {
 	winIcon = NewChild(Class'Window');
 	winIcon.SetBackgroundStyle(DSTY_Masked);
-	winIcon.SetPos(1, 1);
-	winIcon.SetSize(24, 24);
+	winIcon.SetPos(1 * dxEnhancedGUIScaleMultiplier, 1 * dxEnhancedGUIScaleMultiplier);
+	winIcon.SetSize(24 * dxEnhancedGUIScaleMultiplier, 24 * dxEnhancedGUIScaleMultiplier);
 
 	winName = PersonaSkillTextWindow(NewChild(Class'PersonaSkillTextWindow'));
-	winName.SetPos(28, 0);
-	winName.SetSize(138, 27);
+	winName.SetPos(28 * dxEnhancedGUIScaleMultiplier, 0);
+	winName.SetSize(138 * dxEnhancedGUIScaleMultiplier, 27 * dxEnhancedGUIScaleMultiplier);
 	winName.SetFont(Font'FontMenuHeaders');
 
 	winLevel = PersonaSkillTextWindow(NewChild(Class'PersonaSkillTextWindow'));
-	winLevel.SetPos(165, 0);
-	winLevel.SetSize(54, 27);
+	winLevel.SetPos(165 * dxEnhancedGUIScaleMultiplier, 0);
+	winLevel.SetSize(54 * dxEnhancedGUIScaleMultiplier, 27 * dxEnhancedGUIScaleMultiplier);
 
 	winLevelIcons = PersonaLevelIconWindow(NewChild(Class'PersonaLevelIconWindow'));
-	winLevelIcons.SetPos(229, 11);
+	winLevelIcons.SetPos(229 * dxEnhancedGUIScaleMultiplier, 11 * dxEnhancedGUIScaleMultiplier);
 
 	winPointsNeeded = PersonaSkillTextWindow(NewChild(Class'PersonaSkillTextWindow'));
-	winPointsNeeded.SetPos(264, 0);
-	winPointsNeeded.SetSize(30, 27);
+	winPointsNeeded.SetPos(264 * dxEnhancedGUIScaleMultiplier, 0);
+	winPointsNeeded.SetSize(30 * dxEnhancedGUIScaleMultiplier, 27 * dxEnhancedGUIScaleMultiplier);
 	winPointsNeeded.SetTextAlignments(HALIGN_Right, VALIGN_Center);
 }
 
@@ -144,18 +144,19 @@ function RefreshSkillInfo()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values and widths
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      NotAvailableLabel="N/A"
-     Left_Textures(0)=(Tex=Texture'DeusExUI.UserInterface.PersonaSkillsButtonNormal_Left',Width=4)
-     Left_Textures(1)=(Tex=Texture'DeusExUI.UserInterface.PersonaSkillsButtonFocus_Left',Width=4)
-     Right_Textures(0)=(Tex=Texture'DeusExUI.UserInterface.PersonaSkillsButtonNormal_Right',Width=8)
-     Right_Textures(1)=(Tex=Texture'DeusExUI.UserInterface.PersonaSkillsButtonFocus_Right',Width=8)
-     Center_Textures(0)=(Tex=Texture'DeusExUI.UserInterface.PersonaSkillsButtonNormal_Center',Width=4)
-     Center_Textures(1)=(Tex=Texture'DeusExUI.UserInterface.PersonaSkillsButtonFocus_Center',Width=4)
+     Left_Textures(0)=(Tex=Texture'DeusExUI.UserInterface.PersonaSkillsButtonNormal_Left',Width=8)
+     Left_Textures(1)=(Tex=Texture'DeusExUI.UserInterface.PersonaSkillsButtonFocus_Left',Width=8)
+     Right_Textures(0)=(Tex=Texture'DeusExUI.UserInterface.PersonaSkillsButtonNormal_Right',Width=16)
+     Right_Textures(1)=(Tex=Texture'DeusExUI.UserInterface.PersonaSkillsButtonFocus_Right',Width=16)
+     Center_Textures(0)=(Tex=Texture'DeusExUI.UserInterface.PersonaSkillsButtonNormal_Center',Width=8)
+     Center_Textures(1)=(Tex=Texture'DeusExUI.UserInterface.PersonaSkillsButtonFocus_Center',Width=8)
      fontButtonText=Font'DeusExUI.FontMenuTitle'
-     buttonHeight=27
-     minimumButtonWidth=50
+     buttonHeight=54
+     minimumButtonWidth=100
 }

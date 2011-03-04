@@ -4,6 +4,8 @@
 
 class MenuUISliderButtonWindow extends Window;
 
+const dxEnhancedGUIScaleMultiplier = 2;					// DJ: Added
+
 var DeusExPlayer player;
 
 var ScaleWindow winSlider;
@@ -32,15 +34,18 @@ event InitWindow()
 
 	// Create the Scale Manager Window
 	winScaleManager = ScaleManagerWindow(NewChild(Class'ScaleManagerWindow'));
-	winScaleManager.SetSize(defaultScaleWidth, 21);
-	winScaleManager.SetMarginSpacing(20);
+	winScaleManager.SetSize(defaultScaleWidth, 21 * dxEnhancedGUIScaleMultiplier);
+	winScaleManager.SetMarginSpacing(20 * dxEnhancedGUIScaleMultiplier);
 
 	// Create the slider window 
 	winSlider = ScaleWindow(winScaleManager.NewChild(Class'ScaleWindow'));
 	winSlider.SetScaleOrientation(ORIENT_Horizontal);
 	winSlider.SetThumbSpan(0);
-	winSlider.SetScaleTexture(defaultScaleTexture, defaultScaleWidth, 21, 8, 8);
-	winSlider.SetThumbTexture(defaultThumbTexture, 9, 15);
+	winSlider.SetScaleTexture(defaultScaleTexture, defaultScaleWidth, 
+							  21 * dxEnhancedGUIScaleMultiplier, 8 * dxEnhancedGUIScaleMultiplier, 
+							   8 * dxEnhancedGUIScaleMultiplier);
+	winSlider.SetThumbTexture(defaultThumbTexture, 9 * dxEnhancedGUIScaleMultiplier, 
+							  15 * dxEnhancedGUIScaleMultiplier);
 	winSlider.SetScaleSounds(Sound'Menu_Press', None, Sound'Menu_Slider');
 	winSlider.SetSoundVolume(0.25);
 
@@ -49,8 +54,8 @@ event InitWindow()
 	{
 		winScaleText = MenuUIInfoButtonWindow(NewChild(Class'MenuUIInfoButtonWindow'));
 		winScaleText.SetSelectability(False);
-		winScaleText.SetWidth(60);
-		winScaleText.SetPos(184, 1);
+		winScaleText.SetWidth(60 * dxEnhancedGUIScaleMultiplier);
+		winScaleText.SetPos(184 * dxEnhancedGUIScaleMultiplier, 1 * dxEnhancedGUIScaleMultiplier);
 	}
 
 	// Tell the Scale Manager wazzup.
@@ -106,14 +111,15 @@ event StyleChanged()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      defaultScaleTexture=Texture'DeusExUI.UserInterface.MenuSliderBar'
      defaultThumbTexture=Texture'DeusExUI.UserInterface.MenuSlider'
-     DefaultWidth=243
-     defaultHeight=21
-     defaultScaleWidth=177
+     DefaultWidth=486
+     defaultHeight=42
+     defaultScaleWidth=354
      bUseScaleText=True
 }

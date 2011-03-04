@@ -4,6 +4,8 @@
 
 class PersonaCheckboxWindow expands CheckboxWindow;
 
+const dxEnhancedGUIScaleMultiplier = 2;
+
 var DeusExPlayer player;
 
 // Defaults
@@ -22,12 +24,12 @@ var int   fontAcceleratorLineHeight;
 event InitWindow()
 {
 	Super.InitWindow();
-
+	
 	SetFont(fontText);
 	SetTextAlignments(HALIGN_Left, VALIGN_Center);
 	SetTextMargins(0, 0);
-	SetCheckboxTextures(Texture'PersonaCheckBox_Off', Texture'PersonaCheckBox_On', 12, 12);
-	SetCheckboxSpacing(6);
+	SetCheckboxTextures(Texture'PersonaCheckBox_Off', Texture'PersonaCheckBox_On', 12 * dxEnhancedGUIScaleMultiplier, 12 * dxEnhancedGUIScaleMultiplier);
+	SetCheckboxSpacing(6 * dxEnhancedGUIScaleMultiplier);
 	SetCheckboxStyle(DSTY_Masked);
 	SetBaselineData(fontBaseLine, fontAcceleratorLineHeight);
 
@@ -59,12 +61,13 @@ event StyleChanged()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      colText=(R=255,G=255,B=255)
      fontText=Font'DeusExUI.FontMenuHeaders'
-     fontBaseLine=1
-     fontAcceleratorLineHeight=1
+     fontBaseLine=2
+     fontAcceleratorLineHeight=2
 }

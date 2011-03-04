@@ -24,7 +24,7 @@ event InitWindow()
 
    SetInitialServerMode();
 
-   SetActionButtonWidth(179);
+   SetActionButtonWidth(179 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -87,6 +87,7 @@ function ResetToDefault()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values defaultInfoWidth, defaultInfoPosX
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -94,8 +95,8 @@ defaultproperties
      ModeNames(0)="Dedicated"
      ModeNames(1)="Non-Dedicated"
      defaultValue=1
-     defaultInfoWidth=243
-     defaultInfoPosX=203
+     defaultInfoWidth=486
+     defaultInfoPosX=406
      HelpText="Type of server to run.  Dedicated servers do not have a local player, but run faster."
      actionText="Server Mode"
      configSetting="MenuScreenHostGame ServerMode"

@@ -37,7 +37,8 @@ event DrawWindow(GC gc)
 		// Now draw the icon
 		gc.SetStyle(iconDrawStyle);
 		gc.SetTileColor(colItemIcon);
-		gc.DrawTexture(2, 2, 32, 32, 0, 0, icon);
+		gc.DrawTexture(  2 * dxEnhancedGUIScaleMultiplier,  2 * dxEnhancedGUIScaleMultiplier, 
+						32 * dxEnhancedGUIScaleMultiplier, 32 * dxEnhancedGUIScaleMultiplier, 0, 0, icon);
 	}
 
 	DrawHotKey(gc);
@@ -59,7 +60,7 @@ function DrawBackground(GC gc)
 {
 	gc.SetStyle(backgroundDrawStyle);
 	gc.SetTileColor(colBackground);
-	gc.DrawTexture(0, 0, width, height, 0, 0, texBackground);
+	gc.DrawTexture(0, 0, width, height, 0, 0, texBackground); // DJ: I could double these, but I don't know what it would do.
 }
 
 // ----------------------------------------------------------------------
@@ -95,12 +96,13 @@ function SetObject(object newClientObject)
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 
 defaultproperties
 {
      colItemIcon=(R=255,G=255,B=255)
      iconDrawStyle=DSTY_Translucent
-     IconWidth=34
-     IconHeight=34
+     IconWidth=68
+     IconHeight=68
      texBackground=Texture'DeusExUI.UserInterface.HUDIconsBackground'
 }

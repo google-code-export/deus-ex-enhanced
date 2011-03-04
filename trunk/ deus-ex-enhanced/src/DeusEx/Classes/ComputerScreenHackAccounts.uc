@@ -27,7 +27,7 @@ event InitWindow()
 {
 	Super.InitWindow();
 
-	SetSize(206, 232);
+	SetSize(206 * dxEnhancedGUIScaleMultiplier, 232 * dxEnhancedGUIScaleMultiplier);
 
 	CreateControls();	
 }
@@ -53,8 +53,8 @@ function CreateChangeAccountButton()
 	local PersonaButtonBarWindow winActionButtons;
 
 	winActionButtons = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(12, 169);
-	winActionButtons.SetWidth(174);
+	winActionButtons.SetPos(   12 * dxEnhancedGUIScaleMultiplier, 169 * dxEnhancedGUIScaleMultiplier);
+	winActionButtons.SetWidth(174 * dxEnhancedGUIScaleMultiplier);
 	winActionButtons.FillAllSpace(False);
 
 	btnChangeAccount = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
@@ -68,8 +68,8 @@ function CreateChangeAccountButton()
 function CreateCurrentUserWindow()
 {
 	winCurrentUser = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
-	winCurrentUser.SetPos(16, 29);
-	winCurrentUser.SetSize(170, 12);
+	winCurrentUser.SetPos(  16 * dxEnhancedGUIScaleMultiplier, 29 * dxEnhancedGUIScaleMultiplier);
+	winCurrentUser.SetSize(170 * dxEnhancedGUIScaleMultiplier, 12 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -81,15 +81,15 @@ function CreateAccountsList()
 	local PersonaScrollAreaWindow winScroll;
 
 	winScroll = PersonaScrollAreaWindow(NewChild(Class'PersonaScrollAreaWindow'));;
-	winScroll.SetPos(14, 69);
-	winScroll.SetSize(170, 97);
+	winScroll.SetPos(  14 * dxEnhancedGUIScaleMultiplier, 69 * dxEnhancedGUIScaleMultiplier);
+	winScroll.SetSize(170 * dxEnhancedGUIScaleMultiplier, 97 * dxEnhancedGUIScaleMultiplier);
 
 	lstAccounts = PersonaListWindow(winScroll.clipWindow.NewChild(Class'PersonaListWindow'));
 	lstAccounts.EnableMultiSelect(False);
 	lstAccounts.EnableAutoExpandColumns(False);
 	lstAccounts.EnableHotKeys(False);
 	lstAccounts.SetNumColumns(1);
-	lstAccounts.SetColumnWidth(0, 170);
+	lstAccounts.SetColumnWidth(0, 170 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -101,11 +101,11 @@ function CreateHeaders()
 	local MenuUIHeaderWindow winHeader;
 
 	winHeader = MenuUIHeaderWindow(NewChild(Class'MenuUIHeaderWindow'));
-	winHeader.SetPos(12, 12);
+	winHeader.SetPos(12 * dxEnhancedGUIScaleMultiplier, 12 * dxEnhancedGUIScaleMultiplier);
 	winHeader.SetText(CurrentAccountHeader);
 
 	winHeader = MenuUIHeaderWindow(NewChild(Class'MenuUIHeaderWindow'));
-	winHeader.SetPos(12, 53);
+	winHeader.SetPos(12 * dxEnhancedGUIScaleMultiplier, 53 * dxEnhancedGUIScaleMultiplier);
 	winHeader.SetText(AllAccountsHeader);
 }
 
@@ -133,7 +133,8 @@ function DrawBorder(GC gc)
 	{
 		gc.SetStyle(borderDrawStyle);
 		gc.SetTileColor(colBorder);
-		gc.DrawTexture(0, 0, 206, 232, 0, 0, texBorder);
+		gc.DrawTexture(0, 0, 206 * dxEnhancedGUIScaleMultiplier, 
+							 232 * dxEnhancedGUIScaleMultiplier, 0, 0, texBorder);
 	}
 }
 
@@ -262,6 +263,7 @@ event bool ListRowActivated(window list, int rowId)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -271,8 +273,8 @@ defaultproperties
      ChangeAccountButtonLabel="|&Change Account"
      AllAccountsHeader="All User Accounts"
      CurrentAccountHeader="Current User"
-     backgroundWidth=188
-     backgroundHeight=181
-     backgroundPosX=6
-     backgroundPosY=9
+     backgroundWidth=376
+     backgroundHeight=362
+     backgroundPosX=12
+     backgroundPosY=18
 }

@@ -44,7 +44,7 @@ event InitWindow()
 	Super.InitWindow();
 
 	SetWindowAlignments(HALIGN_Center, VALIGN_Center);
-	SetSize(103, 162);
+	SetSize(103 * dxEnhancedGUIScaleMultiplier, 162 * dxEnhancedGUIScaleMultiplier);
 	SetMouseFocusMode(MFocus_EnterLeave);
 
 	inputCode="";
@@ -170,19 +170,21 @@ function DrawBorder(GC gc)
 
 // ----------------------------------------------------------------------
 // CreateKeypadButtons()
+// DJ: Did not change this yet
 // ----------------------------------------------------------------------
 
 function CreateKeypadButtons()
 {
 	local int i, x, y;
 
-	for (y=0; y<4; y++)
+	for (y = 0; y < 4; y++)
 	{
-		for (x=0; x<3; x++)
+		for (x = 0; x < 3; x++)
 		{
 			i = x + y * 3;
 			btnKeys[i] = HUDKeypadButton(NewChild(Class'HUDKeypadButton'));
-			btnKeys[i].SetPos((x * 26) + 16, (y * 28) + 35);
+			btnKeys[i].SetPos(((x * 26) + 16) * dxEnhancedGUIScaleMultiplier, 
+							  ((y * 28) + 35) * dxEnhancedGUIScaleMultiplier);
 			btnKeys[i].num = i;
 		}
 	}
@@ -195,8 +197,8 @@ function CreateKeypadButtons()
 function CreateInputTextWindow()
 {
 	winText = TextWindow(NewChild(Class'TextWindow'));
-	winText.SetPos(17, 21);
-	winText.SetSize(75, 11);
+	winText.SetPos(17 * dxEnhancedGUIScaleMultiplier, 21 * dxEnhancedGUIScaleMultiplier);
+	winText.SetSize(75 * dxEnhancedGUIScaleMultiplier, 11 * dxEnhancedGUIScaleMultiplier);
 	winText.SetTextMargins(0, 0);
 	winText.SetTextAlignments(HALIGN_Center, VALIGN_Center);
 	winText.SetFont(Font'FontMenuSmall');

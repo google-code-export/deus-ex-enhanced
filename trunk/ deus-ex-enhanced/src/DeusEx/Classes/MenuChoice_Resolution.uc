@@ -139,11 +139,12 @@ function GetScreenResolutions()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled value defaultInfoWidth
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     defaultInfoWidth=98
+     defaultInfoWidth=196
      HelpText="Change the video resolution"
      actionText="|&Screen Resolution"
 }

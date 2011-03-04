@@ -3,6 +3,9 @@
 //=============================================================================
 class HUDBaseWindow extends Window;
 
+const dxEnhancedGUIScaleMultiplier = 2; 				// DJ: Added
+const dxEnhancedGUIScaleBeltIconPosY = 14;
+
 var DeusExPlayer player;
 
 // Border and Background Translucency
@@ -21,6 +24,8 @@ var Color colBackground;
 var Color colBorder;
 var Color colHeaderText;
 var Color colText;
+
+
 
 // ----------------------------------------------------------------------
 // InitWindow()

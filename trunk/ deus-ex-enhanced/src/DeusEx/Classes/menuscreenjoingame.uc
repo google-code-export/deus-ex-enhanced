@@ -95,16 +95,16 @@ event InitWindow()
 	Super.InitWindow();
 
 	CreateJoinMenuButtons();
-   CreateIPEditWindow();
-   CreateGamesList();
-   CreatePingLists();
-   CreateHeaderButtons();
-   PopulateServerList();
-   CreateGameInfoList();
-   CreateGameFilterBoxes();
-   Query();
+	CreateIPEditWindow();
+	CreateGamesList();
+	CreatePingLists();
+	CreateHeaderButtons();
+	PopulateServerList();
+	CreateGameInfoList();
+	CreateGameFilterBoxes();
+	Query();
 
-   bTickEnabled = Default.bTickEnabled;
+	bTickEnabled = Default.bTickEnabled;
 }
 
 function DestroyWindow()
@@ -274,7 +274,8 @@ function QueryFinished(bool bSuccess, optional string ErrorMsg)
 // ---------------------------------------------------------------------
 // ListQueryFinished()
 // ---------------------------------------------------------------------
-function ListQueryFinished(UBrowserServerListFactory Fact, bool bSuccess, optional string ErrorMsg)
+function ListQueryFinished(UBrowserServerListFactory Fact, bool bSuccess, 
+							optional string ErrorMsg)
 {
 }
 
@@ -349,7 +350,8 @@ function DestroyPingLists()
 // FoundServer()
 // --------------------------------------------------------------------
 
-function FoundServer(string IP, int QueryPort, string Category, string GameName, optional string HostName)
+function FoundServer(string IP, int QueryPort, string Category, 
+					 string GameName, optional string HostName)
 {
 	local DeusExServerList NewListEntry;
 
@@ -393,19 +395,19 @@ function UpdateSelectionInfo(int RowID)
    local int ServerGamePort;
    local DeusExServerList ListEntry;
 
-   ServerIP = ServerList.GetField(RowID,6);
-   ServerQueryPort = int(ServerList.GetField(RowID,5));
-   ServerGamePort = int(ServerList.GetField(RowID,7));
+   ServerIP 	   = ServerList.GetField(RowID,6);
+   ServerQueryPort = int(ServerList.GetField(RowID, 5));
+   ServerGamePort  = int(ServerList.GetField(RowID, 7));
+   
    if (ServerGamePort == 0)
 	   IPWindow.SetText(ServerIP);
    else 
 	   IPWindow.SetText(ServerIP$":"$ServerGamePort);
 
    ListEntry = PingedList.FindExistingServer(ServerIP,ServerQueryPort);
+   
    if (ListEntry != None)
-   {
       ListEntry.ServerStatus();
-   }
 
    UpdateGameInfo(ListEntry);
 }
@@ -479,8 +481,10 @@ function CreateGamesList()
 {
 	ServerScroll = CreateScrollAreaWindow(winClient);
 
-	ServerScroll.SetPos(7, 40);
-	ServerScroll.SetSize(611, 188);
+	ServerScroll.SetPos(   7 * dxEnhancedGUIScaleMultiplier,  
+						  40 * dxEnhancedGUIScaleMultiplier);
+	ServerScroll.SetSize(611 * dxEnhancedGUIScaleMultiplier, 
+						 188 * dxEnhancedGUIScaleMultiplier);
 
 	ServerList = MenuUIListWindow(ServerScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
 	ServerList.EnableMultiSelect(False);
@@ -488,38 +492,38 @@ function CreateGamesList()
 
 	ServerList.SetNumColumns(8);
 
-	ServerList.SetColumnWidth(0, 225);
+	ServerList.SetColumnWidth(0, 225 * dxEnhancedGUIScaleMultiplier);
 	ServerList.SetColumnType(0, COLTYPE_String);
 	
-   ServerList.SetSortColumn(0, True);
+	ServerList.SetSortColumn(0, True);
 	ServerList.EnableAutoSort(True);
 
-   ServerList.SetColumnWidth(1, 154);
+	ServerList.SetColumnWidth(1, 154 * dxEnhancedGUIScaleMultiplier);
 	ServerList.SetColumnType(1, COLTYPE_String);
 
-   ServerList.SetColumnWidth(2, 96);
+	ServerList.SetColumnWidth(2,  96 * dxEnhancedGUIScaleMultiplier);
 	ServerList.SetColumnType(2, COLTYPE_String);
 	
-   ServerList.SetColumnWidth(3, 72);
+	ServerList.SetColumnWidth(3,  72 * dxEnhancedGUIScaleMultiplier);
 	ServerList.SetColumnType(3, COLTYPE_String);
 
-   ServerList.SetColumnWidth(4, 52);
-   ServerList.SetColumnType(4, COLTYPE_Float, "%.0f");
+	ServerList.SetColumnWidth(4,  52 * dxEnhancedGUIScaleMultiplier);
+	ServerList.SetColumnType(4, COLTYPE_Float, "%.0f");
 
-   ServerList.SetColumnWidth(5, 10);
-   ServerList.SetColumnType(5, COLTYPE_String);
+	ServerList.SetColumnWidth(5,  10 * dxEnhancedGUIScaleMultiplier);
+	ServerList.SetColumnType(5, COLTYPE_String);
 
-   ServerList.HideColumn(5);
+	ServerList.HideColumn(5);
 
-   ServerList.SetColumnWidth(6,10);
-   ServerList.SetColumnType(6, COLTYPE_String);
+	ServerList.SetColumnWidth(6,  10 * dxEnhancedGUIScaleMultiplier);
+	ServerList.SetColumnType(6, COLTYPE_String);
 
-   ServerList.HideColumn(6);
+	ServerList.HideColumn(6);
 
-   ServerList.SetColumnWidth(7,10);
-   ServerList.SetColumnType(7, COLTYPE_String);
+	ServerList.SetColumnWidth(7,  10 * dxEnhancedGUIScaleMultiplier);
+	ServerList.SetColumnType(7, COLTYPE_String);
 
-   ServerList.HideColumn(7);
+	ServerList.HideColumn(7);
 }
 
 // ----------------------------------------------------------------------
@@ -528,11 +532,26 @@ function CreateGamesList()
 
 function CreateHeaderButtons()
 {
-	btnHeaderHostName = CreateHeaderButton(7,  17, 224, strHostNameLabel, winClient);
-	btnHeaderMapName = CreateHeaderButton(234, 17, 151, strMapNameLabel, winClient);
-	btnHeaderGameType = CreateHeaderButton(388,  17, 94, strGameTypeLabel, winClient);
-	btnHeaderNumPlayers = CreateHeaderButton(485, 17, 68, strNumPlayersLabel, winClient);
-	btnHeaderPing = CreateHeaderButton(556,  17, 54, strPingLabel, winClient);
+	btnHeaderHostName 	= CreateHeaderButton(  7 * dxEnhancedGUIScaleMultiplier,  
+											  17 * dxEnhancedGUIScaleMultiplier, 
+											 224 * dxEnhancedGUIScaleMultiplier, 
+												   strHostNameLabel, winClient);
+	btnHeaderMapName	= CreateHeaderButton(234 * dxEnhancedGUIScaleMultiplier, 
+											  17 * dxEnhancedGUIScaleMultiplier, 
+											 151 * dxEnhancedGUIScaleMultiplier, 
+												   strMapNameLabel, winClient);
+	btnHeaderGameType	= CreateHeaderButton(388 * dxEnhancedGUIScaleMultiplier,  
+											  17 * dxEnhancedGUIScaleMultiplier, 
+											  94 * dxEnhancedGUIScaleMultiplier, 
+												   strGameTypeLabel, winClient);
+	btnHeaderNumPlayers = CreateHeaderButton(485 * dxEnhancedGUIScaleMultiplier, 
+											  17 * dxEnhancedGUIScaleMultiplier, 
+											  68 * dxEnhancedGUIScaleMultiplier, 
+												   strNumPlayersLabel, winClient);
+	btnHeaderPing 		= CreateHeaderButton(556 * dxEnhancedGUIScaleMultiplier,  
+											  17 * dxEnhancedGUIScaleMultiplier, 
+											  54 * dxEnhancedGUIScaleMultiplier, 
+												   strPingLabel, winClient);
 }
 
 // ----------------------------------------------------------------------
@@ -543,20 +562,20 @@ function CreateGameInfoList()
 {
 	GameInfoScroll = CreateScrollAreaWindow(winClient);
 
-	GameInfoScroll.SetPos(144, 241);
-	GameInfoScroll.SetSize(464, 85);
+	GameInfoScroll.SetPos( 144 * dxEnhancedGUIScaleMultiplier, 
+					       241 * dxEnhancedGUIScaleMultiplier);
+	GameInfoScroll.SetSize(464 * dxEnhancedGUIScaleMultiplier, 
+						    85 * dxEnhancedGUIScaleMultiplier);
 
 	GameInfoList = MenuUIListWindow(GameInfoScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
+	
 	GameInfoList.EnableMultiSelect(False);
 	GameInfoList.EnableAutoExpandColumns(False);
-
 	GameInfoList.SetNumColumns(1);
-
-	GameInfoList.SetColumnWidth(0, 345);
-	GameInfoList.SetColumnType(0, COLTYPE_String);
+	GameInfoList.SetColumnWidth(0, 345 * dxEnhancedGUIScaleMultiplier);
+	GameInfoList.SetColumnType( 0, COLTYPE_String);
 	GameInfoList.EnableAutoSort(False);
-
-   GameInfoList.SetSensitivity(False);
+	GameInfoList.SetSensitivity(False);
 }
 
 // ----------------------------------------------------------------------
@@ -567,21 +586,24 @@ function CreateGameFilterBoxes()
 {
 	chkShowGameTypeOne = MenuUICheckboxWindow(winClient.NewChild(Class'MenuUICheckboxWindow'));
 
-	chkShowGameTypeOne.SetPos(154, 333);
+	chkShowGameTypeOne.SetPos(154 * dxEnhancedGUIScaleMultiplier, 
+							  333 * dxEnhancedGUIScaleMultiplier);
 	chkShowGameTypeOne.SetText(GameTypeOneLabel);
 	chkShowGameTypeOne.SetFont(Font'FontMenuSmall');
 	chkShowGameTypeOne.SetToggle(bShowGameTypeOne);
 
-   chkShowGameTypeTwo = MenuUICheckboxWindow(winClient.NewChild(Class'MenuUICheckboxWindow'));
+	chkShowGameTypeTwo = MenuUICheckboxWindow(winClient.NewChild(Class'MenuUICheckboxWindow'));
 
-	chkShowGameTypeTwo.SetPos(154, 347);
+	chkShowGameTypeTwo.SetPos(154 * dxEnhancedGUIScaleMultiplier, 
+							  347 * dxEnhancedGUIScaleMultiplier);
 	chkShowGameTypeTwo.SetText(GameTypeTwoLabel);
 	chkShowGameTypeTwo.SetFont(Font'FontMenuSmall');
 	chkShowGameTypeTwo.SetToggle(bShowGameTypeTwo);
 
-   chkShowAllGameTypes = MenuUICheckboxWindow(winClient.NewChild(Class'MenuUICheckboxWindow'));
+	chkShowAllGameTypes = MenuUICheckboxWindow(winClient.NewChild(Class'MenuUICheckboxWindow'));
 
-	chkShowAllGameTypes.SetPos(154, 360);
+	chkShowAllGameTypes.SetPos(154 * dxEnhancedGUIScaleMultiplier, 
+							   360 * dxEnhancedGUIScaleMultiplier);
 	chkShowAllGameTypes.SetText(ShowAllGameTypesLabel);
 	chkShowAllGameTypes.SetFont(Font'FontMenuSmall');
 	chkShowAllGameTypes.SetToggle(bShowAllGameTypes);
@@ -674,15 +696,18 @@ function PopulateServerList()
 // ----------------------------------------------------------------------
 function string ConvertGameType(string GameTypeClassName)
 {
-   local int iClassIndex;
+	local int iClassIndex;
 
-   for (iClassIndex = 0; iClassIndex < ArrayCount(GameClassNames); iClassIndex++)
-   {
-      if ((GameClassNames[iClassIndex] ~= GameTypeClassName) && (GameHumanNames[iClassIndex] != ""))
-         return GameHumanNames[iClassIndex];
-   }
+	for (iClassIndex = 0; iClassIndex < ArrayCount(GameClassNames); iClassIndex++)
+	{
+		if ((GameClassNames[iClassIndex] ~= GameTypeClassName) && 
+											(GameHumanNames[iClassIndex] != ""))
+		{
+			return GameHumanNames[iClassIndex];
+		}
+	}
     
-   return GameTypeClassName;
+	return GameTypeClassName;
 }
 
 // ----------------------------------------------------------------------
@@ -691,15 +716,18 @@ function string ConvertGameType(string GameTypeClassName)
 // ----------------------------------------------------------------------
 function string GameTypePackage(string GameTypeClassName)
 {
-   local int iClassIndex;
+	local int iClassIndex;
 
-   for (iClassIndex = 0; iClassIndex < ArrayCount(GameClassNames); iClassIndex++)
-   {
-      if ((GameClassNames[iClassIndex] ~= GameTypeClassName) && (GamePackages[iClassIndex] != ""))
-         return GamePackages[iClassIndex];
-   }
+	for (iClassIndex = 0; iClassIndex < ArrayCount(GameClassNames); iClassIndex++)
+	{
+		if ((GameClassNames[iClassIndex] ~=  GameTypeClassName) && 
+										  (GamePackages[iClassIndex] != ""))
+		{		
+			return GamePackages[iClassIndex];
+		}
+	}
     
-   return "";
+	return "";
 }
 
 // ----------------------------------------------------------------------
@@ -707,54 +735,58 @@ function string GameTypePackage(string GameTypeClassName)
 // ----------------------------------------------------------------------
 function bool CanShowgame(string GameTypeClassName)
 {
-   local Class<GameInfo> GameClass;
-   local GameInfo RemoteGame;
-   local Class<GameInfo> TestClass;
-   local GameInfo TestGame;
-   local string GameLoadString;
-   local string TypePackage;
+	local Class<GameInfo> GameClass;
+	local GameInfo RemoteGame;
+	local Class<GameInfo> TestClass;
+	local GameInfo TestGame;
+	local string GameLoadString;
+	local string TypePackage;
 
-   if (bShowAllGameTypes)
-      return True;
+	if (bShowAllGameTypes)
+		return True;
 
-   TypePackage = GameTypePackage(GameTypeClassName);
-   if (TypePackage != "")
-	   GameLoadString = TypePackage $ "." $ GameTypeClassName;
-   else
-	   GameLoadString = GameTypeClassName;
+	TypePackage = GameTypePackage(GameTypeClassName);
+	if (TypePackage != "")
+		GameLoadString = TypePackage $ "." $ GameTypeClassName;
+	else
+		GameLoadString = GameTypeClassName;
 
-   GameClass = class<GameInfo>( Player.DynamicLoadObject( GameLoadString, class'Class', true) );
-   if (GameClass == None)
-      return false;
+	GameClass =	class<GameInfo>( Player.DynamicLoadObject( GameLoadString, 
+				class'Class', true) );
+	if (GameClass == None)
+		return false;
 
-   RemoteGame = Player.Spawn(GameClass);
+	RemoteGame = Player.Spawn(GameClass);
 
-   if (RemoteGame == None)
-      return false;
+	if (RemoteGame == None)
+		return false;
 
-   // Test gametype one
-   TestClass = class<GameInfo>( Player.DynamicLoadObject( "DeusEx." $ GameTypeOneClassName, class'Class', true) );
-   if (TestClass != None)
-   {
-      if (RemoteGame.IsA(TestClass.Name))
-      {
-         RemoteGame.Destroy();
-         return bShowGameTypeOne;
-      }
-   }
+	// Test gametype one
+	TestClass = class<GameInfo>(Player.DynamicLoadObject( "DeusEx." $ GameTypeOneClassName, 
+				class'Class', true));
+	if (TestClass != None)
+	{
+		if (RemoteGame.IsA(TestClass.Name))
+		{
+			RemoteGame.Destroy();
+			return bShowGameTypeOne;
+		}
+	}
 
-   TestClass = class<GameInfo>( Player.DynamicLoadObject( "DeusEx." $ GameTypeTwoClassName, class'Class', true) );
-   if (TestClass != None)
-   {
-      if (RemoteGame.IsA(TestClass.Name))
-      {
-         RemoteGame.Destroy();
-         return bShowGameTypeTwo;
-      }
-   }
+	TestClass = class<GameInfo>( Player.DynamicLoadObject( "DeusEx." $ GameTypeTwoClassName, 
+				class'Class', true) );
+	if (TestClass != None)
+	{
+		if (RemoteGame.IsA(TestClass.Name))
+		{
+			RemoteGame.Destroy();
+			return bShowGameTypeTwo;
+		}
+	}
   
-   RemoteGame.Destroy();
-   return false;
+	RemoteGame.Destroy();
+	
+	return false;
 }
 
 // ----------------------------------------------------------------------
@@ -776,19 +808,18 @@ function Tick(float Delta)
 {
 	PingedList.Tick(Delta);
 
-   ClickTimer += Delta;
+	ClickTimer += Delta;
 
-   if (ClickTimer > TimeToClick)
-   {
-      ClickRowID = -1;
-   }
+	if (ClickTimer > TimeToClick)
+	{
+		ClickRowID = -1;
+	}
 
 	if(PingedList.bNeedUpdateCount)
 	{
 		PingedList.UpdateServerCount();
 		PingedList.bNeedUpdateCount = False;
 	}
-
 }
 
 // ----------------------------------------------------------------------
@@ -827,27 +858,30 @@ function PingStatusDone(DeusExServerList DoneList)
 
 function CreateJoinMenuButtons()
 {
-   //Create Host Game button
-   HostButton = MenuUIChoiceButton(winClient.NewChild(Class'MenuUIChoiceButton'));
+	//Create Host Game button
+	HostButton = MenuUIChoiceButton(winClient.NewChild(Class'MenuUIChoiceButton'));
 	HostButton.SetButtonText(HostButtonName);
-	HostButton.SetPos(7, 239);
-	HostButton.SetWidth(121);
-   HostButton.SetHelpText(HostButtonHelpText);
+	HostButton.SetPos(	  7 * dxEnhancedGUIScaleMultiplier, 
+						239 * dxEnhancedGUIScaleMultiplier);
+	HostButton.SetWidth(121 * dxEnhancedGUIScaleMultiplier);
+	HostButton.SetHelpText(HostButtonHelpText);
 
-   //Create Join Game Button
-   JoinButton = MenuUIChoiceButton(winClient.NewChild(Class'MenuUIChoiceButton'));
+	//Create Join Game Button
+	JoinButton = MenuUIChoiceButton(winClient.NewChild(Class'MenuUIChoiceButton'));
 	JoinButton.SetButtonText(JoinButtonName);
-	JoinButton.SetPos(7, 267);
-	JoinButton.SetWidth(121);
-   JoinButton.SetHelpText(JoinButtonHelpText);
-   JoinButton.SetSensitivity(False);
+	JoinButton.SetPos(	  7 * dxEnhancedGUIScaleMultiplier, 
+						267 * dxEnhancedGUIScaleMultiplier);
+	JoinButton.SetWidth(121 * dxEnhancedGUIScaleMultiplier);
+	JoinButton.SetHelpText(JoinButtonHelpText);
+	JoinButton.SetSensitivity(False);
 
-   //Create Refresh button
-   RefreshButton = MenuUIChoiceButton(winClient.NewChild(Class'MenuUIChoiceButton'));
-   RefreshButton.SetButtonText(RefreshButtonName);
-   RefreshButton.SetPos(527,337);
-   RefreshButton.SetWidth(83);
-   RefreshButton.SetHelpText(RefreshButtonHelpText);
+	//Create Refresh button
+	RefreshButton = MenuUIChoiceButton(winClient.NewChild(Class'MenuUIChoiceButton'));
+	RefreshButton.SetButtonText(RefreshButtonName);
+	RefreshButton.SetPos( 527 * dxEnhancedGUIScaleMultiplier, 
+						  337 * dxEnhancedGUIScaleMultiplier);
+	RefreshButton.SetWidth(83 * dxEnhancedGUIScaleMultiplier);
+	RefreshButton.SetHelpText(RefreshButtonHelpText);
 }
 
 // ----------------------------------------------------------------------
@@ -856,14 +890,19 @@ function CreateJoinMenuButtons()
 
 function CreateIPEditWindow()
 {
-   //Create label
-   CreateMenuLabel( 7, 322, HeaderIPWindowLabel, winClient );
+	//Create label
+	CreateMenuLabel(  7 * dxEnhancedGUIScaleMultiplier, 
+					322 * dxEnhancedGUIScaleMultiplier, 
+						  HeaderIPWindowLabel, winClient);
 
+	//Create edit window
+	IPWindow = CreateMenuEditWindow(  7 * dxEnhancedGUIScaleMultiplier, 
+								    337 * dxEnhancedGUIScaleMultiplier, 
+									121 * dxEnhancedGUIScaleMultiplier, 
+									 24 * dxEnhancedGUIScaleMultiplier, 
+										  winClient);
 
-   //Create edit window
-	IPWindow = CreateMenuEditWindow(7, 337, 121, 24, winClient);
-
-   IPWindow.SetText("");
+	IPWindow.SetText("");
 	IPWindow.SetFilter(filterString);
 }
 
@@ -879,9 +918,9 @@ function HandleJoinGame()
    local DeusExServerList ListEntry;
    local String FullString;
 
-   ServerIP = ServerList.GetField(ServerList.GetFocusRow(),6);
-   ServerQueryPort = int(ServerList.GetField(ServerList.GetFocusRow(),5));
-   ServerGamePort = int(ServerList.GetField(ServerList.GetFocusRow(),7));
+   ServerIP		   = ServerList.GetField(ServerList.GetFocusRow(), 6);
+   ServerQueryPort = int(ServerList.GetField(ServerList.GetFocusRow(), 5));
+   ServerGamePort  = int(ServerList.GetField(ServerList.GetFocusRow(), 7));
 
    if (ServerGamePort == 0)
 	   FullString = ServerIP;
@@ -915,6 +954,7 @@ function string GetExtraJoinOptions()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled last 3 values
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -962,14 +1002,14 @@ defaultproperties
      FullServerWarningMessage="The selected server is detected as full.  Refresh list?"
      actionButtons(0)=(Align=HALIGN_Right,Action=AB_Cancel)
      Title="Start Multiplayer Game"
-     ClientWidth=614
-     ClientHeight=420
+     ClientWidth=1228
+     ClientHeight=840
      clientTextures(0)=Texture'DeusExUI.UserInterface.MenuJoinBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.MenuJoinBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.MenuJoinBackground_3'
      clientTextures(3)=Texture'DeusExUI.UserInterface.MenuJoinBackground_4'
      clientTextures(4)=Texture'DeusExUI.UserInterface.MenuJoinBackground_5'
      clientTextures(5)=Texture'DeusExUI.UserInterface.MenuJoinBackground_6'
-     helpPosY=378
+     helpPosY=756
      bTickEnabled=True
 }

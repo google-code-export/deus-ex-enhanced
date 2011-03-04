@@ -36,14 +36,24 @@ function CreateControls()
 	Super.CreateControls();
 
 	btnWithdraw = winButtonBar.AddButton(ButtonLabelWithdraw, HALIGN_Right);
-	btnClose    = winButtonBar.AddButton(ButtonLabelClose,  HALIGN_Right);
+	btnClose    = winButtonBar.AddButton(ButtonLabelClose,	  HALIGN_Right);
 
-	CreateMenuLabel(20, 91, BalanceLabel, winClient);
-	CreateMenuLabel(20, 121, WithdrawAmountLabel, winClient);
+	CreateMenuLabel(20 * dxEnhancedGUIScaleMultiplier,  91 * dxEnhancedGUIScaleMultiplier, 
+					BalanceLabel, winClient);
+	CreateMenuLabel(20 * dxEnhancedGUIScaleMultiplier, 121 * dxEnhancedGUIScaleMultiplier, 
+					WithdrawAmountLabel, winClient);
 
-	editBalance  = CreateMenuEditWindow(231, 89, 143, 10, winClient);
+	editBalance  = CreateMenuEditWindow(231 * dxEnhancedGUIScaleMultiplier, 
+										 89 * dxEnhancedGUIScaleMultiplier, 
+										143 * dxEnhancedGUIScaleMultiplier, 
+										 10 * dxEnhancedGUIScaleMultiplier, winClient);
+										 
 	editBalance.SetSensitivity(False);	// cannot edit balance!!
-	editWithdraw = CreateMenuEditWindow(231, 119, 143, 10, winClient);
+	
+	editWithdraw = CreateMenuEditWindow(231 * dxEnhancedGUIScaleMultiplier, 
+										119 * dxEnhancedGUIScaleMultiplier, 
+										143 * dxEnhancedGUIScaleMultiplier, 
+										 10 * dxEnhancedGUIScaleMultiplier, winClient);
 
 	CreateInstructionsWindow();
 	CreateInfoWindow();
@@ -77,8 +87,10 @@ function CreateInstructionsWindow()
 {
 	winInstructions = MenuUILabelWindow(winClient.NewChild(Class'MenuUILabelWindow'));
 
-	winInstructions.SetPos(8, 10);
-	winInstructions.SetSize(381, 50);
+	winInstructions.SetPos(   8 * dxEnhancedGUIScaleMultiplier, 
+							 10 * dxEnhancedGUIScaleMultiplier);
+	winInstructions.SetSize(381 * dxEnhancedGUIScaleMultiplier, 
+							 50 * dxEnhancedGUIScaleMultiplier);
 	winInstructions.SetTextAlignments(HALIGN_Center, VALIGN_Center);
 	winInstructions.SetTextMargins(0, 0);
 }
@@ -91,8 +103,8 @@ function CreateInfoWindow()
 {
 	winInfo = MenuUISmallLabelWindow(winClient.NewChild(Class'MenuUISmallLabelWindow'));
 
-	winInfo.SetPos(8, 152);
-	winInfo.SetSize(385, 25);
+	winInfo.SetPos(   8 * dxEnhancedGUIScaleMultiplier, 152 * dxEnhancedGUIScaleMultiplier);
+	winInfo.SetSize(385 * dxEnhancedGUIScaleMultiplier, 25 * dxEnhancedGUIScaleMultiplier);
 	winInfo.SetTextAlignments(HALIGN_Center, VALIGN_Center);
 	winInfo.SetTextMargins(0, 0);
 }
@@ -266,6 +278,7 @@ function EnableButtons()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values, except: textureRows, textureCols
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -283,14 +296,14 @@ defaultproperties
      HackedText="TERMINAL HACKED"
      escapeAction="LOGOUT"
      Title="PageNet Global Banking System"
-     ClientWidth=403
-     ClientHeight=211
-     verticalOffset=30
+     ClientWidth=806
+     ClientHeight=422
+     verticalOffset=60
      clientTextures(0)=Texture'DeusExUI.UserInterface.ComputerGBSWithdrawBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.ComputerGBSWithdrawBackground_2'
      textureRows=1
      textureCols=2
      bAlwaysCenter=True
-     statusPosY=186
+     statusPosY=372
      ComputerNodeFunctionLabel="ATMWD"
 }

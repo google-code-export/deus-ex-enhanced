@@ -81,6 +81,8 @@ simulated function bool UpdateInfo(Object winObject)
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      DragToUpgrade="Drag over weapon to upgrade.  Weapons highlighted in GREEN can be upgraded with this mod."
@@ -89,8 +91,8 @@ defaultproperties
      PickupViewMesh=LodMesh'DeusExItems.WeaponMod'
      ThirdPersonMesh=LodMesh'DeusExItems.WeaponMod'
      LandSound=Sound'DeusExSounds.Generic.PlasticHit1'
-     largeIconWidth=34
-     largeIconHeight=49
+     largeIconWidth=68
+     largeIconHeight=98
      Mesh=LodMesh'DeusExItems.WeaponMod'
      CollisionRadius=3.500000
      CollisionHeight=4.420000

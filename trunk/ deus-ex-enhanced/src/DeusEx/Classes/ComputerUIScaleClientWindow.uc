@@ -31,7 +31,7 @@ event DrawWindow(GC gc)
 
 	// Draw top textures
 	for(colIndex=0; colIndex<textureCols; colIndex++)
-		gc.DrawIcon(colIndex * 256, 0, clientTextures[textureIndex++]);
+		gc.DrawIcon(colIndex * 256 * dxEnhancedGUIScaleMultiplier, 0, clientTextures[textureIndex++]);
 
 	// Draw middle textures
 	for(middleIndex=0; middleIndex<numMiddleTextures; middleIndex++)
@@ -39,7 +39,7 @@ event DrawWindow(GC gc)
 		middleTextureIndex = textureIndex;
 		for(colIndex=0; colIndex<textureCols; colIndex++)
 		{
-			gc.DrawIcon(colIndex * 256, topHeight + middlePosY, clientTextures[middleTextureIndex++]);		
+			gc.DrawIcon(colIndex * 256 * dxEnhancedGUIScaleMultiplier, topHeight + middlePosY, clientTextures[middleTextureIndex++]);		
 		}
 
 		middlePosY += middleHeight;
@@ -49,7 +49,7 @@ event DrawWindow(GC gc)
 
 	// Draw bottom textures
 	for(colIndex=0; colIndex<textureCols; colIndex++)
-		gc.DrawIcon(colIndex * 256, topHeight + middlePosY, clientTextures[textureIndex++]);
+		gc.DrawIcon(colIndex * 256 * dxEnhancedGUIScaleMultiplier, topHeight + middlePosY, clientTextures[textureIndex++]);
 }
 
 // ----------------------------------------------------------------------

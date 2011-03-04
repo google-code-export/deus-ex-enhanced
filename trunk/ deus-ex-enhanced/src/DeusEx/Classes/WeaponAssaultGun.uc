@@ -24,6 +24,8 @@ simulated function PreBeginPlay()
 	}
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      LowAmmoWaterMark=30
@@ -76,8 +78,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.DropMediumWeapon'
      Icon=Texture'DeusExUI.Icons.BeltIconAssaultGun'
      largeIcon=Texture'DeusExUI.Icons.LargeIconAssaultGun'
-     largeIconWidth=94
-     largeIconHeight=65
+     largeIconWidth=188
+     largeIconHeight=130
      invSlotsX=2
      invSlotsY=2
      Description="The 7.62x51mm assault rifle is designed for close-quarters combat, utilizing a shortened barrel and 'bullpup' design for increased maneuverability. An additional underhand 20mm HE launcher increases the rifle's effectiveness against a variety of targets."

@@ -29,7 +29,7 @@ function AddAmmoInfoWindow(DeusExAmmo ammo, bool bShowDescriptions)
 	{
 		winAmmo = AlignWindow(winTile.NewChild(Class'AlignWindow'));
 		winAmmo.SetChildVAlignment(VALIGN_Top);
-		winAmmo.SetChildSpacing(4);
+		winAmmo.SetChildSpacing(4 * dxEnhancedGUIScaleMultiplier);
 
 		// Add icon
 		winIcon = winAmmo.NewChild(Class'Window');
@@ -41,7 +41,7 @@ function AddAmmoInfoWindow(DeusExAmmo ammo, bool bShowDescriptions)
 		else
 			winIcon.SetBackground(ammo.Icon);
 		winIcon.SetBackgroundStyle(DSTY_Masked);
-		winIcon.SetSize(42, 37);
+		winIcon.SetSize(42 * dxEnhancedGUIScaleMultiplier, 37 * dxEnhancedGUIScaleMultiplier);
 
 		// Add description
 		winText = PersonaNormalTextWindow(winAmmo.NewChild(Class'PersonaNormalTextWindow'));
@@ -94,11 +94,11 @@ function CreateAmmoTileWindow()
 		winTileAmmo.MakeWidthsEqual(False);
 		winTileAmmo.MakeHeightsEqual(True);
 		winTileAmmo.SetMargins(0, 0);
-		winTileAmmo.SetMinorSpacing(4);
+		winTileAmmo.SetMinorSpacing(4 * dxEnhancedGUIScaleMultiplier);
 
 		winText = PersonaNormalTextWindow(winTileAmmo.NewChild(Class'PersonaNormalTextWindow'));
-		winText.SetWidth(70);
-		winText.SetTextMargins(0, 6);
+		winText.SetWidth(70 * dxEnhancedGUIScaleMultiplier);
+		winText.SetTextMargins(0, 6 * dxEnhancedGUIScaleMultiplier);
 		winText.SetTextAlignments(HALIGN_Right, VALIGN_Center);
 		winText.SetText(AmmoLabel);
 	}

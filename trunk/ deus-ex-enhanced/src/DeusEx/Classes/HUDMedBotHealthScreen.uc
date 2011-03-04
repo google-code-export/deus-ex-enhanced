@@ -76,7 +76,7 @@ function CreateControls()
 	CreateClientBorderWindow();
 	CreateClientWindow();
 
-	CreateTitleWindow(9, 5, HealthTitleText);
+	CreateTitleWindow(9 * dxEnhancedGUIScaleMultiplier, 5 * dxEnhancedGUIScaleMultiplier, HealthTitleText);
 	CreateInfoWindow();
 	CreateOverlaysWindow();
 	CreateBodyWindow();
@@ -96,8 +96,8 @@ function CreateControls()
 function CreateStatusWindow()
 {
 	winStatus = PersonaStatusLineWindow(winClient.NewChild(Class'PersonaStatusLineWindow'));
-	winStatus.SetPos(15, 410);
-	winStatus.SetWidth(291);
+	winStatus.SetPos(15 * dxEnhancedGUIScaleMultiplier, 410 * dxEnhancedGUIScaleMultiplier);
+	winStatus.SetWidth(291 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -117,8 +117,8 @@ function CreateNavBarWindow()
 function CreateInfoWindow()
 {
 	winInfo = PersonaInfoWindow(winClient.NewChild(Class'PersonaInfoWindow'));
-	winInfo.SetPos(348, 22);
-	winInfo.SetSize(238, 243);
+	winInfo.SetPos(348 * dxEnhancedGUIScaleMultiplier, 22 * dxEnhancedGUIScaleMultiplier);
+	winInfo.SetSize(238 * dxEnhancedGUIScaleMultiplier, 243 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -130,8 +130,8 @@ function CreateButtons()
 	local PersonaButtonBarWindow winActionButtons;
 
 	winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(346, 346);
-	winActionButtons.SetWidth(97);
+	winActionButtons.SetPos(346 * dxEnhancedGUIScaleMultiplier, 346 * dxEnhancedGUIScaleMultiplier);
+	winActionButtons.SetWidth(97 * dxEnhancedGUIScaleMultiplier);
 	winActionButtons.FillAllSpace(False);
 
 	btnHealAll = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
@@ -145,7 +145,7 @@ function CreateButtons()
 function CreateOverlaysWindow()
 {
 	winOverlays = PersonaOverlaysWindow(winClient.NewChild(Class'HUDMedBotHealthOverlaysWindow'));
-	winOverlays.SetPos(24, 36);
+	winOverlays.SetPos(24 * dxEnhancedGUIScaleMultiplier, 36 * dxEnhancedGUIScaleMultiplier);
 	winOverlays.Lower();
 }
 
@@ -158,8 +158,8 @@ function CreateMedbotLabel()
 	local PersonaHeaderTextWindow txtLabel;
 
 	txtLabel = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
-	txtLabel.SetPos(305, 9);
-	txtLabel.SetSize(250, 16);
+	txtLabel.SetPos(305 * dxEnhancedGUIScaleMultiplier, 9 * dxEnhancedGUIScaleMultiplier);
+	txtLabel.SetSize(250 * dxEnhancedGUIScaleMultiplier, 16 * dxEnhancedGUIScaleMultiplier);
 	txtLabel.SetTextAlignments(HALIGN_Right, VALIGN_Center);
 	txtLabel.SetText(MedbotInterfaceText);
 }
@@ -172,8 +172,8 @@ function CreateMedBotDisplay()
 {
 	winHealthBar = ProgressBarWindow(winClient.NewChild(Class'ProgressBarWindow'));
 
-	winHealthBar.SetPos(446, 348);
-	winHealthBar.SetSize(140, 12);
+	winHealthBar.SetPos(446 * dxEnhancedGUIScaleMultiplier, 348 * dxEnhancedGUIScaleMultiplier);
+	winHealthBar.SetSize(140 * dxEnhancedGUIScaleMultiplier, 12 * dxEnhancedGUIScaleMultiplier);
 	winHealthBar.SetValues(0, 100);
 	winHealthBar.UseScaledColor(True);
 	winHealthBar.SetVertical(False);
@@ -181,17 +181,17 @@ function CreateMedBotDisplay()
 	winHealthBar.SetDrawBackground(False);
 
 	winHealthBarText = TextWindow(winClient.NewChild(Class'TextWindow'));
-	winHealthBarText.SetPos(446, 349);
-	winHealthBarText.SetSize(140, 12);
+	winHealthBarText.SetPos(446 * dxEnhancedGUIScaleMultiplier, 349 * dxEnhancedGUIScaleMultiplier);
+	winHealthBarText.SetSize(140 * dxEnhancedGUIScaleMultiplier, 12 * dxEnhancedGUIScaleMultiplier);
 	winHealthBarText.SetTextMargins(0, 0);
 	winHealthBarText.SetTextAlignments(HALIGN_Center, VALIGN_Center);
 	winHealthBarText.SetFont(Font'FontMenuSmall_DS');
 	winHealthBarText.SetTextColorRGB(255, 255, 255);
 
 	winHealthInfoText = PersonaNormalTextWindow(winClient.NewChild(Class'PersonaNormalTextWindow'));
-	winHealthInfoText.SetPos(348, 293);
-	winHealthInfoText.SetSize(238, 50);
-	winHealthInfoText.SetTextMargins(2, 0);
+	winHealthInfoText.SetPos(348 * dxEnhancedGUIScaleMultiplier, 293 * dxEnhancedGUIScaleMultiplier);
+	winHealthInfoText.SetSize(238 * dxEnhancedGUIScaleMultiplier, 50 * dxEnhancedGUIScaleMultiplier);
+	winHealthInfoText.SetTextMargins(2 * dxEnhancedGUIScaleMultiplier, 0);
 }
 
 // ----------------------------------------------------------------------

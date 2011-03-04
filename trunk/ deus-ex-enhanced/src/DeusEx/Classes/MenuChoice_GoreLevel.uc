@@ -37,6 +37,7 @@ function ResetToDefault()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled defaultInfoWidth
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -44,7 +45,7 @@ defaultproperties
      enumText(0)="Low"
      enumText(1)="Normal"
      defaultValue=1
-     defaultInfoWidth=88
+     defaultInfoWidth=176
      HelpText="Setting to low will remove blood from the game"
      actionText="|&Gore Level"
 }

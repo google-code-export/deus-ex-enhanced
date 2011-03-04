@@ -125,13 +125,13 @@ event DrawWindow(GC gc)
 				str = weapon.AmmoType.beltDescription;
 			}
 
-			if (str != "")
+			if (str != "") // DJ: This block prints the ammo text in the inventory item's button
 			{
 				gc.SetFont(Font'FontMenuSmall_DS');
 				gc.SetAlignments(HALIGN_Center, VALIGN_Center);
 				gc.SetTextColor(colHeaderText);		
 				gc.GetTextExtent(0, strWidth, strHeight, str);
-				gc.DrawText(0, height - strHeight, width, strHeight, str);
+				gc.DrawText(0, height - (strHeight * dxEnhancedGUIScaleMultiplier) , width, strHeight * dxEnhancedGUIScaleMultiplier, str);
 			}
 		}
 

@@ -212,13 +212,14 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values, except last 2
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     choiceVerticalGap=36
-     choiceStartX=7
-     choiceStartY=27
+     choiceVerticalGap=72
+     choiceStartX=14
+     choiceStartY=54
      textureRows=2
      textureCols=3
      bActionButtonBarActive=True

@@ -92,6 +92,8 @@ simulated function bool TestMPBeltSpot(int BeltSpot)
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      rechargeAmount=25
@@ -109,8 +111,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.PlasticHit2'
      Icon=Texture'DeusExUI.Icons.BeltIconBioCell'
      largeIcon=Texture'DeusExUI.Icons.LargeIconBioCell'
-     largeIconWidth=44
-     largeIconHeight=43
+     largeIconWidth=88
+     largeIconHeight=86
      Description="A bioelectric cell provides efficient storage of energy in a form that can be utilized by a number of different devices.|n|n<UNATCO OPS FILE NOTE JR289-VIOLET> Augmented agents have been equipped with an interface that allows them to transparently absorb energy from bioelectric cells. -- Jaime Reyes <END NOTE>"
      beltDescription="BIOCELL"
      Mesh=LodMesh'DeusExItems.BioCell'

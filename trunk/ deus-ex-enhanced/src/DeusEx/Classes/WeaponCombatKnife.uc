@@ -151,6 +151,8 @@ function bool TestCycleable()
 	return true;
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      LowAmmoWaterMark=0
@@ -193,8 +195,8 @@ defaultproperties
      ThirdPersonMesh=LodMesh'DeusExItems.CombatKnife3rd'
      Icon=Texture'DeusExUI.Icons.BeltIconCombatKnife'
      largeIcon=Texture'DeusExUI.Icons.LargeIconCombatKnife'
-     largeIconWidth=49
-     largeIconHeight=45
+     largeIconWidth=98
+     largeIconHeight=90
      Description="An ultra-high carbon stainless steel knife."
      beltDescription="KNIFE"
      Mesh=LodMesh'DeusExItems.CombatKnifePickup'

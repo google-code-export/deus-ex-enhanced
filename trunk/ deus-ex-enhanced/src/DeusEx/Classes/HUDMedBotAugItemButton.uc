@@ -116,16 +116,17 @@ event StyleChanged()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      colIconDisabled=(R=64,G=64,B=64)
      colIconNormal=(R=255,G=255)
-     iconPosWidth=32
-     iconPosHeight=32
-     buttonWidth=34
-     buttonHeight=34
-     borderWidth=34
-     borderHeight=34
+     iconPosWidth=64
+     iconPosHeight=64
+     buttonWidth=68
+     buttonHeight=68
+     borderWidth=68
+     borderHeight=68
 }

@@ -17,6 +17,8 @@ state Activated
 Begin:
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      healthEffect=5
@@ -31,8 +33,8 @@ defaultproperties
      ThirdPersonMesh=LodMesh'DeusExItems.SoyFood'
      Icon=Texture'DeusExUI.Icons.BeltIconSoyFood'
      largeIcon=Texture'DeusExUI.Icons.LargeIconSoyFood'
-     largeIconWidth=42
-     largeIconHeight=46
+     largeIconWidth=84
+     largeIconHeight=92
      Description="Fine print: 'Seasoned with nanoscale mechanochemical generators, this TSP (textured soy protein) not only tastes good but also self-heats when its package is opened.'"
      beltDescription="SOY FOOD"
      Mesh=LodMesh'DeusExItems.SoyFood'

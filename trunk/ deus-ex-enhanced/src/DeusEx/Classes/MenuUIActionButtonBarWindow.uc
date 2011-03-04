@@ -69,7 +69,7 @@ function ConfigurationChanged()
 					rightX -= buttonSpacing;
 					break;
 			}
-			btn.ConfigureChild(btnPos, 1, qWidth, qHeight);
+			btn.ConfigureChild(btnPos, 1, qWidth, qHeight); // DJ: Hmm...
 		}			
 	}
 }
@@ -112,10 +112,11 @@ function MenuUIActionButtonWindow AddButton(string buttonLabel, EHALIGN buttonAl
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     defaultBarHeight=21
-     buttonSpacing=2
+     defaultBarHeight=42
+     buttonSpacing=4
 }

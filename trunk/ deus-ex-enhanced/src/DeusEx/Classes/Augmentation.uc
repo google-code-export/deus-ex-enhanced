@@ -421,14 +421,15 @@ simulated function float GetEnergyRate()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled icon size
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      EnergyRate=50.000000
      MaxLevel=3
-     IconWidth=52
-     IconHeight=52
+     IconWidth=104
+     IconHeight=104
      HotKeyNum=-1
      EnergyRateLabel="Energy Rate: %d Units/Minute"
      OccupiesSlotLabel="Occupies Slot: %s"

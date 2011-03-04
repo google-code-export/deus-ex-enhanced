@@ -196,6 +196,8 @@ state Activated
 Begin:
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      InvDescription(0)="The can is blank except for the phrase 'PRODUCT PLACEMENT HERE.' It is unclear whether this is a name or an invitation."
@@ -216,8 +218,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.MetalHit1'
      Icon=Texture'DeusExUI.Icons.BeltIconSodaCan'
      largeIcon=Texture'DeusExUI.Icons.LargeIconSodaCan'
-     largeIconWidth=24
-     largeIconHeight=45
+     largeIconWidth=48
+     largeIconHeight=90
      Description="The can is blank except for the phrase 'PRODUCT PLACEMENT HERE.' It is unclear whether this is a name or an invitation."
      beltDescription="SODA"
      Mesh=LodMesh'DeusExItems.Sodacan'

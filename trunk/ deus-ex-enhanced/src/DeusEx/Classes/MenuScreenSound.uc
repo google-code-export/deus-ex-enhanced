@@ -15,6 +15,7 @@ function SaveSettings()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -32,13 +33,13 @@ defaultproperties
      actionButtons(1)=(Align=HALIGN_Right,Action=AB_OK)
      actionButtons(2)=(Action=AB_Reset)
      Title="Sound Settings"
-     ClientWidth=537
-     ClientHeight=408
+     ClientWidth=1074
+     ClientHeight=816
      clientTextures(0)=Texture'DeusExUI.UserInterface.MenuSoundBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.MenuSoundBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.MenuSoundBackground_3'
      clientTextures(3)=Texture'DeusExUI.UserInterface.MenuSoundBackground_4'
      clientTextures(4)=Texture'DeusExUI.UserInterface.MenuSoundBackground_5'
      clientTextures(5)=Texture'DeusExUI.UserInterface.MenuSoundBackground_6'
-     helpPosY=354
+     helpPosY=708
 }

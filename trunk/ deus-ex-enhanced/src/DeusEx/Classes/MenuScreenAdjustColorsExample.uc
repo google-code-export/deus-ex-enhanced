@@ -4,6 +4,8 @@
 
 class MenuScreenAdjustColorsExample expands Window;
 
+const dxEnhancedGUIScaleMultiplier = 2;
+
 var DeusExPlayer player;
 
 var Color colBackground;      
@@ -35,7 +37,7 @@ event InitWindow()
 {
 	Super.InitWindow();
 
-	SetSize(207, 135);
+	SetSize(207 * dxEnhancedGUIScaleMultiplier, 135 * dxEnhancedGUIScaleMultiplier);
 
 	// Get a pointer to the player
 	player = DeusExPlayer(GetRootWindow().parentPawn);
@@ -56,7 +58,7 @@ event DrawWindow(GC gc)
 		gc.SetStyle(DSTY_Masked);
 
 	gc.SetTileColor(colBackground);
-	gc.DrawTexture(0, 0, 256, 135, 0, 0, Texture'MenuColorHUDBackground');
+	gc.DrawTexture(0, 0, 256 * dxEnhancedGUIScaleMultiplier, 135 * dxEnhancedGUIScaleMultiplier, 0, 0, Texture'MenuColorHUDBackground');
 
 	// Draw Borders
 	if (bBordersVisible)
@@ -67,29 +69,29 @@ event DrawWindow(GC gc)
 			gc.SetStyle(DSTY_Masked);
 
 		gc.SetTileColor(colBorders);
-		gc.DrawTexture(0, 0, 256, 135, 0, 0, Texture'MenuColorHUDBorders');
+		gc.DrawTexture(0, 0, 256 * dxEnhancedGUIScaleMultiplier, 135 * dxEnhancedGUIScaleMultiplier, 0, 0, Texture'MenuColorHUDBorders');
 	}
 
 	// Draw Text
 	gc.SetTextColor(colTitleText);
 	gc.SetFont(Font'FontMenuHeaders');
-	gc.DrawText(23, 19, 90, 11, TitleBarLabel);
+	gc.DrawText(23 * dxEnhancedGUIScaleMultiplier, 19 * dxEnhancedGUIScaleMultiplier, 90 * dxEnhancedGUIScaleMultiplier, 11 * dxEnhancedGUIScaleMultiplier, TitleBarLabel);
 
 	gc.SetTextColor(colHeaderText);
 	gc.SetFont(Font'FontMenuHeaders');
-	gc.DrawText(27, 37, 90, 11, TextHeaderLabel);
+	gc.DrawText(27 * dxEnhancedGUIScaleMultiplier, 37 * dxEnhancedGUIScaleMultiplier, 90 * dxEnhancedGUIScaleMultiplier, 11 * dxEnhancedGUIScaleMultiplier, TextHeaderLabel);
 
 	gc.SetTextColor(colNormalText);
 	gc.SetFont(Font'FontMenuSmall');
-	gc.DrawText(27, 56, 90, 11, TextNormalLabel);
+	gc.DrawText(27 * dxEnhancedGUIScaleMultiplier, 56 * dxEnhancedGUIScaleMultiplier, 90 * dxEnhancedGUIScaleMultiplier, 11 * dxEnhancedGUIScaleMultiplier, TextNormalLabel);
 
 	gc.SetTextColor(colButtonTextNormal);
 	gc.SetFont(Font'FontMenuHeaders');
-	gc.DrawText(28, 110, 54, 10, ButtonPressedLabel);
+	gc.DrawText(28 * dxEnhancedGUIScaleMultiplier, 110 * dxEnhancedGUIScaleMultiplier, 54 * dxEnhancedGUIScaleMultiplier, 10 * dxEnhancedGUIScaleMultiplier, ButtonPressedLabel);
 
 	gc.SetTextColor(colButtonTextFocus);
 	gc.SetFont(Font'FontMenuHeaders');
-	gc.DrawText(94, 110, 54, 10, ButtonNormalLabel);
+	gc.DrawText(94 * dxEnhancedGUIScaleMultiplier, 110 * dxEnhancedGUIScaleMultiplier, 54 * dxEnhancedGUIScaleMultiplier, 10 * dxEnhancedGUIScaleMultiplier, ButtonNormalLabel);
 }
 
 // ----------------------------------------------------------------------

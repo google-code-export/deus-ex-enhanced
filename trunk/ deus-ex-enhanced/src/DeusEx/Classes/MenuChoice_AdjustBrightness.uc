@@ -57,6 +57,7 @@ event bool ScalePositionChanged(Window scale, int newTickPosition,
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled choicecontrolposx
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -64,7 +65,7 @@ defaultproperties
      numTicks=101
      endValue=1.000000
      defaultValue=0.500000
-     choiceControlPosX=290
+     choiceControlPosX=580
      actionText="|&Brightness"
      configSetting="ini:Engine.Engine.ViewportManager Brightness"
 }

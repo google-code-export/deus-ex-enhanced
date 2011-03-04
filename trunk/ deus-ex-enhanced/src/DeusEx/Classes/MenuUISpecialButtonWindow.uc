@@ -4,6 +4,8 @@
 
 class MenuUISpecialButtonWindow extends ButtonWindow;
 
+const dxEnhancedGUIScaleMultiplier = 2; 				// DJ: Added
+
 var DeusExPlayer player;
 
 var Texture texNormal;
@@ -22,7 +24,7 @@ event InitWindow()
 	// Get a pointer to the player
 	player = DeusExPlayer(GetRootWindow().parentPawn);
 
-	SetSize(25, 19);
+	SetSize(25 * dxEnhancedGUIScaleMultiplier, 19 * dxEnhancedGUIScaleMultiplier);
 
 	StyleChanged();
 }

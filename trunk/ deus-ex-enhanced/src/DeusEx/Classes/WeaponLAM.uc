@@ -15,6 +15,8 @@ simulated function bool TestMPBeltSpot(int BeltSpot)
    return (BeltSpot == 7);
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      ShortName="LAM"
@@ -54,8 +56,8 @@ defaultproperties
      ThirdPersonMesh=LodMesh'DeusExItems.LAM3rd'
      Icon=Texture'DeusExUI.Icons.BeltIconLAM'
      largeIcon=Texture'DeusExUI.Icons.LargeIconLAM'
-     largeIconWidth=35
-     largeIconHeight=45
+     largeIconWidth=70
+     largeIconHeight=90
      Description="A multi-functional explosive with electronic priming system that can either be thrown or attached to any surface with its polyhesive backing and used as a proximity mine.|n|n<UNATCO OPS FILE NOTE SC093-BLUE> Disarming a proximity device should only be attempted with the proper demolitions training. Trust me on this. -- Sam Carter <END NOTE>"
      beltDescription="LAM"
      Mesh=LodMesh'DeusExItems.LAMPickup'

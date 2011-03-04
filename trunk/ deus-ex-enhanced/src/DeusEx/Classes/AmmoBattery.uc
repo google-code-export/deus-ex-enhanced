@@ -14,8 +14,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.PlasticHit2'
      Icon=Texture'DeusExUI.Icons.BeltIconAmmoProd'
      largeIcon=Texture'DeusExUI.Icons.LargeIconAmmoProd'
-     largeIconWidth=17
-     largeIconHeight=46
+     largeIconWidth=34
+     largeIconHeight=92
      Description="A portable charging unit for the riot prod."
      beltDescription="CHARGER"
      Mesh=LodMesh'DeusExItems.AmmoProd'

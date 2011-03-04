@@ -3,6 +3,9 @@
 //=============================================================================
 class DeusExScopeView expands Window;
 
+const dxEnhancedGUIScaleMultiplier = 2;			// DJ: Added
+const dxEnhancedScopeAndBinocFix   = 2;         // DJ: Added
+
 var bool bActive;		// is this view actually active?
 
 var DeusExPlayer player;
@@ -127,7 +130,7 @@ event DrawWindow(GC gc)
 	local vector		loc;
 	local bool          narrowScopeView;
 
-	scopeHeight = 512;
+	scopeHeight = 256 * dxEnhancedScopeAndBinocFix * dxEnhancedGUIScaleMultiplier;
 
 	Super.DrawWindow(gc);
 
@@ -141,11 +144,11 @@ event DrawWindow(GC gc)
 	
 	if (bBinocs)
 	{
-		scopeWidth  = 1024;
+		scopeWidth  = 512 * dxEnhancedScopeAndBinocFix * dxEnhancedGUIScaleMultiplier;
 	}
 	else
 	{		
-		scopeWidth  = 512;
+		scopeWidth  = 256 * dxEnhancedScopeAndBinocFix * dxEnhancedGUIScaleMultiplier;
 	}
 	
 	fromX = (width  - scopeWidth)  / 2;
@@ -224,13 +227,20 @@ event DrawWindow(GC gc)
 	if (bBinocs)
 	{
 		gc.SetStyle(DSTY_Modulated);
-		gc.DrawTexture(fromX,       fromY, 512, scopeHeight, 0, 0, Texture'HUDBinocularView_1');
-		gc.DrawTexture(fromX + 512, fromY, 512, scopeHeight, 0, 0, Texture'HUDBinocularView_2');
+		gc.DrawTexture(fromX, fromY, 256 * dxEnhancedScopeAndBinocFix * dxEnhancedGUIScaleMultiplier, 
+					   scopeHeight, 0, 0, Texture'HUDBinocularView_1');
+		gc.DrawTexture(fromX + (256 * dxEnhancedScopeAndBinocFix * dxEnhancedGUIScaleMultiplier), 
+					   fromY,   256 * dxEnhancedScopeAndBinocFix * dxEnhancedGUIScaleMultiplier, 
+					   scopeHeight, 0, 0, Texture'HUDBinocularView_2');
 
 		gc.SetTileColor(colLines);
+		
 		gc.SetStyle(DSTY_Masked);
-		gc.DrawTexture(fromX,       fromY, 512, scopeHeight, 0, 0, Texture'HUDBinocularCrosshair_1');
-		gc.DrawTexture(fromX + 512, fromY, 512, scopeHeight, 0, 0, Texture'HUDBinocularCrosshair_2');
+		gc.DrawTexture(fromX, fromY, 256 * dxEnhancedScopeAndBinocFix * dxEnhancedGUIScaleMultiplier, 
+					   scopeHeight, 0, 0, Texture'HUDBinocularCrosshair_1');
+		gc.DrawTexture(fromX + (256 * dxEnhancedScopeAndBinocFix * dxEnhancedGUIScaleMultiplier), 
+					   fromY,  (256 * dxEnhancedScopeAndBinocFix * dxEnhancedGUIScaleMultiplier), 
+					   scopeHeight, 0, 0, Texture'HUDBinocularCrosshair_2');
 	}
 	else
 	{

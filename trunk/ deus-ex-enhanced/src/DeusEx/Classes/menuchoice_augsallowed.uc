@@ -14,7 +14,7 @@ event InitWindow()
 {
 	Super.InitWindow();
 
-   SetActionButtonWidth(179);
+   SetActionButtonWidth(179 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -52,13 +52,14 @@ function SaveSetting()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values, except first
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      defaultValue=1
-     defaultInfoWidth=178
-     defaultInfoPosX=204
+     defaultInfoWidth=356
+     defaultInfoPosX=408
      HelpText="Sets whether players receive starting augmentations and augmentations for kills."
      actionText="Augmentations"
      configSetting="DeusExMPGame bAugsAllowed"

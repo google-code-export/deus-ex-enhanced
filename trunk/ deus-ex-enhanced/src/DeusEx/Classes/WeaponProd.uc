@@ -19,6 +19,8 @@ simulated function PreBeginPlay()
 	}
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      LowAmmoWaterMark=4
@@ -59,8 +61,8 @@ defaultproperties
      ThirdPersonMesh=LodMesh'DeusExItems.Prod3rd'
      Icon=Texture'DeusExUI.Icons.BeltIconProd'
      largeIcon=Texture'DeusExUI.Icons.LargeIconProd'
-     largeIconWidth=49
-     largeIconHeight=48
+     largeIconWidth=98
+     largeIconHeight=96
      Description="The riot prod has been extensively used by security forces who wish to keep what remains of the crumbling peace and have found the prod to be an valuable tool. Its short range tetanizing effect is most effective when applied to the torso or when the subject is taken by surprise."
      beltDescription="PROD"
      Mesh=LodMesh'DeusExItems.ProdPickup'

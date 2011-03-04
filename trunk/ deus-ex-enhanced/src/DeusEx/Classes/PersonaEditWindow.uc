@@ -4,6 +4,8 @@
 
 class PersonaEditWindow extends EditWindow;
 
+const dxEnhancedGUIScaleMultiplier = 2;
+
 var DeusExPlayer player;
 
 var Color colText;

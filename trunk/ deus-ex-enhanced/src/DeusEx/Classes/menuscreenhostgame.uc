@@ -211,14 +211,15 @@ function LockButtonSetting(MenuUIChoice SetButton)
    CurrentType.Destroy();
 }
 // ----------------------------------------------------------------------
+// DJ: Doubled values except: Servermode, texturecols
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      CurrentGameType="DeusEx.DeathMatchGame"
      ServerMode=1
-     choiceVerticalGap=28
-     choiceStartY=17
+     choiceVerticalGap=56
+     choiceStartY=34
      choices(0)=Class'DeusEx.menuchoice_gametype'
      choices(1)=Class'DeusEx.menuchoice_map'
      choices(2)=Class'DeusEx.menuchoice_maxplayers'
@@ -236,12 +237,12 @@ defaultproperties
      actionButtons(1)=(Align=HALIGN_Right,Action=AB_Reset)
      actionButtons(2)=(Action=AB_Other,Text="Start Game",Key="BEGINHOST")
      Title="Host Multiplayer Game"
-     ClientWidth=461
-     ClientHeight=427
+     ClientWidth=922
+     ClientHeight=854
      clientTextures(0)=Texture'DeusExUI.UserInterface.MenuHostBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.MenuHostBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.MenuHostBackground_3'
      clientTextures(3)=Texture'DeusExUI.UserInterface.MenuHostBackground_4'
      textureCols=2
-     helpPosY=377
+     helpPosY=754
 }

@@ -87,6 +87,8 @@ function bool UseAmmo(int AmountNeeded)
 	return False;
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      bShowInfo=True
@@ -97,8 +99,8 @@ defaultproperties
      PickupViewMesh=LodMesh'DeusExItems.Ammo762mm'
      LandSound=Sound'DeusExSounds.Generic.MetalHit1'
      Icon=Texture'DeusExUI.Icons.BeltIconAmmo762'
-     largeIconWidth=46
-     largeIconHeight=34
+     largeIconWidth=92
+     largeIconHeight=68
      Description="The 7.62x51mm (NATO) round was chiefly used by anti-terrorist units equipped with assault rifles for close-quarters combat until its widespread adoption among national security forces requiring enhanced combat responsiveness made it ubiquitous."
      beltDescription="7.62 AMMO"
      Mesh=LodMesh'DeusExItems.Ammo762mm'

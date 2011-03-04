@@ -87,12 +87,14 @@ function CreateControls()
 {
 	Super.CreateControls();
 
-	CreateTitleWindow(9,   5, GoalsTitleText);
-	CreateTitleWindow(9, 209, NotesTitleText);
+	CreateTitleWindow(9 * dxEnhancedGUIScaleMultiplier, 5 * dxEnhancedGUIScaleMultiplier, GoalsTitleText);
+	CreateTitleWindow(9 * dxEnhancedGUIScaleMultiplier, 209 * dxEnhancedGUIScaleMultiplier, NotesTitleText);
 
-	winGoals = CreateScrollTileWindow(16,  21, 574, 154);
+	winGoals = CreateScrollTileWindow( 16 * dxEnhancedGUIScaleMultiplier,  21 * dxEnhancedGUIScaleMultiplier, 
+									  574 * dxEnhancedGUIScaleMultiplier, 154 * dxEnhancedGUIScaleMultiplier);
 
-	winNotes = CreateScrollTileWindow(16, 226, 574, 182);
+	winNotes = CreateScrollTileWindow(16 * dxEnhancedGUIScaleMultiplier, 226 * dxEnhancedGUIScaleMultiplier, 
+									  574 * dxEnhancedGUIScaleMultiplier, 182 * dxEnhancedGUIScaleMultiplier);
 	winNotes.SetMinorSpacing(4);
 
 	CreateShowCompletedGoalsCheckbox();
@@ -112,7 +114,7 @@ function CreateShowCompletedGoalsCheckbox()
 
 	chkShowCompletedGoals.SetText(DisplayCompletedGoals);
 	chkShowCompletedGoals.SetToggle(bDisplayCompletedGoals);
-	chkShowCompletedGoals.SetWindowAlignments(HALIGN_Right, VALIGN_Top, 13, 180);
+	chkShowCompletedGoals.SetWindowAlignments(HALIGN_Right, VALIGN_Top, 13 * dxEnhancedGUIScaleMultiplier, 180 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -124,8 +126,8 @@ function CreateNotesButtons()
 	local PersonaButtonBarWindow winActionButtons;
 
 	winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(10, 411);
-	winActionButtons.SetWidth(179);
+	winActionButtons.SetPos(10 * dxEnhancedGUIScaleMultiplier, 411 * dxEnhancedGUIScaleMultiplier);
+	winActionButtons.SetWidth(179 * dxEnhancedGUIScaleMultiplier);
 	winActionButtons.FillAllSpace(False);
 
 	btnAddNote = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
@@ -148,7 +150,7 @@ function CreateConfirmNoteDeletionCheckbox()
 
 	chkConfirmNoteDeletion.SetText(ConfirmNoteDeletionLabel);
 	chkConfirmNoteDeletion.SetToggle(bConfirmNoteDeletes);
-	chkConfirmNoteDeletion.SetWindowAlignments(HALIGN_Right, VALIGN_Top, 13, 412);
+	chkConfirmNoteDeletion.SetWindowAlignments(HALIGN_Right, VALIGN_Top, 13 * dxEnhancedGUIScaleMultiplier, 412 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -453,6 +455,7 @@ function EnableButtons()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values, except last 4
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -471,11 +474,11 @@ defaultproperties
      AddButtonLabel="Add |&Note"
      DeleteButtonLabel="|&Delete Note"
      ConfirmNoteDeletionLabel="Confirm Note Deletion"
-     clientBorderOffsetY=29
-     ClientWidth=604
-     ClientHeight=433
-     clientOffsetX=15
-     clientOffsetY=10
+     clientBorderOffsetY=58
+     ClientWidth=1208
+     ClientHeight=866
+     clientOffsetX=30
+     clientOffsetY=20
      clientTextures(0)=Texture'DeusExUI.UserInterface.GoalsBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.GoalsBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.GoalsBackground_3'

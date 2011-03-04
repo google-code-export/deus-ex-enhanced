@@ -37,7 +37,7 @@ event DrawWindow(GC gc)
 		gc.SetFont(Font'FontMenuSmall_DS');
 		gc.SetAlignments(HALIGN_Left, VALIGN_Top);
 		gc.SetTextColor(colHeaderText);
-		gc.DrawText(2, iconPosHeight - 9, iconPosWidth - 2, 10, str);
+		gc.DrawText(2 * dxEnhancedGUIScaleMultiplier, iconPosHeight - (9 * dxEnhancedGUIScaleMultiplier), iconPosWidth - (2 * dxEnhancedGUIScaleMultiplier), 10 * dxEnhancedGUIScaleMultiplier, str);
 	}
 }
 
@@ -48,7 +48,7 @@ event DrawWindow(GC gc)
 function CreateControls()
 {
 	winLevels = PersonaLevelIconWindow(NewChild(Class'PersonaLevelIconWindow'));
-	winLevels.SetPos(30, 54);
+	winLevels.SetPos(30 * dxEnhancedGUIScaleMultiplier, 54 * dxEnhancedGUIScaleMultiplier);
 	winLevels.SetSelected(True);
 }
 
@@ -86,11 +86,12 @@ function SetLevel(int newLevel)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled value
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      colIconActive=(G=255)
      colIconNormal=(R=255,G=255)
-     buttonHeight=59
+     buttonHeight=118
 }

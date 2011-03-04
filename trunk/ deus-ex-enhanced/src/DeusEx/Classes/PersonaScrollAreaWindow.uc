@@ -4,6 +4,7 @@
 
 class PersonaScrollAreaWindow extends ScrollAreaWindow;
 
+const dxEnhancedGUIScaleMultiplier = 2;
 var DeusExPlayer player;
 
 var Color colButtonFace;
@@ -17,6 +18,7 @@ var Color colButtonFace;
 event InitWindow()
 {
 	Super.InitWindow();
+	
 	EnableScrolling(False, True);
 	SetAreaMargins(0, 0);
 	SetScrollbarDistance(0);
@@ -24,20 +26,20 @@ event InitWindow()
 	vScale.SetThumbCaps(
 		Texture'PersonaScrollThumb_Top', 
 		Texture'PersonaScrollThumb_Bottom', 
-		7, 4, 7, 4);
+		7 * dxEnhancedGUIScaleMultiplier, 4 * dxEnhancedGUIScaleMultiplier, 7 * dxEnhancedGUIScaleMultiplier, 4 * dxEnhancedGUIScaleMultiplier);
 
 	// TODO: Replace Menu sounds with HUD sounds
 
-	vScale.SetThumbTexture(Texture'PersonaScrollThumb_Center', 7, 2);
-	vScale.SetScaleTexture(Texture'PersonaScrollScale', 11, 2, 0, 0);
+	vScale.SetThumbTexture(Texture'PersonaScrollThumb_Center', 7 * dxEnhancedGUIScaleMultiplier, 2 * dxEnhancedGUIScaleMultiplier);
+	vScale.SetScaleTexture(Texture'PersonaScrollScale', 11 * dxEnhancedGUIScaleMultiplier, 2 * dxEnhancedGUIScaleMultiplier, 0, 0);
 	vScale.SetScaleMargins(0, 0);
 	vScale.SetScaleStyle(DSTY_Translucent);
 	vScale.SetThumbStyle(DSTY_Translucent);
-	vScale.SetThumbStep(10);
+	vScale.SetThumbStep(10 * dxEnhancedGUIScaleMultiplier);
 	vScale.SetScaleSounds(Sound'Menu_Press', Sound'Menu_Press', Sound'Menu_Slider');
 	vScale.SetSoundVolume(0.25);
 
-	upButton.SetSize(11, 12);
+	upButton.SetSize(11 * dxEnhancedGUIScaleMultiplier, 12 * dxEnhancedGUIScaleMultiplier);
 	upButton.SetBackgroundStyle(DSTY_Translucent);
 	upButton.SetButtonTextures(
 		Texture'PersonaScrollUpButton_Normal', Texture'PersonaScrollUpButton_Pressed',
@@ -47,7 +49,7 @@ event InitWindow()
 	upButton.SetFocusSounds(Sound'Menu_Focus');
 	upButton.SetSoundVolume(0.25);
 
-	downButton.SetSize(11, 12);
+	downButton.SetSize(11 * dxEnhancedGUIScaleMultiplier, 12 * dxEnhancedGUIScaleMultiplier);
 	downButton.SetBackgroundStyle(DSTY_Translucent);
 	downButton.SetButtonTextures(
 		Texture'PersonaScrollDownButton_Normal', Texture'PersonaScrollDownButton_Pressed',

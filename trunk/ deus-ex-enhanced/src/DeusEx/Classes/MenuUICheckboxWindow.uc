@@ -4,6 +4,8 @@
 
 class MenuUICheckboxWindow expands CheckboxWindow;
 
+const dxEnhancedGUIScaleMultiplier = 2;
+
 var DeusExPlayer player;
 
 // Defaults
@@ -26,8 +28,8 @@ event InitWindow()
 	SetFont(fontText);
 	SetTextAlignments(HALIGN_Left, VALIGN_Center);
 	SetTextMargins(0, 0);
-	SetCheckboxTextures(Texture'MenuCheckBox_Off', Texture'MenuCheckBox_On', 13, 13);
-	SetCheckboxSpacing(6);
+	SetCheckboxTextures(Texture'MenuCheckBox_Off', Texture'MenuCheckBox_On', 13 * dxEnhancedGUIScaleMultiplier, 13 * dxEnhancedGUIScaleMultiplier);
+	SetCheckboxSpacing(6 * dxEnhancedGUIScaleMultiplier);
 	SetCheckboxStyle(DSTY_Masked);
 	SetBaselineData(fontBaseLine, fontAcceleratorLineHeight);
 

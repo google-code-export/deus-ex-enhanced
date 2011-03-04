@@ -50,7 +50,7 @@ event InitWindow()
 {
 	Super.InitWindow();
 
-	SetSize(215, 112);
+	SetSize(215 * dxEnhancedGUIScaleMultiplier, 112 * dxEnhancedGUIScaleMultiplier);
 
 	CreateControls();	
 
@@ -90,8 +90,8 @@ function CreateControls()
 function CreateHackMessageWindow()
 {
 	winHackMessage = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
-	winHackMessage.SetPos(22, 19);
-	winHackMessage.SetSize(168, 47);
+	winHackMessage.SetPos(  22 * dxEnhancedGUIScaleMultiplier, 19 * dxEnhancedGUIScaleMultiplier);
+	winHackMessage.SetSize(168 * dxEnhancedGUIScaleMultiplier, 47 * dxEnhancedGUIScaleMultiplier);
 	winHackMessage.SetTextAlignments(HALIGN_Center, VALIGN_Center);
 	winHackMessage.SetBackgroundStyle(DSTY_Modulated);
 	winHackMessage.SetBackground(Texture'HackInfoBackground');
@@ -104,8 +104,8 @@ function CreateHackMessageWindow()
 function CreateTextDigits()
 {
 	winDigits = PersonaNormalTextWindow(NewChild(Class'PersonaNormalTextWindow'));
-	winDigits.SetPos(22, 19);
-	winDigits.SetSize(168, 47);
+	winDigits.SetPos(  22 * dxEnhancedGUIScaleMultiplier, 19 * dxEnhancedGUIScaleMultiplier);
+	winDigits.SetSize(168 * dxEnhancedGUIScaleMultiplier, 47 * dxEnhancedGUIScaleMultiplier);
 	winDigits.SetFont(Font'FontFixedWidthSmall');
 	winDigits.SetTextColor(colDigits);
 	winDigits.SetTextAlignments(HALIGN_Left, VALIGN_Top);
@@ -119,8 +119,8 @@ function CreateTextDigits()
 function CreateHackProgressBar()
 {
 	barHackProgress = ProgressBarWindow(NewChild(Class'ProgressBarWindow'));
-	barHackProgress.SetPos(22, 71);
-	barHackProgress.SetSize(169, 12);
+	barHackProgress.SetPos(  22 * dxEnhancedGUIScaleMultiplier, 71 * dxEnhancedGUIScaleMultiplier);
+	barHackProgress.SetSize(169 * dxEnhancedGUIScaleMultiplier, 12 * dxEnhancedGUIScaleMultiplier);
 	barHackProgress.SetValues(0, 100);
 	barHackProgress.SetVertical(False);
 	barHackProgress.UseScaledColor(True);
@@ -137,8 +137,8 @@ function CreateHackButton()
 	local PersonaButtonBarWindow winActionButtons;
 
 	winActionButtons = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(20, 86);
-	winActionButtons.SetWidth(88);
+	winActionButtons.SetPos(20 * dxEnhancedGUIScaleMultiplier, 86 * dxEnhancedGUIScaleMultiplier);
+	winActionButtons.SetWidth(88 * dxEnhancedGUIScaleMultiplier);
 	winActionButtons.FillAllSpace(False);
 
 	btnHack = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
@@ -169,7 +169,8 @@ function DrawBorder(GC gc)
 	{
 		gc.SetStyle(borderDrawStyle);
 		gc.SetTileColor(colBorder);
-		gc.DrawTexture(0, 0, 221, 112, 0, 0, texBorder);
+		gc.DrawTexture(0, 0, 221 * dxEnhancedGUIScaleMultiplier, 
+							 112 * dxEnhancedGUIScaleMultiplier, 0, 0, texBorder);
 	}
 }
 
@@ -500,6 +501,7 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -507,7 +509,7 @@ defaultproperties
      blinkTimer=1.000000
      digitUpdateTimer=0.050000
      hackDetectedDelay=3.000000
-     digitWidth=23
+     digitWidth=46
      digitFillerChars="01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+-=][}{"
      colDigits=(G=128)
      colRed=(R=255)
@@ -520,8 +522,8 @@ defaultproperties
      HackSuccessfulLabel="ICE Breaker Hack Successful..."
      HackDetectedLabel="*** WARNING ***|nINTRUDER DETECTED!"
      MPHackInitializingLabel="Hacking... Hit ESC to Abort"
-     backgroundWidth=187
-     backgroundHeight=94
-     backgroundPosX=14
-     backgroundPosY=13
+     backgroundWidth=372
+     backgroundHeight=188
+     backgroundPosX=28
+     backgroundPosY=26
 }

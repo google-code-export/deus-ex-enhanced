@@ -169,9 +169,10 @@ event bool ChildRequestedReconfiguration(window childWin)
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 
 defaultproperties
 {
-     itemAugsOffsetX=14
-     itemAugsOffsetY=6
+     itemAugsOffsetX=28
+     itemAugsOffsetY=12
 }

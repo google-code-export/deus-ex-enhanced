@@ -75,8 +75,10 @@ function CreateEmailListWindow()
 	local MenuUIScrollAreaWindow winScroll;
 
 	winScroll = CreateScrollAreaWindow(winClient);
-	winScroll.SetPos(11, 22);
-	winScroll.SetSize(373, 73);
+	winScroll.SetPos(  11 * dxEnhancedGUIScaleMultiplier, 
+					   22 * dxEnhancedGUIScaleMultiplier);
+	winScroll.SetSize(373 * dxEnhancedGUIScaleMultiplier, 
+					   73 * dxEnhancedGUIScaleMultiplier);
 
 	lstEmail = MenuUIListWindow(winScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
 	lstEmail.EnableMultiSelect(False);
@@ -87,8 +89,8 @@ function CreateEmailListWindow()
 	lstEMail.HideColumn(2);
 	lstEmail.SetColumnType(2, COLTYPE_Float);
 
-	lstEmail.SetColumnWidth(0, 123);
-	lstEmail.SetColumnWidth(1, 250);
+	lstEmail.SetColumnWidth(0, 123 * dxEnhancedGUIScaleMultiplier);
+	lstEmail.SetColumnWidth(1, 250 * dxEnhancedGUIScaleMultiplier);
 	lstEmail.SetSortColumn(0, bFromSortOrder);
 }
 
@@ -101,11 +103,11 @@ function CreateEmailViewWindow()
 	local MenuUIScrollAreaWindow winScroll;
 
 	winScroll = CreateScrollAreaWindow(winClient);
-	winScroll.SetPos(11, 136);
-	winScroll.SetSize(373, 239);
+	winScroll.SetPos(11 * dxEnhancedGUIScaleMultiplier, 136 * dxEnhancedGUIScaleMultiplier);
+	winScroll.SetSize(373 * dxEnhancedGUIScaleMultiplier, 239 * dxEnhancedGUIScaleMultiplier);
 
 	winEmail = MenuUINormalLargeTextWindow(winScroll.ClipWindow.NewChild(Class'MenuUINormalLargeTextWindow'));
-	winEmail.SetTextMargins(4, 1);
+	winEmail.SetTextMargins(4 * dxEnhancedGUIScaleMultiplier, 1 * dxEnhancedGUIScaleMultiplier);
 	winEmail.SetWordWrap(True);
 	winEmail.SetTextAlignments(HALIGN_Left, VALIGN_Top);
 }
@@ -119,24 +121,37 @@ function CreateEmailHeaders()
 	local MenuUILabelWindow newLabel;
 
 	// First create the headers
-	newLabel = CreateMenuLabel(12, 104, EmailFromHeader, winClient);
+	newLabel = CreateMenuLabel( 12 * dxEnhancedGUIScaleMultiplier, 
+							   104 * dxEnhancedGUIScaleMultiplier, EmailFromHeader, winClient);
 	newLabel.SetFont(Font'FontMenuTitle');
 
-	newLabel = CreateMenuLabel(212, 104, EmailToHeader, winClient);
+	newLabel = CreateMenuLabel(212 * dxEnhancedGUIScaleMultiplier, 
+							   104 * dxEnhancedGUIScaleMultiplier, EmailToHeader, winClient);
 	newLabel.SetFont(Font'FontMenuTitle');
 
-	newLabel = CreateMenuLabel(12, 118, EmailSubjectHeader, winClient);
+	newLabel = CreateMenuLabel( 12 * dxEnhancedGUIScaleMultiplier, 
+							   118 * dxEnhancedGUIScaleMultiplier, EmailSubjectHeader, winClient);
 	newLabel.SetFont(Font'FontMenuTitle');
 
-	winEmailCCHeader = CreateMenuLabel(212, 118, EmailCarbonCopyHeader, winClient);
+	winEmailCCHeader = CreateMenuLabel(212 * dxEnhancedGUIScaleMultiplier, 
+									   118 * dxEnhancedGUIScaleMultiplier, 
+											 EmailCarbonCopyHeader, winClient);
+											 
 	winEmailCCHeader.SetFont(Font'FontMenuTitle');
 	winEmailCCHeader.Hide();
 
 	// Now create the text fields
-	winEmailFrom    = CreateSmallMenuLabel( 50, 105, "", winClient);
-	winEmailTo      = CreateSmallMenuLabel(240, 105, "", winClient);
-	winEmailSubject = CreateSmallMenuLabel( 50, 119, "", winClient);
-	winEmailCC      = CreateSmallMenuLabel(240, 119, "", winClient);
+	winEmailFrom    = CreateSmallMenuLabel(  50 * dxEnhancedGUIScaleMultiplier, 
+											105 * dxEnhancedGUIScaleMultiplier, 
+												  "", winClient);
+	winEmailTo      = CreateSmallMenuLabel( 240 * dxEnhancedGUIScaleMultiplier, 
+											105 * dxEnhancedGUIScaleMultiplier, 
+												  "", winClient);
+	winEmailSubject = CreateSmallMenuLabel(  50 * dxEnhancedGUIScaleMultiplier, 
+											119 * dxEnhancedGUIScaleMultiplier, 
+												  "", winClient);
+	winEmailCC      = CreateSmallMenuLabel(240 * dxEnhancedGUIScaleMultiplier, 
+										   119 * dxEnhancedGUIScaleMultiplier, "", winClient);
 }
 
 // ----------------------------------------------------------------------
@@ -145,8 +160,12 @@ function CreateEmailHeaders()
 
 function CreateHeaderButtons()
 {
-	btnHeaderFrom    = CreateHeaderButton(10,  3, 121, HeaderFromLabel, winClient);
-	btnHeaderSubject = CreateHeaderButton(134, 3, 187, HeaderSubjectLabel, winClient);
+	btnHeaderFrom    = CreateHeaderButton( 10 * dxEnhancedGUIScaleMultiplier,  
+											3 * dxEnhancedGUIScaleMultiplier, 
+										  121 * dxEnhancedGUIScaleMultiplier, HeaderFromLabel, winClient);
+	btnHeaderSubject = CreateHeaderButton(134 * dxEnhancedGUIScaleMultiplier, 
+											3 * dxEnhancedGUIScaleMultiplier, 
+										  187 * dxEnhancedGUIScaleMultiplier, HeaderSubjectLabel, winClient);
 }
 
 // ----------------------------------------------------------------------
@@ -313,6 +332,7 @@ function ChangeAccount()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values, except: textureRows, textureCols
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -327,15 +347,15 @@ defaultproperties
      HeaderSubjectLabel="Subject"
      escapeAction="LOGOUT"
      Title="Email"
-     ClientWidth=395
-     ClientHeight=412
+     ClientWidth=790
+     ClientHeight=824
      clientTextures(0)=Texture'DeusExUI.UserInterface.ComputerEmailBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.ComputerEmailBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.ComputerEmailBackground_3'
      clientTextures(3)=Texture'DeusExUI.UserInterface.ComputerEmailBackground_4'
      textureRows=2
      textureCols=2
-     statusPosY=383
-     defaultStatusLeftOffset=12
+     statusPosY=766
+     defaultStatusLeftOffset=24
      ComputerNodeFunctionLabel="Email"
 }

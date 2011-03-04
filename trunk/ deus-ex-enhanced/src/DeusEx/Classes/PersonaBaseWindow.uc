@@ -3,6 +3,8 @@
 //=============================================================================
 class PersonaBaseWindow extends Window;
 
+const dxEnhancedGUIScaleMultiplier = 2;
+
 var DeusExPlayer player;
 
 // Border and Background Translucency

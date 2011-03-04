@@ -4,6 +4,8 @@
 
 class PersonaStatusLineWindow extends TextWindow;
 
+const dxEnhancedGUIScaleMultiplier = 2;
+
 var DeusExPlayer player;
 var Font         fontText;
 var Float        logDuration;
@@ -18,10 +20,10 @@ var Float        logTimer;
 event InitWindow()
 {
 	Super.InitWindow();
-
+	
 	SetFont(fontText);
-	SetWidth(238);
-	SetTextMargins(2, 1);
+	SetWidth(238 * dxEnhancedGUIScaleMultiplier);
+	SetTextMargins(2 * dxEnhancedGUIScaleMultiplier, 1 * dxEnhancedGUIScaleMultiplier);
 	SetTextAlignments(HALIGN_Left, VALIGN_Top);
 
 	// Get a pointer to the player

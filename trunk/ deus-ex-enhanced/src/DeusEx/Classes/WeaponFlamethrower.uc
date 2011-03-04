@@ -27,6 +27,8 @@ simulated function PreBeginPlay()
 	}
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      burnTime=30
@@ -75,8 +77,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.DropLargeWeapon'
      Icon=Texture'DeusExUI.Icons.BeltIconFlamethrower'
      largeIcon=Texture'DeusExUI.Icons.LargeIconFlamethrower'
-     largeIconWidth=203
-     largeIconHeight=69
+     largeIconWidth=406
+     largeIconHeight=138
      invSlotsX=4
      invSlotsY=2
      Description="A portable flamethrower that discards the old and highly dangerous backpack fuel delivery system in favor of pressurized canisters of napalm. Inexperienced agents will find that a flamethrower can be difficult to maneuver, however."

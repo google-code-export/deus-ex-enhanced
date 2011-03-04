@@ -41,11 +41,12 @@ function ResetToDefault()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled defaultInfoWidth
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     defaultInfoWidth=88
+     defaultInfoWidth=176
      HelpText="If enabled, the player will bob up and down slightly while walking."
      actionText="|&Player Bob"
 }

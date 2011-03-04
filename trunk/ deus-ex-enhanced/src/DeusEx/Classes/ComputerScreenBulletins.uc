@@ -35,8 +35,11 @@ function CreateControls()
 function CreateHeaderWindow()
 {
 	winHeader = MenuUIHeaderWindow(winClient.NewChild(Class'MenuUIHeaderWindow'));
-	winHeader.SetPos(11, 6);
-	winHeader.SetSize(300, 12);
+	
+	winHeader.SetPos(  11 * dxEnhancedGUIScaleMultiplier, 
+					    6 * dxEnhancedGUIScaleMultiplier);
+	winHeader.SetSize(300 * dxEnhancedGUIScaleMultiplier, 
+					   12 * dxEnhancedGUIScaleMultiplier);
 	winHeader.SetTextAlignments(HALIGN_Left, VALIGN_Top);
 	winHeader.SetText(BulletinsHeaderText);
 }
@@ -50,16 +53,18 @@ function CreateBulletinsListWindow()
 	local MenuUIScrollAreaWindow winScroll;
 
 	winScroll = CreateScrollAreaWindow(winClient);
-	winScroll.SetPos(11, 22);
-	winScroll.SetSize(373, 113);
+	
+	winScroll.SetPos(  11 * dxEnhancedGUIScaleMultiplier, 
+					   22 * dxEnhancedGUIScaleMultiplier);
+	winScroll.SetSize(373 * dxEnhancedGUIScaleMultiplier, 
+					  113 * dxEnhancedGUIScaleMultiplier);
 
 	lstBulletins = MenuUIListWindow(winScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
 	lstBulletins.EnableMultiSelect(False);
 	lstBulletins.EnableAutoExpandColumns(False);
 	lstBulletins.EnableHotKeys(False);
-
 	lstBulletins.SetNumColumns(1);
-	lstBulletins.SetColumnWidth(0, 373);
+	lstBulletins.SetColumnWidth(0, 373 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -71,11 +76,11 @@ function CreateBulletinViewWindow()
 	local MenuUIScrollAreaWindow winScroll;
 
 	winScroll = CreateScrollAreaWindow(winClient);
-	winScroll.SetPos(11, 143);
-	winScroll.SetSize(373, 232);
+	winScroll.SetPos(  11 * dxEnhancedGUIScaleMultiplier, 143 * dxEnhancedGUIScaleMultiplier);
+	winScroll.SetSize(373 * dxEnhancedGUIScaleMultiplier, 232 * dxEnhancedGUIScaleMultiplier);
 
 	winBulletin = MenuUINormalLargeTextWindow(winScroll.ClipWindow.NewChild(Class'MenuUINormalLargeTextWindow'));
-	winBulletin.SetTextMargins(4, 1);
+	winBulletin.SetTextMargins(4 * dxEnhancedGUIScaleMultiplier, 1 * dxEnhancedGUIScaleMultiplier);
 	winBulletin.SetWordWrap(True);
 	winBulletin.SetTextAlignments(HALIGN_Left, VALIGN_Top);
 }
@@ -197,6 +202,7 @@ event bool ListSelectionChanged(window list, int numSelections, int focusRowId)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values, except: textureRows, textureCols
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -204,15 +210,15 @@ defaultproperties
      NoBulletinsTodayText="No Bulletins Today!"
      BulletinsHeaderText="Please choose a bulletin to view:"
      Title="Bulletins"
-     ClientWidth=395
-     ClientHeight=412
+     ClientWidth=790
+     ClientHeight=824
      clientTextures(0)=Texture'DeusExUI.UserInterface.ComputerBulletinBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.ComputerBulletinBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.ComputerBulletinBackground_3'
      clientTextures(3)=Texture'DeusExUI.UserInterface.ComputerBulletinBackground_4'
      textureRows=2
      textureCols=2
-     statusPosY=383
-     defaultStatusLeftOffset=12
+     statusPosY=766
+     defaultStatusLeftOffset=24
      ComputerNodeFunctionLabel="Bulletins"
 }

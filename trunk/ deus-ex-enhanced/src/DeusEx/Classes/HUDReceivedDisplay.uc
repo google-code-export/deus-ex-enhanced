@@ -41,8 +41,8 @@ function CreateTileWindow()
 	winTile.SetOrder(ORDER_RightThenDown);
 	winTile.SetChildAlignments(HALIGN_Left, VALIGN_Center);
 	winTile.SetPos(0, topMargin);
-	winTile.SetMargins(10, 10);
-	winTile.SetMinorSpacing(4);
+	winTile.SetMargins(10 * dxEnhancedGUIScaleMultiplier, 10 * dxEnhancedGUIScaleMultiplier);
+	winTile.SetMinorSpacing(4 * dxEnhancedGUIScaleMultiplier);
 	winTile.MakeWidthsEqual(False);
 	winTile.MakeHeightsEqual(True);
 }
@@ -232,12 +232,13 @@ event StyleChanged()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled TopMargin value
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      fontReceived=Font'DeusExUI.FontMenuHeaders_DS'
      displayLength=3.000000
-     TopMargin=5
+     TopMargin=10
      TextReceivedLabel="Received:"
 }

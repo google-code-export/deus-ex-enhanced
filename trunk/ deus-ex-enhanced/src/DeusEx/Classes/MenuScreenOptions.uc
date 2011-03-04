@@ -15,6 +15,7 @@ function SaveSettings()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -32,13 +33,13 @@ defaultproperties
      actionButtons(1)=(Align=HALIGN_Right,Action=AB_OK)
      actionButtons(2)=(Action=AB_Reset)
      Title="Options"
-     ClientWidth=537
-     ClientHeight=406
+     ClientWidth=1074
+     ClientHeight=812
      clientTextures(0)=Texture'DeusExUI.UserInterface.MenuGameOptionsBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.MenuGameOptionsBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.MenuGameOptionsBackground_3'
      clientTextures(3)=Texture'DeusExUI.UserInterface.MenuGameOptionsBackground_4'
      clientTextures(4)=Texture'DeusExUI.UserInterface.MenuGameOptionsBackground_5'
      clientTextures(5)=Texture'DeusExUI.UserInterface.MenuGameOptionsBackground_6'
-     helpPosY=354
+     helpPosY=708
 }

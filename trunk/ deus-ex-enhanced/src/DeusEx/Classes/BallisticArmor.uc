@@ -7,6 +7,8 @@ class BallisticArmor extends ChargedPickup;
 // Reduces ballistic damage
 //
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      skillNeeded=Class'DeusEx.SkillEnviro'
@@ -23,8 +25,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.PaperHit2'
      Icon=Texture'DeusExUI.Icons.BeltIconArmorBallistic'
      largeIcon=Texture'DeusExUI.Icons.LargeIconArmorBallistic'
-     largeIconWidth=34
-     largeIconHeight=49
+     largeIconWidth=68
+     largeIconHeight=98
      Description="Ballistic armor is manufactured from electrically sensitive polymer sheets that intrinsically react to the violent impact of a bullet or an explosion by 'stiffening' in response and absorbing the majority of the damage.  These polymer sheets must be charged before use; after the charge has dissipated they lose their reflexive properties and should be discarded."
      beltDescription="BAL ARMOR"
      Mesh=LodMesh'DeusExItems.BallisticArmor'

@@ -4,6 +4,8 @@
 
 class ComputerSecurityCameraWindow extends Window;
 
+const dxEnhancedGUIScaleMultiplier = 2;
+
 var DeusExRootWindow root;							// Keep a pointer to the root window handy
 var DeusExPlayer player;							// Keep a pointer to the player for easy reference
 var Computers    compOwner;							// what computer owns this window?
@@ -54,7 +56,7 @@ event InitWindow()
 	// Get a pointer to the player
 	player = DeusExPlayer(root.parentPawn);
 
-	SetSize(202, 213);
+	SetSize(202 * dxEnhancedGUIScaleMultiplier, 213 * dxEnhancedGUIScaleMultiplier);
 	CreateControls();	
 }
 
@@ -90,7 +92,7 @@ function CreateControls()
 
 function CreateTitle()
 {
-	winTitle = CreateLabel(2, "");
+	winTitle = CreateLabel(2 * dxEnhancedGUIScaleMultiplier, "");
 }
 
 // ----------------------------------------------------------------------
@@ -99,9 +101,9 @@ function CreateTitle()
 
 function CreateStatusLabels()
 {
-	winCameraStatus = CreateLabel(171, CameraStatusLabel);
-	winDoorStatus   = CreateLabel(186, DoorStatusLabel);
-	winTurretStatus = CreateLabel(201, TurretStatusLabel);
+	winCameraStatus = CreateLabel(171 * dxEnhancedGUIScaleMultiplier, CameraStatusLabel);
+	winDoorStatus   = CreateLabel(186 * dxEnhancedGUIScaleMultiplier, DoorStatusLabel);
+	winTurretStatus = CreateLabel(201 * dxEnhancedGUIScaleMultiplier, TurretStatusLabel);
 }
 
 // ----------------------------------------------------------------------
@@ -113,7 +115,7 @@ function MenuUIHeaderWindow CreateLabel(int posY, string labelText)
 	local MenuUIHeaderWindow newLabel;
 
 	newLabel = MenuUIHeaderWindow(NewChild(Class'MenuUIHeaderWindow'));
-	newLabel.SetPos(6, posY);
+	newLabel.SetPos(6 * dxEnhancedGUIScaleMultiplier, posY);
 	newLabel.SetText(labelText);
 
 	return newLabel;
@@ -126,7 +128,7 @@ function MenuUIHeaderWindow CreateLabel(int posY, string labelText)
 function CreateCameraButton()
 {
 	btnCamera = ComputerSecurityCameraViewButton(NewChild(Class'ComputerSecurityCameraViewButton'));
-	btnCamera.SetPos(0, 16);
+	btnCamera.SetPos(0, 16 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -136,8 +138,8 @@ function CreateCameraButton()
 function CreateViewportWindow()
 {
 	winCamera = ViewportWindow(NewChild(class'ViewportWindow', False));
-	winCamera.SetSize(200, 150);
-	winCamera.SetPos(1, 17);
+	winCamera.SetSize(200 * dxEnhancedGUIScaleMultiplier, 150 * dxEnhancedGUIScaleMultiplier);
+	winCamera.SetPos(1 * dxEnhancedGUIScaleMultiplier, 17 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------

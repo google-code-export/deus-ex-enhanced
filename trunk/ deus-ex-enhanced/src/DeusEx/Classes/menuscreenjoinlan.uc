@@ -18,7 +18,7 @@ function Query()
 
    Link.OwnerWindow = Self;
    Link.Start();
-   Link.SetTimer(1.0,False);
+   Link.SetTimer(1.0, False);
 }
 
 // ---------------------------------------------------------------------

@@ -50,12 +50,12 @@ event Tick(float deltaSeconds)
 // CreateEnergyBar()
 // ----------------------------------------------------------------------
 
-function CreateEnergyBar()
+function CreateEnergyBar() // DJ: I thought I changed this in another file?
 {
 	winEnergy = ProgressBarWindow(NewChild(Class'ProgressBarWindow'));
-	winEnergy.SetSize(32, 2);
+	winEnergy.SetSize(32 * dxEnhancedGUIScaleMultiplier, 2 * dxEnhancedGUIScaleMultiplier);
 	winEnergy.UseScaledColor(True);
-	winEnergy.SetPos(1, 30);
+	winEnergy.SetPos(1 * dxEnhancedGUIScaleMultiplier, 30 * dxEnhancedGUIScaleMultiplier);
 	winEnergy.SetValues(0, 100);
 	winEnergy.SetCurrentValue(0);
 	winEnergy.SetVertical(False);

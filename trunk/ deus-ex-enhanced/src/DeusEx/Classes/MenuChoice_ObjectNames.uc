@@ -31,11 +31,12 @@ function ResetToDefault()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled value
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     defaultInfoWidth=88
+     defaultInfoWidth=176
      HelpText="If enabled, the name of the selected object in the world will be printed"
      actionText="|&Object Names"
 }

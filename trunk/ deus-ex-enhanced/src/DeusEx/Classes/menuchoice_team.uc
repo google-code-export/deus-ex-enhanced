@@ -28,10 +28,10 @@ event InitWindow()
 
    SetInitialTeam();
 
-   SetActionButtonWidth(153);
+   SetActionButtonWidth(153 * dxEnhancedGUIScaleMultiplier);
 
    btnAction.SetHelpText(HelpText);
-   btnInfo.SetPos(0,195);
+   btnInfo.SetPos(0,195 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -147,8 +147,8 @@ function CreatePortraitButton()
 {
 	btnPortrait = ButtonWindow(NewChild(Class'ButtonWindow'));
 
-	btnPortrait.SetSize(116, 163);
-	btnPortrait.SetPos(19, 27);
+	btnPortrait.SetSize(116 * dxEnhancedGUIScaleMultiplier, 163 * dxEnhancedGUIScaleMultiplier);
+	btnPortrait.SetPos(19 * dxEnhancedGUIScaleMultiplier, 27 * dxEnhancedGUIScaleMultiplier);
 
 	btnPortrait.SetBackgroundStyle(DSTY_Masked);
 }
@@ -163,6 +163,7 @@ function UpdatePortrait()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values: defaultInfoWidth, defaultInfoPosX
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -177,8 +178,8 @@ defaultproperties
      texPortraits(1)=Texture'DeusExUI.UserInterface.menuplayersetupnsf'
      texPortraits(2)=Texture'DeusExUI.UserInterface.menuplayersetupautoteam'
      defaultValue=2
-     defaultInfoWidth=153
-     defaultInfoPosX=170
+     defaultInfoWidth=306
+     defaultInfoPosX=340
      HelpText="Choice of team on which to play."
      actionText="Team Model"
 }

@@ -160,6 +160,8 @@ simulated function bool TestMPBeltSpot(int BeltSpot)
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      healAmount=30
@@ -175,8 +177,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.PlasticHit2'
      Icon=Texture'DeusExUI.Icons.BeltIconMedKit'
      largeIcon=Texture'DeusExUI.Icons.LargeIconMedKit'
-     largeIconWidth=39
-     largeIconHeight=46
+     largeIconWidth=78
+     largeIconHeight=92
      Description="A first-aid kit.|n|n<UNATCO OPS FILE NOTE JR095-VIOLET> The nanomachines of an augmented agent will automatically metabolize the contents of a medkit to efficiently heal damaged areas. An agent with medical training could greatly expedite this process. -- Jaime Reyes <END NOTE>"
      beltDescription="MEDKIT"
      Mesh=LodMesh'DeusExItems.MedKit'

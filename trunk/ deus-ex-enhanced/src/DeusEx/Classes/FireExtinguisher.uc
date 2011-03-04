@@ -66,6 +66,8 @@ state DeActivated
 {
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      bActivatable=True
@@ -77,8 +79,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.GlassDrop'
      Icon=Texture'DeusExUI.Icons.BeltIconFireExtinguisher'
      largeIcon=Texture'DeusExUI.Icons.LargeIconFireExtinguisher'
-     largeIconWidth=25
-     largeIconHeight=49
+     largeIconWidth=50
+     largeIconHeight=98
      Description="A chemical fire extinguisher.  Caution: contains chemicals which absorb and impede the flow of oxygen."
      beltDescription="FIRE EXT"
      Mesh=LodMesh'DeusExItems.FireExtinguisher'

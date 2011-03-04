@@ -56,12 +56,13 @@ function CyclePreviousValue()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled defaultInfoWidth
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      defaultValue=1
-     defaultInfoWidth=97
+     defaultInfoWidth=194
      HelpText="If translucency is enabled, the background will be visible through the menus."
      actionText="Menu |&Translucency"
 }

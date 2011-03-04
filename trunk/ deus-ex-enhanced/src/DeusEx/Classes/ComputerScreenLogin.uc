@@ -38,11 +38,21 @@ function CreateControls()
 	btnCancel = winButtonBar.AddButton(ButtonLabelCancel, HALIGN_Right);
 	btnLogin  = winButtonBar.AddButton(ButtonLabelLogin,  HALIGN_Right);
 
-	CreateMenuLabel(10, 22, UserNameLabel, winClient);
-	CreateMenuLabel(10, 55, PasswordLabel, winClient);
+	CreateMenuLabel(10 * dxEnhancedGUIScaleMultiplier, 
+					22 * dxEnhancedGUIScaleMultiplier, 
+						 UserNameLabel, winClient);
+	CreateMenuLabel(10 * dxEnhancedGUIScaleMultiplier, 
+					55 * dxEnhancedGUIScaleMultiplier, 
+						 PasswordLabel, winClient);
 
-	editUserName = CreateMenuEditWindow(105, 20, 143, 20, winClient);
-	editPassword = CreateMenuEditWindow(105, 54, 143, 20, winClient);
+	editUserName = CreateMenuEditWindow(105 * dxEnhancedGUIScaleMultiplier, 
+										 20 * dxEnhancedGUIScaleMultiplier, 
+										143 * dxEnhancedGUIScaleMultiplier, 
+										 20 * dxEnhancedGUIScaleMultiplier, winClient);
+	editPassword = CreateMenuEditWindow(105 * dxEnhancedGUIScaleMultiplier, 
+										 54 * dxEnhancedGUIScaleMultiplier, 
+										143 * dxEnhancedGUIScaleMultiplier, 
+										 20 * dxEnhancedGUIScaleMultiplier, winClient);
 
 	CreateLogo();
 	CreateLoginInfoWindow();
@@ -56,8 +66,8 @@ function CreateLogo()
 {
 	winLogo = winClient.NewChild(Class'Window');
 
-	winLogo.SetPos(276, 5);
-	winLogo.SetSize(61, 61);
+	winLogo.SetPos(276 * dxEnhancedGUIScaleMultiplier,  5 * dxEnhancedGUIScaleMultiplier);
+	winLogo.SetSize(61 * dxEnhancedGUIScaleMultiplier, 61 * dxEnhancedGUIScaleMultiplier);
 	winLogo.SetBackgroundStyle(DSTY_Masked);
 }
 
@@ -69,8 +79,8 @@ function CreateLoginInfoWindow()
 {
 	winLoginInfo = MenuUISmallLabelWindow(winClient.NewChild(Class'MenuUISmallLabelWindow'));
 
-	winLoginInfo.SetPos(10, 97);
-	winLoginInfo.SetSize(320, 25);
+	winLoginInfo.SetPos(  10 * dxEnhancedGUIScaleMultiplier, 97 * dxEnhancedGUIScaleMultiplier);
+	winLoginInfo.SetSize(320 * dxEnhancedGUIScaleMultiplier, 25 * dxEnhancedGUIScaleMultiplier);
 	winLoginInfo.SetTextAlignments(HALIGN_Left, VALIGN_Center);
 	winLoginInfo.SetTextMargins(0, 0);
 }
@@ -250,6 +260,7 @@ function EnableButtons()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values, except: textureRows, textureCols
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -258,12 +269,12 @@ defaultproperties
      PasswordLabel="Password"
      InvalidLoginMessage="LOGIN ERROR - ACCESS DENIED"
      Title="Welcome to %s"
-     ClientWidth=343
-     ClientHeight=151
+     ClientWidth=686
+     ClientHeight=302
      clientTextures(0)=Texture'DeusExUI.UserInterface.ComputerLogonBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.ComputerLogonBackground_2'
      textureRows=1
      textureCols=2
-     statusPosY=131
+     statusPosY=262
      ComputerNodeFunctionLabel="Login"
 }

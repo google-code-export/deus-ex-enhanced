@@ -104,7 +104,7 @@ function CreateInfoButton()
 	btnInfo = MenuUIInfoButtonWindow(NewChild(Class'MenuUIInfoButtonWindow'));
 
 	btnInfo.SetSelectability(False);
-	btnInfo.SetSize(defaultInfoWidth, 19);
+	btnInfo.SetSize(defaultInfoWidth, 19 * dxEnhancedGUIScaleMultiplier);
 	btnInfo.SetPos(defaultInfoPosX, 0);
 }
 
@@ -196,10 +196,11 @@ function ResetToDefault()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     defaultInfoWidth=77
-     defaultInfoPosX=270
+     defaultInfoWidth=154
+     defaultInfoPosX=540
 }

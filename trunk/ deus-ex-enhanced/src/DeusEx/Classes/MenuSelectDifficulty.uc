@@ -100,6 +100,7 @@ function InvokeNewGameScreen(float difficulty)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values, except last 2
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -109,16 +110,16 @@ defaultproperties
      ButtonNames(2)="Hard"
      ButtonNames(3)="Realistic"
      ButtonNames(4)="Previous Menu"
-     buttonXPos=7
-     buttonWidth=245
-     buttonDefaults(0)=(Y=13,Action=MA_Custom,Key="EASY")
-     buttonDefaults(1)=(Y=49,Action=MA_Custom,Key="MEDIUM")
-     buttonDefaults(2)=(Y=85,Action=MA_Custom,Key="HARD")
-     buttonDefaults(3)=(Y=121,Action=MA_Custom,Key="REALISTIC")
-     buttonDefaults(4)=(Y=179,Action=MA_Previous)
+     buttonXPos=14
+     buttonWidth=490
+     buttonDefaults(0)=(Y=26,Action=MA_Custom,Key="EASY")
+     buttonDefaults(1)=(Y=98,Action=MA_Custom,Key="MEDIUM")
+     buttonDefaults(2)=(Y=170,Action=MA_Custom,Key="HARD")
+     buttonDefaults(3)=(Y=242,Action=MA_Custom,Key="REALISTIC")
+     buttonDefaults(4)=(Y=358,Action=MA_Previous)
      Title="Select Combat Difficulty"
-     ClientWidth=258
-     ClientHeight=221
+     ClientWidth=516
+     ClientHeight=442
      clientTextures(0)=Texture'DeusExUI.UserInterface.MenuDifficultyBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.MenuDifficultyBackground_2'
      textureRows=1

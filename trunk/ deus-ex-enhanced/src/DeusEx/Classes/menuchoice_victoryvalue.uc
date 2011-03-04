@@ -24,7 +24,7 @@ event InitWindow()
 
    SetVictoryType(player.ConsoleCommand("get DeusExMPGame VictoryCondition"));
 
-   SetActionButtonWidth(179);
+   SetActionButtonWidth(179 * dxEnhancedGUIScaleMultiplier);
 
    btnSlider.winSlider.SetValueFormat("%1.0f");
 }
@@ -76,6 +76,7 @@ function SetVictoryType(string VictoryType)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled choiceControlPosX
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -88,7 +89,7 @@ defaultproperties
      startValue=1.000000
      endValue=40.000000
      defaultValue=20.000000
-     choiceControlPosX=203
+     choiceControlPosX=406
      actionText=""
      configSetting="DeusExMPGame ScoreToWin"
 }

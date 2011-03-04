@@ -39,7 +39,7 @@ function CreateControls()
 	winScroll = PersonaScrollAreaWindow(NewChild(Class'PersonaScrollAreaWindow'));
 
 	winText = PersonaNormalTextWindow(winScroll.ClipWindow.NewChild(Class'PersonaNormalTextWindow'));
-	winText.SetTextMargins(2, 2);
+	winText.SetTextMargins(2 * dxEnhancedGUIScaleMultiplier, 2 * dxEnhancedGUIScaleMultiplier);
 	winText.SetWordWrap(True);
 	winText.SetTextAlignments(HALIGN_Left, VALIGN_Top);
 }
@@ -186,7 +186,7 @@ function ConfigurationChanged()
 		winScroll.QueryPreferredSize(scrollWidth, scrollHeight);
 		winScroll.ConfigureChild(
 			iconWidth + 1, 2, 
-			width - iconWidth - 3, height - 4);
+			width - iconWidth - 3, height - 4); // DJ: Hmmm...
 	}
 }
 
@@ -202,6 +202,7 @@ function bool ChildRequestedReconfiguration(window child)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties

@@ -49,10 +49,10 @@ function CreateControls()
 	Super.CreateControls();
 
 	// Create scale textures
-	CreateScaleWindow(14, colRed);
-	CreateScaleWindow(144, colGreen);
-	CreateScaleWindow(274, colBlue);
-	CreateScaleWindow(404, colWhite);
+	CreateScaleWindow(14  * dxEnhancedGUIScaleMultiplier, colRed);
+	CreateScaleWindow(144 * dxEnhancedGUIScaleMultiplier, colGreen);
+	CreateScaleWindow(274 * dxEnhancedGUIScaleMultiplier, colBlue);
+	CreateScaleWindow(404 * dxEnhancedGUIScaleMultiplier, colWhite);
 
 	// Create line
 //	CreateScaleLine();
@@ -67,8 +67,8 @@ function CreateScaleLine()
 	local Window winLine;
 
 	winLine = winClient.NewChild(Class'Window');
-	winLine.SetPos(14, 178);
-	winLine.SetSize(520, 1);
+	winLine.SetPos(14 * dxEnhancedGUIScaleMultiplier, 178 * dxEnhancedGUIScaleMultiplier);
+	winLine.SetSize(520 * dxEnhancedGUIScaleMultiplier, 1 * dxEnhancedGUIScaleMultiplier);
 	winLine.SetBackground(Texture'Solid');
 	winLine.SetBackgroundStyle(DSTY_Normal);
 	winLine.SetTileColor(colWhite);
@@ -83,14 +83,15 @@ function CreateScaleWindow(int posX, Color colScale)
 	local Window winScale;
 
 	winScale = winClient.NewChild(Class'Window');
-	winScale.SetPos(posX, 67);
-	winScale.SetSize(130, 137);
+	winScale.SetPos(posX, 67 * dxEnhancedGUIScaleMultiplier);
+	winScale.SetSize(130 * dxEnhancedGUIScaleMultiplier, 137 * dxEnhancedGUIScaleMultiplier);
 	winScale.SetBackground(Texture'MenuBrightnessGradient');
 	winScale.SetTileColor(colScale);
 	winScale.SetBackgroundStyle(DSTY_Normal);
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -105,8 +106,8 @@ defaultproperties
      actionButtons(1)=(Align=HALIGN_Right,Action=AB_OK)
      actionButtons(2)=(Action=AB_Reset)
      Title="Adjust Brightness"
-     ClientWidth=556
-     ClientHeight=283
+     ClientWidth=1112
+     ClientHeight=566
      clientTextures(0)=Texture'DeusExUI.UserInterface.MenuBrightnessBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.MenuBrightnessBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.MenuBrightnessBackground_3'
@@ -114,5 +115,5 @@ defaultproperties
      clientTextures(4)=Texture'DeusExUI.UserInterface.MenuBrightnessBackground_5'
      clientTextures(5)=Texture'DeusExUI.UserInterface.MenuBrightnessBackground_6'
      bHelpAlwaysOn=True
-     helpPosY=229
+     helpPosY=458
 }
