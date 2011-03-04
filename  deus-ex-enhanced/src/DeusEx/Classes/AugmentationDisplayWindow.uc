@@ -854,7 +854,7 @@ function DrawTargetAugmentation(GC gc)
 	local String str;
 	local Actor target;
 	local float boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
-	local float x, y, w, h, mult;
+	local float x, y, w, h, accuracyMultiplier, aspectRatio, mult;
 	local Vector v1, v2;
 	local int i, j, k;
 	local DeusExWeapon weapon;
@@ -898,12 +898,29 @@ function DrawTargetAugmentation(GC gc)
 				h = height;
 				x = int(w * 0.5)-1;
 				y = int(h * 0.5)-1;
+				aspectRatio = w / h;
+				accuracyMultiplier = 80;			// DJ: 80 was original, 60 is shifter
+				
+				if (aspectRatio == 1.6) 			// DJ: 16:10 aspect ratio... probably what Shifter was aiming for.
+				{
+					accuracyMultiplier = 66;
+				}				
+				else if (aspectRatio == 1.25)		// DJ: 5:4 aspect ratio
+				{
+					accuracyMultiplier = 85;
+				}
+				else if (w >= 1920.0)			    // DJ: somewhat safe to assume 16:9 aspect ratio
+				{
+					accuracyMultiplier = 60;		// DJ: assuming the person who wrote the Shifter code was on a 16:9 screen
+				}
 
-				// scale based on screen resolution - default is 640x480
-				//mult = FClamp(weapon.currentAccuracy * 80.0 * (width/640.0), corner, 80.0);
-				// DJ: 80 was original, 60 is shifter
-				// DJ: With the following values, the cross squares @1680x1050 match up with how vanilla looked @640x480!  Win!
-				mult = FClamp(weapon.currentAccuracy * 66.0 * (width / 640), corner, 66.0 * dxEnhancedGUIScaleMultiplier);	
+				// scale based on screen resolution - default is 640x480							
+
+				// DJ: match up the cross squares at different aspects so match up with how vanilla looked @640x480 res
+				// mult = FClamp(weapon.currentAccuracy * 80.0 * (width/640.0), corner, 80.0);
+				mult = FClamp(weapon.currentAccuracy * accuracyMultiplier * (width / 640), 
+							  corner, accuracyMultiplier * dxEnhancedGUIScaleMultiplier);	
+							  
 				// make sure it's not too close to the center unless you have a perfect accuracy
 				if (weapon.currentAccuracy == 0.0)
 				{

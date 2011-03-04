@@ -1,7 +1,9 @@
 	2.0.0
 
 	 - Doubled GUI resolution (lots of files had to be edited)
-	 - Accuracy fixes (reticule size looks the same @1680x1050 as @640x480)
+	 - Accuracy fixes:
+              1) normalized reticule size on different aspect ratio screens - had to guess on value for 16:9, however)
+              2) corrected reticule size when using mods that remove normal GUI scaling
 	 - Fixed corrupted string in Mission03 (an email from Dan the janitor)
 
 
