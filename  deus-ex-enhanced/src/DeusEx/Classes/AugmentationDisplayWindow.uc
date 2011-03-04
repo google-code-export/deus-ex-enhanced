@@ -901,7 +901,7 @@ function DrawTargetAugmentation(GC gc)
 
 				// scale based on screen resolution - default is 640x480
 				//mult = FClamp(weapon.currentAccuracy * 80.0 * (width/640.0), corner, 80.0);
-				mult = FClamp(weapon.currentAccuracy * 80.0 * dxEnhancedGUIScaleMultiplier * (width / 640), corner, 80.0 * dxEnhancedGUIScaleMultiplier);				
+				mult = FClamp(weapon.currentAccuracy * 64.0 * dxEnhancedGUIScaleMultiplier * (width / 640), corner, 64.0 * dxEnhancedGUIScaleMultiplier);				
 
 				// make sure it's not too close to the center unless you have a perfect accuracy
 				if (weapon.currentAccuracy == 0.0)
