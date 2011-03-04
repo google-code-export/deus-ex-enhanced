@@ -67,7 +67,7 @@ function CreateControls()
 
 function CreateAugChosenHeader()
 {
-   CreateMenuLabel( 381, 12, HeaderAugChosenLabel, winClient );
+   CreateMenuLabel(381 * dxEnhancedGUIScaleMultiplier, 12 * dxEnhancedGUIScaleMultiplier, HeaderAugChosenLabel, winClient );
 }
 
 // ----------------------------------------------------------------------
@@ -104,18 +104,21 @@ function CreateAugButtons()
          {
             if (!bShiftRight)
             {
-               btnAugChoice[iButtonIndex].SetPos(6, 4 + 23 * CurAug.mpConflictSlot);
+               btnAugChoice[iButtonIndex].SetPos(6 * dxEnhancedGUIScaleMultiplier, 
+												(4 + 23 * CurAug.mpConflictSlot) * dxEnhancedGUIScaleMultiplier);
             }
             else
             {
-               btnAugChoice[iButtonIndex].SetPos(172, 4 + 23 * CurAug.mpConflictSlot);
+               btnAugChoice[iButtonIndex].SetPos(172 * dxEnhancedGUIScaleMultiplier, 
+												(4 + 23 * CurAug.mpConflictSlot) * dxEnhancedGUIScaleMultiplier);
             }
          }
          else // Last button is aqualung, centered
          {
-            btnAugChoice[iButtonIndex].SetPos(92, 4 + 23 * CurAug.mpConflictSlot);
+            btnAugChoice[iButtonIndex].SetPos(92 * dxEnhancedGUIScaleMultiplier, 
+											 (4 + 23 * CurAug.mpConflictSlot) * dxEnhancedGUIScaleMultiplier);
          }
-         btnAugChoice[iButtonIndex].SetWidth(163);
+         btnAugChoice[iButtonIndex].SetWidth(163 * dxEnhancedGUIScaleMultiplier);
          btnAugChoice[iButtonIndex].SetHelpText(curAug.MPInfo);         
          btnAugChoice[iButtonIndex].fontButtonText = font'FontMenuSmall';
 
@@ -130,8 +133,10 @@ function CreateAugButtons()
 
 function CreatePriorityButtons()
 {
-	btnAugUp    = CreateSpecialButton(357, 107, Texture'SecurityButtonPanUp_Normal',    Texture'SecurityButtonPanUp_Pressed');
-	btnAugDown  = CreateSpecialButton(357, 127, Texture'SecurityButtonPanDown_Normal',  Texture'SecurityButtonPanDown_Pressed');
+	btnAugUp    = CreateSpecialButton(357 * dxEnhancedGUIScaleMultiplier, 107 * dxEnhancedGUIScaleMultiplier, 
+				  Texture'SecurityButtonPanUp_Normal',    Texture'SecurityButtonPanUp_Pressed');
+	btnAugDown  = CreateSpecialButton(357 * dxEnhancedGUIScaleMultiplier, 127 * dxEnhancedGUIScaleMultiplier, 
+				  Texture'SecurityButtonPanDown_Normal',  Texture'SecurityButtonPanDown_Pressed');
 }
 
 // ----------------------------------------------------------------------
@@ -181,8 +186,8 @@ function CreateChosenList()
 {
    ChosenScroll = CreateScrollAreaWindow(winClient);
 
-	ChosenScroll.SetPos(390, 29);
-	ChosenScroll.SetSize(134, 152);
+	ChosenScroll.SetPos(390 * dxEnhancedGUIScaleMultiplier, 29 * dxEnhancedGUIScaleMultiplier);
+	ChosenScroll.SetSize(134 * dxEnhancedGUIScaleMultiplier, 152 * dxEnhancedGUIScaleMultiplier);
 
 	ChosenAugList = MenuUIListWindow(ChosenScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
 	ChosenAugList.EnableMultiSelect(False);
@@ -191,7 +196,7 @@ function CreateChosenList()
 
 	ChosenAugList.SetNumColumns(1);
 
-	ChosenAugList.SetColumnWidth(0, 140);
+	ChosenAugList.SetColumnWidth(0, 140 * dxEnhancedGUIScaleMultiplier);
 	ChosenAugList.SetColumnType(0, COLTYPE_String);
 
 }
@@ -649,6 +654,7 @@ function CompressChosenList()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -668,13 +674,13 @@ defaultproperties
      actionButtons(1)=(Align=HALIGN_Right,Action=AB_Reset)
      actionButtons(2)=(Action=AB_OK)
      Title="Multiplayer Augmentation Setup"
-     ClientWidth=537
-     ClientHeight=311
+     ClientWidth=1074
+     ClientHeight=622
      clientTextures(0)=Texture'DeusExUI.UserInterface.MenuAugsBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.MenuAugsBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.MenuAugsBackground_3'
      clientTextures(3)=Texture'DeusExUI.UserInterface.MenuAugsBackground_4'
      clientTextures(4)=Texture'DeusExUI.UserInterface.MenuAugsBackground_5'
      clientTextures(5)=Texture'DeusExUI.UserInterface.MenuAugsBackground_6'
-     helpPosY=251
+     helpPosY=502
 }

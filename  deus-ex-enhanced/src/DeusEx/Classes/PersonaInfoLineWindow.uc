@@ -16,7 +16,7 @@ event InitWindow()
 {
 	Super.InitWindow();
 
-	SetHeight(5);
+	SetHeight(5 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -29,7 +29,7 @@ event DrawWindow(GC gc)
 
 	gc.SetStyle(DSTY_Normal);
 	gc.SetTileColor(colLine);
-	gc.DrawPattern(0, 2, width, 1, 0, 0, Texture'Solid' );
+	gc.DrawPattern(0, 2 * dxEnhancedGUIScaleMultiplier, width, 1 * dxEnhancedGUIScaleMultiplier, 0, 0, Texture'Solid' );
 }
 
 // ----------------------------------------------------------------------

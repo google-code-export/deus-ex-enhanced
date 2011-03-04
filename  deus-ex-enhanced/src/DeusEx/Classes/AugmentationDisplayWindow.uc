@@ -901,26 +901,39 @@ function DrawTargetAugmentation(GC gc)
 
 				// scale based on screen resolution - default is 640x480
 				//mult = FClamp(weapon.currentAccuracy * 80.0 * (width/640.0), corner, 80.0);
-				mult = FClamp(weapon.currentAccuracy * 60.0 * (width/640.0), corner, 60.0);
+				mult = FClamp(weapon.currentAccuracy * 80.0 * dxEnhancedGUIScaleMultiplier * (width / 640), corner, 80.0 * dxEnhancedGUIScaleMultiplier);				
 
 				// make sure it's not too close to the center unless you have a perfect accuracy
-				mult = FMax(mult, corner+4.0);
 				if (weapon.currentAccuracy == 0.0)
+				{
 					mult = corner;
+				} 
+				else 
+				{
+					mult = FMax(mult, corner + (4.0 * dxEnhancedGUIScaleMultiplier));
+				}
 
 				// draw the drop shadowed reticle
 				gc.SetTileColorRGB(0,0,0);
-				for (i=1; i>=0; i--)
-				{
-					gc.DrawBox(x+i, y-mult+i, 1, corner, 0, 0, 1, Texture'Solid');
-					gc.DrawBox(x+i, y+mult-corner+i, 1, corner, 0, 0, 1, Texture'Solid');
-					gc.DrawBox(x-(corner-1)/2+i, y-mult+i, corner, 1, 0, 0, 1, Texture'Solid');
-					gc.DrawBox(x-(corner-1)/2+i, y+mult+i, corner, 1, 0, 0, 1, Texture'Solid');
+				for (i = 1; i >= 0; i--) // DJ: This has to be in a loop for some reason, or it won't draw. Weird.
+				{										
+					gc.DrawBox(x + i - (dxEnhancedGUIScaleMultiplier / 2), y - mult + i, 
+							   1 * dxEnhancedGUIScaleMultiplier, corner, 0, 0, 1, Texture'Solid');
+					gc.DrawBox(x + i - (dxEnhancedGUIScaleMultiplier / 2), y + mult - corner + i + (dxEnhancedGUIScaleMultiplier / 2), 
+							   1 * dxEnhancedGUIScaleMultiplier, corner, 0, 0, 1, Texture'Solid');
+					gc.DrawBox(x - (corner - 1) / 2 + i, y - mult + i, 
+							   corner, 1 * dxEnhancedGUIScaleMultiplier, 0, 0, 1, Texture'Solid');
+					gc.DrawBox(x - (corner - 1) / 2 + i, y + mult + i - (dxEnhancedGUIScaleMultiplier / 2), 
+							   corner, 1 * dxEnhancedGUIScaleMultiplier, 0, 0, 1, Texture'Solid');
 
-					gc.DrawBox(x-mult+i, y+i, corner, 1, 0, 0, 1, Texture'Solid');
-					gc.DrawBox(x+mult-corner+i, y+i, corner, 1, 0, 0, 1, Texture'Solid');
-					gc.DrawBox(x-mult+i, y-(corner-1)/2+i, 1, corner, 0, 0, 1, Texture'Solid');
-					gc.DrawBox(x+mult+i, y-(corner-1)/2+i, 1, corner, 0, 0, 1, Texture'Solid');
+					gc.DrawBox(x - mult + i, y + i - (dxEnhancedGUIScaleMultiplier / 2), 
+							   corner, 1 * dxEnhancedGUIScaleMultiplier, 0, 0, 1, Texture'Solid');
+					gc.DrawBox(x + mult - corner + i + (dxEnhancedGUIScaleMultiplier / 2), y + i - (dxEnhancedGUIScaleMultiplier / 2), 
+							   corner, 1 * dxEnhancedGUIScaleMultiplier, 0, 0, 1, Texture'Solid');
+					gc.DrawBox(x - mult + i, (y - (corner - 1) / 2 + i), 
+							   1 * dxEnhancedGUIScaleMultiplier, corner, 0, 0, 1, Texture'Solid');
+					gc.DrawBox(x + mult + i - (dxEnhancedGUIScaleMultiplier / 2), (y - (corner - 1) / 2 + i),
+							   1 * dxEnhancedGUIScaleMultiplier, corner, 0, 0, 1, Texture'Solid');
 
 					gc.SetTileColor(crossColor);
 				}
@@ -1612,12 +1625,13 @@ function int GetVisionTargetStatus(Actor Target)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled margin and corner
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     margin=4.000000
-     corner=9.000000
+     margin=8.000000
+     corner=18.000000
      msgRange="Range"
      msgRangeUnits="ft"
      msgHigh="High"

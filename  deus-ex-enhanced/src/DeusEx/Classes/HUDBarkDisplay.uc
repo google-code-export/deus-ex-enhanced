@@ -22,8 +22,8 @@ event InitWindow()
 	winBarks.SetChildAlignments(HALIGN_Full, VALIGN_Top);
 	winBarks.MakeWidthsEqual(True);
 	winBarks.MakeHeightsEqual(False);
-	winBarks.SetMargins(20, topMargin);
-	winBarks.SetMinorSpacing(2);
+	winBarks.SetMargins(20 * dxEnhancedGUIScaleMultiplier, topMargin);
+	winBarks.SetMinorSpacing(2 * dxEnhancedGUIScaleMultiplier);
 	winBarks.SetWindowAlignments(HALIGN_Full, VALIGN_Top);
 }
 

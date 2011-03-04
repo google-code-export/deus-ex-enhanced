@@ -39,11 +39,12 @@ function SaveSetting()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled value
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     defaultInfoWidth=98
+     defaultInfoWidth=196
      HelpText="Change the amount of texture detail in the world"
      actionText="|&World Texture Detail"
      configSetting="ini:Engine.Engine.ViewportManager TextureDetail"

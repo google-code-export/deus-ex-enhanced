@@ -95,6 +95,8 @@ function bool TestCycleable()
 
 //Damage up to 12 from 10
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      LowAmmoWaterMark=0
@@ -135,8 +137,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.DropMediumWeapon'
      Icon=Texture'DeusExUI.Icons.BeltIconCrowbar'
      largeIcon=Texture'DeusExUI.Icons.LargeIconCrowbar'
-     largeIconWidth=101
-     largeIconHeight=43
+     largeIconWidth=202
+     largeIconHeight=86
      invSlotsX=2
      Description="A crowbar. Hit someone or something with it. Repeat.|n|n<UNATCO OPS FILE NOTE GH010-BLUE> Many crowbars we call 'murder of crowbars.'  Always have one for kombat. Ha. -- Gunther Hermann <END NOTE>"
      beltDescription="CROWBAR"

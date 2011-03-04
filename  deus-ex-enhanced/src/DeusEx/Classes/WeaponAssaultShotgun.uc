@@ -177,6 +177,8 @@ function ReloadAmmo()
 
 //     ProjectileNames(2)=Class'DeusEx.Fireball'
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      msgExtraShells="%d rounds loaded into firing chamber"
@@ -228,8 +230,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.DropMediumWeapon'
      Icon=Texture'DeusExUI.Icons.BeltIconAssaultShotgun'
      largeIcon=Texture'DeusExUI.Icons.LargeIconAssaultShotgun'
-     largeIconWidth=99
-     largeIconHeight=55
+     largeIconWidth=198
+     largeIconHeight=110
      invSlotsX=2
      invSlotsY=2
      Description="The assault shotgun (sometimes referred to as a 'street sweeper') combines the best traits of a normal shotgun with a fully automatic feed that can clear an area of hostiles in a matter of seconds. Particularly effective in urban combat, the assault shotgun accepts either buckshot or sabot shells."

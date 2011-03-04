@@ -80,6 +80,7 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled value defaultInfoWidth
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -89,7 +90,7 @@ defaultproperties
      enumText(0)="8-bit"
      enumText(1)="16-bit"
      defaultValue=1
-     defaultInfoWidth=83
+     defaultInfoWidth=166
      HelpText="16-bit sound is higher quality but uses twice as much memory as 8-bit sound, so if you're low on memory, use 8-bit."
      actionText="Sound |&Quality"
      configSetting="ini:Engine.Engine.AudioDevice LowSoundQuality"

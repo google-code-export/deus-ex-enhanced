@@ -23,7 +23,7 @@ event InitWindow()
 
    SetInitialVictoryType();
 
-   SetActionButtonWidth(179);
+   SetActionButtonWidth(179 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -119,6 +119,7 @@ function string GetModuleName(int GameIndex)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -127,8 +128,8 @@ defaultproperties
      VictoryTypes(1)="Time"
      VictoryNames(0)="Kill Limit"
      VictoryNames(1)="Time Limit"
-     defaultInfoWidth=243
-     defaultInfoPosX=203
+     defaultInfoWidth=486
+     defaultInfoPosX=406
      HelpText="Determines under what circumstances the game ends."
      actionText="Victory Condition"
      configSetting="DeusEXMPGame VictoryCondition"

@@ -17,7 +17,7 @@ event InitWindow()
 {
 	Super.InitWindow();
 
-	SetSize(66, 13);
+	SetSize(66 * dxEnhancedGUIScaleMultiplier, 13 * dxEnhancedGUIScaleMultiplier);
 	SetButtonText(HealButtonLabel);	
 }
 
@@ -40,17 +40,18 @@ function int GetPartIndex()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values and widths
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      HealButtonLabel="Heal"
-     Left_Textures(0)=(Tex=Texture'DeusExUI.UserInterface.HealthButtonNormal_Left',Width=4)
-     Left_Textures(1)=(Tex=Texture'DeusExUI.UserInterface.HealthButtonPressed_Left',Width=4)
-     Right_Textures(0)=(Tex=Texture'DeusExUI.UserInterface.HealthButtonNormal_Right',Width=8)
-     Right_Textures(1)=(Tex=Texture'DeusExUI.UserInterface.HealthButtonPressed_Right',Width=8)
-     Center_Textures(0)=(Tex=Texture'DeusExUI.UserInterface.HealthButtonNormal_Center',Width=2)
-     Center_Textures(1)=(Tex=Texture'DeusExUI.UserInterface.HealthButtonPressed_Center',Width=2)
-     buttonHeight=13
-     minimumButtonWidth=66
+     Left_Textures(0)=(Tex=Texture'DeusExUI.UserInterface.HealthButtonNormal_Left',Width=8)
+     Left_Textures(1)=(Tex=Texture'DeusExUI.UserInterface.HealthButtonPressed_Left',Width=8)
+     Right_Textures(0)=(Tex=Texture'DeusExUI.UserInterface.HealthButtonNormal_Right',Width=16)
+     Right_Textures(1)=(Tex=Texture'DeusExUI.UserInterface.HealthButtonPressed_Right',Width=16)
+     Center_Textures(0)=(Tex=Texture'DeusExUI.UserInterface.HealthButtonNormal_Center',Width=4)
+     Center_Textures(1)=(Tex=Texture'DeusExUI.UserInterface.HealthButtonPressed_Center',Width=4)
+     buttonHeight=26
+     minimumButtonWidth=132
 }

@@ -19,8 +19,8 @@ event InitWindow()
 {
 	Super.InitWindow();
 
-	SetTextMargins(2, 2);
-	SetMaxSize(200);				// maybe increase this later, probably not.
+	SetTextMargins(2 * dxEnhancedGUIScaleMultiplier, 2 * dxEnhancedGUIScaleMultiplier);
+	SetMaxSize(200 * dxEnhancedGUIScaleMultiplier);				// maybe increase this later, probably not.
 	SetNormalColors();
 	SetSelectedAreaTexture(Texture'Solid', colEditHighlight);
 	SetSelectedAreaTextColor(colEditTextHighlight);

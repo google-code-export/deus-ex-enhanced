@@ -21,6 +21,8 @@ simulated function PreBeginPlay()
 	}
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      LowAmmoWaterMark=50
@@ -62,8 +64,8 @@ defaultproperties
      ThirdPersonMesh=LodMesh'DeusExItems.PepperGun3rd'
      Icon=Texture'DeusExUI.Icons.BeltIconPepperSpray'
      largeIcon=Texture'DeusExUI.Icons.LargeIconPepperSpray'
-     largeIconWidth=46
-     largeIconHeight=40
+     largeIconWidth=92
+     largeIconHeight=80
      Description="The pepper gun will accept a number of commercially available riot control agents in cartridge form and disperse them as a fine aerosol mist that can cause blindness or blistering at short-range."
      beltDescription="PEPPER"
      Mesh=LodMesh'DeusExItems.PepperGunPickup'

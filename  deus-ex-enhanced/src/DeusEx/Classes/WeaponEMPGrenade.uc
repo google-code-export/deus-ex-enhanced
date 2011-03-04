@@ -19,6 +19,8 @@ simulated function bool TestMPBeltSpot(int BeltSpot)
    return (BeltSpot == 7);
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      LowAmmoWaterMark=2
@@ -59,8 +61,8 @@ defaultproperties
      ThirdPersonMesh=LodMesh'DeusExItems.EMPGrenade3rd'
      Icon=Texture'DeusExUI.Icons.BeltIconEMPGrenade'
      largeIcon=Texture'DeusExUI.Icons.LargeIconEMPGrenade'
-     largeIconWidth=31
-     largeIconHeight=49
+     largeIconWidth=62
+     largeIconHeight=98
      Description="The EMP grenade creates a localized pulse that will temporarily disable all electronics within its area of effect, including cameras and security grids.|n|n<UNATCO OPS FILE NOTE JR134-VIOLET> While nanotech augmentations are largely unaffected by EMP, experiments have shown that it WILL cause the spontaneous dissipation of stored bioelectric energy. -- Jaime Reyes <END NOTE>"
      beltDescription="EMP GREN"
      Mesh=LodMesh'DeusExItems.EMPGrenadePickup'

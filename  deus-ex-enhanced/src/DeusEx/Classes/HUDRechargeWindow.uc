@@ -65,7 +65,7 @@ event InitWindow()
 	// Get a pointer to the player
 	player = DeusExPlayer(GetRootWindow().parentPawn);
 
-	SetSize(265, 153);
+	SetSize(265 * dxEnhancedGUIScaleMultiplier, 153 * dxEnhancedGUIScaleMultiplier);
 
 	CreateControls();
 	EnableButtons();
@@ -121,8 +121,9 @@ function DrawBackground(GC gc)
 	
 	gc.SetTileColor(colBackground);
 
-	gc.DrawTexture(0,   0, 256, height, 0, 0, texBackground[0]);
-	gc.DrawTexture(256, 0, 9,   height, 0, 0, texBackground[1]);
+	gc.DrawTexture(0,   0, 256 * dxEnhancedGUIScaleMultiplier, height, 0, 0, texBackground[0]);
+	gc.DrawTexture(256 * dxEnhancedGUIScaleMultiplier, 0, 9 * dxEnhancedGUIScaleMultiplier, 
+					height, 0, 0, texBackground[1]);
 }
 
 // ----------------------------------------------------------------------
@@ -140,8 +141,9 @@ function DrawBorder(GC gc)
 		
 		gc.SetTileColor(colBorder);
 
-		gc.DrawTexture(0,   0, 256, height, 0, 0, texBorder[0]);
-		gc.DrawTexture(256, 0, 9,   height, 0, 0, texBorder[1]);
+		gc.DrawTexture(0,   0, 256 * dxEnhancedGUIScaleMultiplier, height, 0, 0, texBorder[0]);
+		gc.DrawTexture(256 * dxEnhancedGUIScaleMultiplier, 0, 9 * dxEnhancedGUIScaleMultiplier, 
+						height, 0, 0, texBorder[1]);
 	}
 }
 
@@ -186,8 +188,8 @@ function CreateTitleWindow()
 	winTitle = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
 	winTitle.SetTextAlignments(HALIGN_Left, VALIGN_Center);
 	winTitle.SetText(RechargeTitle);
-	winTitle.SetPos(20, 20);
-	winTitle.SetSize(233, 14);
+	winTitle.SetPos(20 * dxEnhancedGUIScaleMultiplier, 20 * dxEnhancedGUIScaleMultiplier);
+	winTitle.SetSize(233 * dxEnhancedGUIScaleMultiplier, 14 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -198,8 +200,8 @@ function CreateInfoWindow()
 {
 	winInfo = PersonaNormalTextWindow(NewChild(Class'PersonaNormalTextWindow'));
 	winInfo.SetTextAlignments(HALIGN_Left, VALIGN_Center);
-	winInfo.SetPos(20, 39);
-	winInfo.SetSize(233, 44);
+	winInfo.SetPos(20 * dxEnhancedGUIScaleMultiplier, 39 * dxEnhancedGUIScaleMultiplier);
+	winInfo.SetSize(233 * dxEnhancedGUIScaleMultiplier, 44 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -210,8 +212,8 @@ function CreateBioWindows()
 {
 	winBioBar = ProgressBarWindow(NewChild(Class'ProgressBarWindow'));
 
-	winBioBar.SetPos(114, 91);
-	winBioBar.SetSize(140, 12);
+	winBioBar.SetPos(114 * dxEnhancedGUIScaleMultiplier, 91 * dxEnhancedGUIScaleMultiplier);
+	winBioBar.SetSize(140 * dxEnhancedGUIScaleMultiplier, 12 * dxEnhancedGUIScaleMultiplier);
 	winBioBar.SetValues(0, 100);
 	winBioBar.UseScaledColor(True);
 	winBioBar.SetVertical(False);
@@ -219,16 +221,16 @@ function CreateBioWindows()
 	winBioBar.SetDrawBackground(False);
 
 	winBioBarText = TextWindow(NewChild(Class'TextWindow'));
-	winBioBarText.SetPos(114, 93);
-	winBioBarText.SetSize(140, 12);
+	winBioBarText.SetPos(114 * dxEnhancedGUIScaleMultiplier, 93 * dxEnhancedGUIScaleMultiplier);
+	winBioBarText.SetSize(140 * dxEnhancedGUIScaleMultiplier, 12 * dxEnhancedGUIScaleMultiplier);
 	winBioBarText.SetTextMargins(0, 0);
 	winBioBarText.SetTextAlignments(HALIGN_Center, VALIGN_Center);
 	winBioBarText.SetFont(Font'FontMenuSmall_DS');
 	winBioBarText.SetTextColorRGB(255, 255, 255);
 
 	winBioInfoText = PersonaNormalTextWindow(NewChild(Class'PersonaNormalTextWindow'));
-	winBioInfoText.SetPos(20, 92);
-	winBioInfoText.SetSize(90, 12);
+	winBioInfoText.SetPos(20 * dxEnhancedGUIScaleMultiplier, 92 * dxEnhancedGUIScaleMultiplier);
+	winBioInfoText.SetSize(90 * dxEnhancedGUIScaleMultiplier, 12 * dxEnhancedGUIScaleMultiplier);
 	winBioInfoText.SetTextMargins(0, 0);
 
 	UpdateBioWindows();
@@ -242,8 +244,8 @@ function CreateRepairbotWindows()
 {
 	winRepairBotBar = ProgressBarWindow(NewChild(Class'ProgressBarWindow'));
 
-	winRepairBotBar.SetPos(114, 111);
-	winRepairBotBar.SetSize(140, 12);
+	winRepairBotBar.SetPos(114 * dxEnhancedGUIScaleMultiplier, 111 * dxEnhancedGUIScaleMultiplier);
+	winRepairBotBar.SetSize(140 * dxEnhancedGUIScaleMultiplier, 12 * dxEnhancedGUIScaleMultiplier);
 	winRepairBotBar.SetValues(0, 100);
 	winRepairBotBar.UseScaledColor(True);
 	winRepairBotBar.SetVertical(False);
@@ -251,16 +253,16 @@ function CreateRepairbotWindows()
 	winRepairBotBar.SetDrawBackground(False);
 
 	winRepairBotBarText = TextWindow(NewChild(Class'TextWindow'));
-	winRepairBotBarText.SetPos(114, 113);
-	winRepairBotBarText.SetSize(140, 12);
+	winRepairBotBarText.SetPos(114 * dxEnhancedGUIScaleMultiplier, 113 * dxEnhancedGUIScaleMultiplier);
+	winRepairBotBarText.SetSize(140 * dxEnhancedGUIScaleMultiplier, 12 * dxEnhancedGUIScaleMultiplier);
 	winRepairBotBarText.SetTextMargins(0, 0);
 	winRepairBotBarText.SetTextAlignments(HALIGN_Center, VALIGN_Center);
 	winRepairBotBarText.SetFont(Font'FontMenuSmall_DS');
 	winRepairBotBarText.SetTextColorRGB(255, 255, 255);
 
 	winRepairBotInfoText = PersonaNormalTextWindow(NewChild(Class'PersonaNormalTextWindow'));
-	winRepairBotInfoText.SetPos(20, 112);
-	winRepairBotInfoText.SetSize(90, 12);
+	winRepairBotInfoText.SetPos(20 * dxEnhancedGUIScaleMultiplier, 112 * dxEnhancedGUIScaleMultiplier);
+	winRepairBotInfoText.SetSize(90 * dxEnhancedGUIScaleMultiplier, 12 * dxEnhancedGUIScaleMultiplier);
 	winRepairBotInfoText.SetTextMargins(0, 0);
 }
 
@@ -348,8 +350,8 @@ function CreateButtons()
 	local PersonaButtonBarWindow winActionButtons;
 
 	winActionButtons = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(15, 126);
-	winActionButtons.SetSize(191, 16);
+	winActionButtons.SetPos(15 * dxEnhancedGUIScaleMultiplier, 126 * dxEnhancedGUIScaleMultiplier);
+	winActionButtons.SetSize(191 * dxEnhancedGUIScaleMultiplier, 16 * dxEnhancedGUIScaleMultiplier);
 	winActionButtons.FillAllSpace(False);
 
 	btnClose = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));

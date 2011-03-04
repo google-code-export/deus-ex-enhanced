@@ -3,6 +3,8 @@
 //=============================================================================
 class AmmoNapalm extends DeusExAmmo;
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      bShowInfo=True
@@ -14,8 +16,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.GlassDrop'
      Icon=Texture'DeusExUI.Icons.BeltIconAmmoNapalm'
      largeIcon=Texture'DeusExUI.Icons.LargeIconAmmoNapalm'
-     largeIconWidth=46
-     largeIconHeight=42
+     largeIconWidth=92
+     largeIconHeight=84
      Description="A pressurized canister of jellied gasoline for use with flamethrowers.|n|n<UNATCO OPS FILE NOTE SC080-BLUE> The canister is double-walled to minimize accidental detonation caused by stray bullets during a firefight. -- Sam Carter <END NOTE>"
      beltDescription="NAPALM"
      Mesh=LodMesh'DeusExItems.AmmoNapalm'

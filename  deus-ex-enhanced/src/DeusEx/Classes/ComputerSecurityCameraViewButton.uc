@@ -3,6 +3,8 @@
 //=============================================================================
 class ComputerSecurityCameraViewButton extends ButtonWindow;
 
+const dxEnhancedGUIScaleMultiplier = 2;
+
 var DeusExPlayer player;
 var Bool         bSelected;
 var Texture      texBorders[9];
@@ -19,7 +21,7 @@ event InitWindow()
 {
 	Super.InitWindow();
 
-	SetSize(202, 152);
+	SetSize(202 * dxEnhancedGUIScaleMultiplier, 152 * dxEnhancedGUIScaleMultiplier);
 
 	// Get a pointer to the player
 	player = DeusExPlayer(GetRootWindow().parentPawn);
@@ -35,9 +37,9 @@ function CreateStaticWindow()
 {
 	// Window used to display static
 	winStatic = StaticWindow(NewChild(Class'StaticWindow', False));
-	winStatic.SetSize(200, 150);
+	winStatic.SetSize(200 * dxEnhancedGUIScaleMultiplier, 150 * dxEnhancedGUIScaleMultiplier);
 	winStatic.RandomizeStatic();
-	winStatic.SetPos(1, 1);
+	winStatic.SetPos(   1 * dxEnhancedGUIScaleMultiplier,   1 * dxEnhancedGUIScaleMultiplier);
 	winStatic.SetBackgroundStyle(DSTY_Modulated);
 	winStatic.Raise();
 }

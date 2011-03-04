@@ -39,12 +39,13 @@ function SaveSetting()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled defaultInfoWidth
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      defaultValue=1
-     defaultInfoWidth=98
+     defaultInfoWidth=196
      HelpText="Disabling Decals may improve performance on slower machines"
      actionText="D|&ecals"
      configSetting="ini:Engine.Engine.ViewportManager Decals"

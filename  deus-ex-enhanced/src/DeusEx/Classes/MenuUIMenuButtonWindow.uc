@@ -35,6 +35,7 @@ event DrawWindow(GC gc)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -43,7 +44,7 @@ defaultproperties
      buttonLights(1)=Texture'DeusExUI.UserInterface.MenuMainLight_Focus'
      buttonLights(2)=Texture'DeusExUI.UserInterface.MenuMainLight_Focus'
      buttonLights(3)=Texture'DeusExUI.UserInterface.MenuMainLight_Normal'
-     buttonLightWidth=7
+     buttonLightWidth=14
      bTranslucentText=True
      Left_Textures(0)=(Tex=Texture'DeusExUI.UserInterface.MenuMainButtonNormal_Left',Width=5)
      Left_Textures(1)=(Tex=Texture'DeusExUI.UserInterface.MenuMainButtonPressed_Left',Width=5)
@@ -51,10 +52,10 @@ defaultproperties
      Right_Textures(1)=(Tex=Texture'DeusExUI.UserInterface.MenuMainButtonPressed_Right',Width=20)
      Center_Textures(0)=(Tex=Texture'DeusExUI.UserInterface.MenuMainButtonNormal_Center',Width=2)
      Center_Textures(1)=(Tex=Texture'DeusExUI.UserInterface.MenuMainButtonPressed_Center',Width=2)
-     leftOffset=9
-     buttonHeight=27
-     minimumButtonWidth=245
-     textLeftMargin=-4
+     leftOffset=18
+     buttonHeight=54
+     minimumButtonWidth=490
+     textLeftMargin=-8
      bTranslucent=True
      bCenterText=True
 }

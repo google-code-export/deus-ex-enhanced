@@ -67,6 +67,8 @@ function bool UseAmmo(int AmountNeeded)
 	return False;
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      bShowInfo=True
@@ -77,8 +79,8 @@ defaultproperties
      PickupViewMesh=LodMesh'DeusExItems.AmmoShell'
      Icon=Texture'DeusExUI.Icons.BeltIconAmmoShells'
      largeIcon=Texture'DeusExUI.Icons.LargeIconAmmoShells'
-     largeIconWidth=34
-     largeIconHeight=45
+     largeIconWidth=68
+     largeIconHeight=90
      Description="Standard 12 gauge shotgun shell; very effective for close-quarters combat against soft targets, but useless against body armor."
      beltDescription="BUCKSHOT"
      Mesh=LodMesh'DeusExItems.AmmoShell'

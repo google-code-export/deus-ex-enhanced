@@ -154,10 +154,11 @@ event StyleChanged()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled value
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     defaultBarHeight=16
+     defaultBarHeight=32
      bFillAllSpace=True
 }

@@ -112,6 +112,8 @@ state Activated
 Begin:
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      drugEffect=7.000000
@@ -128,8 +130,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.GlassHit1'
      Icon=Texture'DeusExUI.Icons.BeltIconBeerBottle'
      largeIcon=Texture'DeusExUI.Icons.LargeIconBeerBottle'
-     largeIconWidth=14
-     largeIconHeight=47
+     largeIconWidth=28
+     largeIconHeight=94
      Description="'COLD SWEAT forty ounce malt liquor. Never let 'em see your COLD SWEAT.'"
      beltDescription="FORTY"
      Mesh=LodMesh'DeusExItems.Liquor40oz'

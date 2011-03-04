@@ -468,8 +468,8 @@ function CreateKeyList()
 {
 	winScroll = CreateScrollAreaWindow(winClient);
 
-	winScroll.SetPos(11, 23);
-	winScroll.SetSize(369, 268);
+	winScroll.SetPos(11 * dxEnhancedGUIScaleMultiplier, 23 * dxEnhancedGUIScaleMultiplier);
+	winScroll.SetSize(369 * dxEnhancedGUIScaleMultiplier, 268 * dxEnhancedGUIScaleMultiplier);
 
 	lstKeys = MenuUIListWindow(winScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
 	lstKeys.EnableMultiSelect(False);
@@ -478,9 +478,9 @@ function CreateKeyList()
 
 	lstKeys.SetNumColumns(2);
 
-	lstKeys.SetColumnWidth(0, 164);
+	lstKeys.SetColumnWidth(0, 164 * dxEnhancedGUIScaleMultiplier);
 	lstKeys.SetColumnType(0, COLTYPE_String);
-	lstKeys.SetColumnWidth(1, 205);
+	lstKeys.SetColumnWidth(1, 205 * dxEnhancedGUIScaleMultiplier);
 	lstKeys.SetColumnType(1, COLTYPE_String);
 }
 
@@ -505,8 +505,12 @@ function PopulateKeyList()
 
 function CreateHeaderButtons()
 {
-	btnHeaderAction   = CreateHeaderButton(10,  3, 162, strHeaderActionLabel,   winClient);
-	btnHeaderAssigned = CreateHeaderButton(175, 3, 157, strHeaderAssignedLabel, winClient);
+	btnHeaderAction   = CreateHeaderButton(10 * dxEnhancedGUIScaleMultiplier,  
+						3 * dxEnhancedGUIScaleMultiplier, 162 * dxEnhancedGUIScaleMultiplier, 
+						strHeaderActionLabel,   winClient);
+	btnHeaderAssigned = CreateHeaderButton(175 * dxEnhancedGUIScaleMultiplier, 
+						3 * dxEnhancedGUIScaleMultiplier, 157 * dxEnhancedGUIScaleMultiplier, 
+						strHeaderAssignedLabel, winClient);
 
 	btnHeaderAction.SetSensitivity(False);
 	btnHeaderAssigned.SetSensitivity(False);
@@ -538,7 +542,7 @@ function RefreshKeyBindings()
 	for(keyIndex=0; keyIndex<arrayCount(AliasNames); keyIndex++ )
 	{
 		rowId = lstKeys.IndexToRowId(keyIndex);
-		lstKeys.SetField(rowId, 1, GetInputDisplayText(keyIndex));
+		lstKeys.SetField(rowId, 1, GetInputDisplayText(keyIndex)); // DJ: Hmm...
 	}
 }
 
@@ -557,6 +561,7 @@ function ResetToDefaults()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled:  ClientWidth, ClientHeight, HelpPosY
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -768,13 +773,13 @@ defaultproperties
      actionButtons(1)=(Align=HALIGN_Right,Action=AB_OK)
      actionButtons(2)=(Action=AB_Reset)
      Title="Keyboard/Mouse Settings"
-     ClientWidth=384
-     ClientHeight=366
+     ClientWidth=762
+     ClientHeight=732
      clientTextures(0)=Texture'DeusExUI.UserInterface.MenuCustomizeKeysBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.MenuCustomizeKeysBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.MenuCustomizeKeysBackground_3'
      clientTextures(3)=Texture'DeusExUI.UserInterface.MenuCustomizeKeysBackground_4'
      textureCols=2
      bHelpAlwaysOn=True
-     helpPosY=312
+     helpPosY=624
 }

@@ -3,6 +3,7 @@
 //=============================================================================
 class HUDBarkDisplayItem expands AlignWindow;
 
+
 var DeusExPlayer player;
 
 var TextWindow winName;
@@ -32,7 +33,7 @@ event InitWindow()
 	winBark = TextWindow(NewChild(Class'TextWindow'));
 	winBark.SetTextAlignments(HALIGN_Left, VALIGN_Top);
 	winBark.SetFont(Font'FontMenuSmall_DS');
-	winBark.SetTextMargins(0, 1);
+	winBark.SetTextMargins(0, 1 * dxEnhancedGUIScaleMultiplier);
 	winBark.SetWordWrap(True);
 
 	// Get a pointer to the player

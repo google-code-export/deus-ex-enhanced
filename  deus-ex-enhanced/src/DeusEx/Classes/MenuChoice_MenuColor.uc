@@ -76,12 +76,13 @@ function CyclePreviousValue()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled defaultInfoWidth
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      defaultTheme="Grey"
-     defaultInfoWidth=97
+     defaultInfoWidth=194
      HelpText="Color scheme used in all menus."
      actionText="|&Menu Color Scheme"
 }

@@ -34,8 +34,8 @@ function CreateLoginInfoWindow()
 {
 	winLoginInfo = MenuUILabelWindow(winClient.NewChild(Class'MenuUILabelWindow'));
 
-	winLoginInfo.SetPos(10, 12);
-	winLoginInfo.SetSize(377, 122);
+	winLoginInfo.SetPos(  10 * dxEnhancedGUIScaleMultiplier,  12 * dxEnhancedGUIScaleMultiplier);
+	winLoginInfo.SetSize(377 * dxEnhancedGUIScaleMultiplier, 122 * dxEnhancedGUIScaleMultiplier);
 	winLoginInfo.SetTextAlignments(HALIGN_Center, VALIGN_Center);
 	winLoginInfo.SetTextMargins(0, 0);
 	winLoginInfo.SetText(LoginInfoText);
@@ -82,6 +82,7 @@ function bool ButtonActivated( Window buttonPressed )
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values, except: textureRows, textureCols
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -90,13 +91,13 @@ defaultproperties
      LoginInfoText="Sorry, this terminal is out of service (ERR 06MJ12)|n|nWe apologize for the inconvenience but would gladly service you at any of the other 231,000 PageNet Banking Terminals around the globe."
      StatusText="PNGBS//GLOBAL//PUB:3902.9571[dsbld]"
      Title="PageNet Global Banking System"
-     ClientWidth=403
-     ClientHeight=211
-     verticalOffset=30
+     ClientWidth=806
+     ClientHeight=422
+     verticalOffset=60
      clientTextures(0)=Texture'DeusExUI.UserInterface.ComputerGBSDisabledBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.ComputerGBSDisabledBackground_2'
      textureRows=1
      textureCols=2
      bAlwaysCenter=True
-     statusPosY=186
+     statusPosY=372
 }

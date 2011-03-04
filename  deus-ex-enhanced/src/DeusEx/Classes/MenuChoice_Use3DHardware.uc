@@ -70,6 +70,7 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled defaultInfoWidth
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -77,7 +78,7 @@ defaultproperties
      RestartTitle="Sound Quality"
      RestartMessage="This change will not take effect until you restart Deus Ex."
      defaultValue=1
-     defaultInfoWidth=83
+     defaultInfoWidth=166
      HelpText="Enables Hardware 3D Sound Support."
      actionText="|&Hardware 3D Support"
      configSetting="ini:Engine.Engine.AudioDevice Use3dHardware"

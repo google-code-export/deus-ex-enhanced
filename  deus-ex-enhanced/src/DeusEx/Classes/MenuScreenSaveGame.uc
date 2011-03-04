@@ -92,7 +92,7 @@ function CreateControls()
 function CreateEditControl()
 {
 	clipName = ClipWindow(lstGames.newChild(Class'ClipWindow'));
-	clipName.SetWidth(235);
+	clipName.SetWidth(235 * dxEnhancedGUIScaleMultiplier);
 	clipName.ForceChildSize(False, True);
 
 	editName = MenuUILoadSaveEditWindow(clipName.newChild(Class'MenuUILoadSaveEditWindow'));
@@ -390,7 +390,7 @@ function ConfirmSaveGame()
 	if ((freeDiskSpace / 1024) < minFreeDiskSpace)
 	{
 		msgBoxMode = MB_LowSpace;
-		root.MessageBox(DiskSpaceTitle, DiskSpaceMessage, 1, False, Self);
+		root.MessageBox(DiskSpaceTitle, DiskSpaceMessage, 1, False, Self); // DJ: Hmm...
 	}
 	else
 	{
@@ -581,7 +581,7 @@ function MoveEditControl(int rowId, optional bool bNoSetOldName)
 	// Get the physical row location so we can position the 
 	// edit control in the same place as the selected row
 	rowIndex = lstGames.RowIdToIndex(editRowId);				
-	clipName.SetPos(0, (rowIndex * lstGames.lineSize) + 1);
+	clipName.SetPos(0, (rowIndex * lstGames.lineSize) + 1); // DJ: Hmm...
 
 	// Set the edit text, move the cursor to the 
 	// end of the line, and finally show the edit control.
@@ -674,14 +674,15 @@ function EnableButtons()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      newSaveSnapshot=Texture'Extension.Solid'
      defaultSaveText="ERROR! Report this as a BUG!"
-     snapshotWidth=160.000000
-     snapshotHeight=120.000000
+     snapshotWidth=320.000000
+     snapshotHeight=240.000000
      DiskSpaceTitle="Disk Space Low"
      DiskSpaceMessage="You must have at least 100MB of free disk space before you can save.  Please delete some save games or free up space in Windows."
      actionButtons(1)=(Text="|&Save Game",Key="SAVE")

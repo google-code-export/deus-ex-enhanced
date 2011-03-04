@@ -27,6 +27,8 @@ function bool TestCycleable()
 	return true;
 }
 
+// DJ: Doubled icon size values
+
 //Damage increased from 15
 
 defaultproperties
@@ -66,8 +68,8 @@ defaultproperties
      ThirdPersonMesh=LodMesh'DeusExItems.Shuriken3rd'
      Icon=Texture'DeusExUI.Icons.BeltIconShuriken'
      largeIcon=Texture'DeusExUI.Icons.LargeIconShuriken'
-     largeIconWidth=36
-     largeIconHeight=45
+     largeIconWidth=72
+     largeIconHeight=90
      Description="A favorite weapon of assassins in the Far East for centuries, throwing knives can be deadly when wielded by a master but are more generally used when it becomes desirable to send a message. The message is usually 'Your death is coming on swift feet.'"
      beltDescription="THW KNIFE"
      Texture=Texture'DeusExItems.Skins.ReflectionMapTex1'

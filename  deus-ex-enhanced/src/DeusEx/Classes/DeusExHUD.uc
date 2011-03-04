@@ -231,7 +231,7 @@ function ConfigurationChanged()
 	if (infolink != None)
 	{
 		infolink.QueryPreferredSize(qWidth, qHeight);
-
+		
 		if ((msgLog != None) && (msgLog.IsVisible()))
 			infolink.ConfigureChild(hitWidth + 20, msgLog.Height + 20, qWidth, qHeight);
 		else

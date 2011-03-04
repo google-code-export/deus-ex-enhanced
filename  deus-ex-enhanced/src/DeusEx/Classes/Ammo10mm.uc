@@ -50,20 +50,22 @@ function bool UseAmmo(int AmountNeeded)
 	return False;
 }
 
+// DJ: Doubled icon size values (?)
+
 defaultproperties
-{
+{	
      bShowInfo=True
      AmmoAmount=6
      MaxAmmo=150
-     ItemName="10mm Ammo"
+     ItemName="10MM AMMO"
      ItemArticle="some"
      PickupViewMesh=LodMesh'DeusExItems.Ammo10mm'
      Icon=Texture'DeusExUI.Icons.BeltIconAmmo10mm'
      largeIcon=Texture'DeusExUI.Icons.LargeIconAmmo10mm'
-     largeIconWidth=44
-     largeIconHeight=31
+     largeIconWidth=88
+     largeIconHeight=62
      Description="With their combination of high stopping power and low recoil, pistols chambered for the 10mm round have become the sidearms of choice for paramilitary forces around the world."
-     beltDescription="10MM AMMO"
+     beltDescription="10mm Ammo"
      Mesh=LodMesh'DeusExItems.Ammo10mm'
      CollisionRadius=8.500000
      CollisionHeight=3.770000

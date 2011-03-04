@@ -3,6 +3,8 @@
 //=============================================================================
 class WeaponMiniRocket expands WeaponLAW;
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      LowAmmoWaterMark=6
@@ -35,8 +37,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.DropMediumWeapon'
      Icon=Texture'DeusExUI.Icons.BeltIconAssaultShotgun'
      largeIcon=Texture'DeusExUI.Icons.LargeIconAssaultShotgun'
-     largeIconWidth=99
-     largeIconHeight=55
+     largeIconWidth=198
+     largeIconHeight=110
      invSlotsX=2
      invSlotsY=2
      Description="Prior to MJ12 adopting the technology, the ILAW was an abandoned attempt at creating a cybernetic rocket-based weapon.  This prototype has been fitted for external use for demonstration purposes."

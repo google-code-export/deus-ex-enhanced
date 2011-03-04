@@ -26,7 +26,7 @@ event InitWindow()
 function CreateExampleWindow()
 {
 	winExample = MenuScreenAdjustColorsExample(winClient.NewChild(Class'MenuScreenAdjustColorsExample'));
-	winExample.SetPos(395, 25);	
+	winExample.SetPos(395 * dxEnhancedGUIScaleMultiplier, 25 * dxEnhancedGUIScaleMultiplier);	
 }
 
 // ----------------------------------------------------------------------
@@ -55,13 +55,13 @@ defaultproperties
      actionButtons(1)=(Align=HALIGN_Right,Action=AB_OK)
      actionButtons(2)=(Action=AB_Reset)
      Title="Adjust Colors"
-     ClientWidth=620
-     ClientHeight=300
+     ClientWidth=1240
+     ClientHeight=600
      clientTextures(0)=Texture'DeusExUI.UserInterface.MenuColorBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.MenuColorBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.MenuColorBackground_3'
      clientTextures(3)=Texture'DeusExUI.UserInterface.MenuColorBackground_4'
      clientTextures(4)=Texture'DeusExUI.UserInterface.MenuColorBackground_5'
      clientTextures(5)=Texture'DeusExUI.UserInterface.MenuColorBackground_6'
-     helpPosY=246
+     helpPosY=492
 }

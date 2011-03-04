@@ -117,17 +117,18 @@ function SetCountLabel(String newLabel)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled Values
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      bDisabledByDefault=True
      CountLabel="Count: %d"
-     iconPosWidth=53
-     iconPosHeight=53
-     buttonWidth=55
-     buttonHeight=55
-     borderWidth=55
-     borderHeight=55
+     iconPosWidth=106
+     iconPosHeight=106
+     buttonWidth=110
+     buttonHeight=110
+     borderWidth=110
+     borderHeight=110
      bIconTranslucent=False
 }

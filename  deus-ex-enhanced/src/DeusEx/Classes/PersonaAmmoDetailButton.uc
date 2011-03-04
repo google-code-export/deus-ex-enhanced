@@ -180,6 +180,7 @@ function UpdateIconColor(bool bHasIt)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -188,11 +189,11 @@ defaultproperties
      colSelectionBorderHalf=(R=128,G=128,B=128)
      RoundLabel="%d Round"
      RoundsLabel="%d Rounds"
-     iconPosWidth=42
-     iconPosHeight=37
-     buttonWidth=44
-     buttonHeight=44
-     borderWidth=44
-     borderHeight=44
+     iconPosWidth=84
+     iconPosHeight=74
+     buttonWidth=88
+     buttonHeight=88
+     borderWidth=88
+     borderHeight=88
      bIconTranslucent=False
 }

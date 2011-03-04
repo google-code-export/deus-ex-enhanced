@@ -23,6 +23,8 @@ simulated function bool TestMPBeltSpot(int BeltSpot)
    return (BeltSpot == 9);
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      UseSound=Sound'DeusExSounds.Generic.LockpickRattling'
@@ -36,8 +38,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.PlasticHit2'
      Icon=Texture'DeusExUI.Icons.BeltIconLockPick'
      largeIcon=Texture'DeusExUI.Icons.LargeIconLockPick'
-     largeIconWidth=45
-     largeIconHeight=44
+     largeIconWidth=90
+     largeIconHeight=88
      Description="A disposable lockpick. The tension wrench is steel, but appropriate needles are formed from fast congealing polymers.|n|n<UNATCO OPS FILE NOTE AJ006-BLACK> Here's what they don't tell you: despite the product literature, you can use a standard lockpick to bypass all but the most high-class nanolocks. -- Alex Jacobson <END NOTE>"
      beltDescription="LOCKPICK"
      Mesh=LodMesh'DeusExItems.Lockpick'

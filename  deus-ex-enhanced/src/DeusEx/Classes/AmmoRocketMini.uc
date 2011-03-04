@@ -17,6 +17,8 @@ function bool Facelift(bool bOn)
 	return true;
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      bShowInfo=True
@@ -30,8 +32,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.WoodHit2'
      Icon=Texture'DeusExUI.Icons.BeltIconAmmoRockets'
      largeIcon=Texture'DeusExUI.Icons.LargeIconAmmoRockets'
-     largeIconWidth=46
-     largeIconHeight=36
+     largeIconWidth=92
+     largeIconHeight=72
      Description="A lighter version of the standard Guided Explosive Projectile.  As such it carries a smaller explosive charge than a standard GEP."
      beltDescription="L-ROCKET"
      Mesh=LodMesh'DeusExItems.GEPAmmo'

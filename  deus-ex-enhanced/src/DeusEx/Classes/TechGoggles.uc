@@ -54,6 +54,8 @@ function ChargedPickupEnd(DeusExPlayer Player)
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      LoopSound=Sound'DeusExSounds.Pickup.TechGogglesLoop'
@@ -69,8 +71,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.PaperHit2'
      Icon=Texture'DeusExUI.Icons.BeltIconTechGoggles'
      largeIcon=Texture'DeusExUI.Icons.LargeIconTechGoggles'
-     largeIconWidth=49
-     largeIconHeight=36
+     largeIconWidth=98
+     largeIconHeight=72
      Description="Tech goggles are used by many special ops forces throughout the world under a number of different brand names, but they all provide some form of portable light amplification in a disposable package."
      beltDescription="GOGGLES"
      Mesh=LodMesh'DeusExItems.GogglesIR'

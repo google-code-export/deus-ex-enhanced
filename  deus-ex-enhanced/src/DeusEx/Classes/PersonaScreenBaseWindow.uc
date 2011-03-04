@@ -304,18 +304,21 @@ event StyleChanged()
 
 	colCursor = theme.GetColorFromName('HUDColor_Cursor');
 
-	SetDefaultCursor(Texture'DeusExCursor2', Texture'DeusExCursor2_Shadow', 32, 32, colCursor);
+	SetDefaultCursor(Texture'DeusExCursor2', Texture'DeusExCursor2_Shadow', 
+					 32 * dxEnhancedGUIScaleMultiplier, 
+					 32 * dxEnhancedGUIScaleMultiplier, colCursor);
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     screenWidth=640
-     screenHeight=480
-     clientBorderWidth=640
-     clientBorderHeight=450
-     clientBorderOffsetY=30
+     screenWidth=1280
+     screenHeight=960
+     clientBorderWidth=1280
+     clientBorderHeight=900
+     clientBorderOffsetY=60
      ScreenType=ST_Persona
 }

@@ -37,10 +37,11 @@ function DisableChoice()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     defaultInfoWidth=113
-     defaultInfoPosX=154
+     defaultInfoWidth=226
+     defaultInfoPosX=308
 }

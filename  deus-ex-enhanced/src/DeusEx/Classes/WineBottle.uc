@@ -44,6 +44,9 @@ state Activated
 Begin:
 }
 
+
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      drugEffect=5.000000
@@ -61,8 +64,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.GlassHit1'
      Icon=Texture'DeusExUI.Icons.BeltIconWineBottle'
      largeIcon=Texture'DeusExUI.Icons.LargeIconWineBottle'
-     largeIconWidth=36
-     largeIconHeight=48
+     largeIconWidth=72
+     largeIconHeight=96
      Description="A nice bottle of wine."
      beltDescription="WINE"
      Mesh=LodMesh'DeusExItems.WineBottle'

@@ -32,7 +32,7 @@ event InitWindow()
 	winTile = TileWindow(NewChild(Class'TileWindow'));
 	winTile.SetOrder( ORDER_Down );
 	winTile.SetChildAlignments( HALIGN_Full, VALIGN_Top );
-	winTile.SetMargins(20, 0);
+	winTile.SetMargins(20 * dxEnhancedGUIScaleMultiplier, 0);
 	winTile.SetMinorSpacing(0);
 	winTile.MakeWidthsEqual(True);
 	winTile.MakeHeightsEqual(False);

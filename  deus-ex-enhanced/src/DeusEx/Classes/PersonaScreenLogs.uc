@@ -64,7 +64,7 @@ function CreateControls()
 {
 	Super.CreateControls();
 
-	CreateTitleWindow(9, 5, LogsTitleText);
+	CreateTitleWindow(9 * dxEnhancedGUIScaleMultiplier, 5 * dxEnhancedGUIScaleMultiplier, LogsTitleText);
 	CreateLogWindow();
 	CreateButtons();
 }
@@ -76,8 +76,8 @@ function CreateControls()
 function CreateLogWindow()
 {
 	winScroll = CreateScrollAreaWindow(winClient);
-	winScroll.SetPos(16, 21);
-	winScroll.SetSize(394, 361);
+	winScroll.SetPos(16 * dxEnhancedGUIScaleMultiplier, 21 * dxEnhancedGUIScaleMultiplier);
+	winScroll.SetSize(394 * dxEnhancedGUIScaleMultiplier, 361 * dxEnhancedGUIScaleMultiplier);
 
 	lstLogs = PersonaListWindow(winScroll.clipWindow.NewChild(Class'PersonaListWindow'));
 	lstLogs.EnableMultiSelect(False);
@@ -85,7 +85,7 @@ function CreateLogWindow()
 	lstLogs.SetNumColumns(2);
 	lstLogs.SetSortColumn(1, True);
 	lstLogs.SetColumnType(1, COLTYPE_Float);
-	lstLogs.SetColumnWidth(0, 394);
+	lstLogs.SetColumnWidth(0, 394 * dxEnhancedGUIScaleMultiplier);
 	lstLogs.HideColumn(1);
 	lstLogs.EnableAutoSort(False);
 }
@@ -99,8 +99,8 @@ function CreateButtons()
 	local PersonaButtonBarWindow winActionButtons;
 
 	winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(10, 385);
-	winActionButtons.SetWidth(75);
+	winActionButtons.SetPos(10 * dxEnhancedGUIScaleMultiplier, 385 * dxEnhancedGUIScaleMultiplier);
+	winActionButtons.SetWidth(75 * dxEnhancedGUIScaleMultiplier);
 
 	btnClear = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
 	btnClear.SetButtonText(ClearButtonLabel);
@@ -152,16 +152,17 @@ function EnableButtons()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values, except last 4
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      LogsTitleText="Logs"
      ClearButtonLabel="Cl|&ear Log"
-     ClientWidth=426
-     ClientHeight=407
-     clientOffsetX=105
-     clientOffsetY=17
+     ClientWidth=852
+     ClientHeight=814
+     clientOffsetX=210
+     clientOffsetY=34
      clientTextures(0)=Texture'DeusExUI.UserInterface.LogsBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.LogsBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.LogsBackground_3'

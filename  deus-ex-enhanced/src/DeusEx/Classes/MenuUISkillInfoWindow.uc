@@ -4,6 +4,8 @@
 
 class MenuUISkillInfoWindow expands Window;
 
+const dxEnhancedGUIScaleMultiplier = 2;					// DJ: Added
+
 var DeusExPlayer player;
 
 var Skill skill;
@@ -26,7 +28,7 @@ event InitWindow()
 {
 	Super.InitWindow();
 
-	SetSize(405, 130);
+	SetSize(405 * dxEnhancedGUIScaleMultiplier, 130 * dxEnhancedGUIScaleMultiplier);
 
 	// Create controls
 	CreateControls();
@@ -44,20 +46,20 @@ event InitWindow()
 function CreateControls()
 {
 	winSkillIcon = NewChild(Class'Window');
-	winSkillIcon.SetPos(3, 20);
-	winSkillIcon.SetSize(24, 24);
+	winSkillIcon.SetPos(3 * dxEnhancedGUIScaleMultiplier, 20 * dxEnhancedGUIScaleMultiplier);
+	winSkillIcon.SetSize(24 * dxEnhancedGUIScaleMultiplier, 24 * dxEnhancedGUIScaleMultiplier);
 	winSkillIcon.SetBackgroundStyle(DSTY_Masked);
 
 	winSkillName = TextWindow(NewChild(Class'TextWindow'));
-	winSkillName.SetPos(39, 2);
-	winSkillName.SetSize(300, 12);
+	winSkillName.SetPos(39 * dxEnhancedGUIScaleMultiplier, 2 * dxEnhancedGUIScaleMultiplier);
+	winSkillName.SetSize(300 * dxEnhancedGUIScaleMultiplier, 12 * dxEnhancedGUIScaleMultiplier);
 	winSkillName.SetTextMargins(0, 0);
 	winSkillName.SetFont(Font'FontMenuHeaders');
 	winSkillName.SetTextAlignments(HALIGN_Left, VALIGN_Top);
 				
 	winScroll = MenuUIScrollAreaWindow(NewChild(Class'MenuUIScrollAreaWindow'));
-	winScroll.SetPos(39, 20);
-	winScroll.SetSize(362, 104);
+	winScroll.SetPos(39 * dxEnhancedGUIScaleMultiplier, 20 * dxEnhancedGUIScaleMultiplier);
+	winScroll.SetSize(362 * dxEnhancedGUIScaleMultiplier, 104 * dxEnhancedGUIScaleMultiplier);
 
 	winSkillDescription = LargeTextWindow(winScroll.clipWindow.NewChild(Class'LargeTextWindow'));
 	winSkillDescription.SetTextMargins(0, 0);

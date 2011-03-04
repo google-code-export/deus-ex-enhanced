@@ -54,7 +54,7 @@ function CreateControls()
 
 function CreatePlayerNameHeader()
 {
-	CreateMenuLabel( 7, 31, HeaderPlayerNameLabel, winClient );
+	CreateMenuLabel( 7 * dxEnhancedGUIScaleMultiplier, 31 * dxEnhancedGUIScaleMultiplier, HeaderPlayerNameLabel, winClient );
 }
 
 // ----------------------------------------------------------------------
@@ -63,7 +63,8 @@ function CreatePlayerNameHeader()
 
 function CreatePlayerNameEditor()
 { 
-  	PlayerNameEditor = CreateMenuEditWindow(177, 27, 153, 18, winClient);
+  	PlayerNameEditor = CreateMenuEditWindow(177 * dxEnhancedGUIScaleMultiplier, 27 * dxEnhancedGUIScaleMultiplier, 
+											153 * dxEnhancedGUIScaleMultiplier, 18 * dxEnhancedGUIScaleMultiplier, winClient);
 
 	PlayerNameEditor.SetText(GetMultiplayerName());
 	PlayerNameEditor.MoveInsertionPoint(MOVEINSERT_End);
@@ -77,7 +78,7 @@ function CreatePlayerNameEditor()
 function CreateConnectionChoice()
 {
 	ConnectionChoice = MenuChoice_Connection(winClient.NewChild(Class'MenuChoice_Connection'));
-	ConnectionChoice.SetPos(6, 54);
+	ConnectionChoice.SetPos(6 * dxEnhancedGUIScaleMultiplier, 54 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -87,7 +88,7 @@ function CreateConnectionChoice()
 function CreateHelpChoice()
 {
 	HelpChoice = MenuChoice_MultiHelp(winClient.NewChild(Class'MenuChoice_MultiHelp'));
-	HelpChoice.SetPos(6, 81);
+	HelpChoice.SetPos(6 * dxEnhancedGUIScaleMultiplier, 81 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -97,8 +98,8 @@ function CreateHelpChoice()
 function CreateTeamChoice()
 {
 	TeamChoice = MenuChoice_Team(winClient.NewChild(Class'MenuChoice_Team'));
-	TeamChoice.SetPos(176, 120);
-   TeamChoice.SetSize(153,213);
+	TeamChoice.SetPos(176 * dxEnhancedGUIScaleMultiplier, 120 * dxEnhancedGUIScaleMultiplier);
+   TeamChoice.SetSize(153 * dxEnhancedGUIScaleMultiplier, 213 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -108,8 +109,8 @@ function CreateTeamChoice()
 function CreateClassChoice()
 {
 	ClassChoice = MenuChoice_Class(winClient.NewChild(Class'MenuChoice_Class'));
-	ClassChoice.SetPos(6, 120);
-   ClassChoice.SetSize(153,213);
+	ClassChoice.SetPos(6 * dxEnhancedGUIScaleMultiplier, 120 * dxEnhancedGUIScaleMultiplier);
+   ClassChoice.SetSize(153 * dxEnhancedGUIScaleMultiplier, 213 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -204,6 +205,7 @@ function SetMultiplayerName(string newname)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values, except textureCols
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -214,12 +216,12 @@ defaultproperties
      actionButtons(1)=(Align=HALIGN_Right,Action=AB_Reset)
      actionButtons(2)=(Action=AB_OK)
      Title="Multiplayer Player Setup"
-     ClientWidth=343
-     ClientHeight=415
+     ClientWidth=686
+     ClientHeight=830
      clientTextures(0)=Texture'DeusExUI.UserInterface.MenuPlayerSetupBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.MenuPlayerSetupBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.MenuPlayerSetupBackground_3'
      clientTextures(3)=Texture'DeusExUI.UserInterface.MenuPlayerSetupBackground_4'
      textureCols=2
-     helpPosY=353
+     helpPosY=706
 }

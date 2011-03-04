@@ -3,6 +3,8 @@
 //=============================================================================
 class PersonaInventoryObjectBelt expands Window;
 
+const dxEnhancedGUIScaleMultiplier = 2;
+
 var PersonaScreenInventory winInventory;	// Pointer to inventory window
 var HUDObjectBelt objBelt;			// Our local object Belt
 var HUDObjectBelt hudBelt;			// HUD Object Belt
@@ -20,13 +22,13 @@ event InitWindow()
 
 	Super.InitWindow();
 
-	SetSize(631, 69);
+	SetSize(631 * dxEnhancedGUIScaleMultiplier, 69 * dxEnhancedGUIScaleMultiplier);
 
 	hudBelt = DeusExRootWindow(GetRootWindow()).hud.belt;
 
 	// Create our local object belt, then get a pointer to the HUD belt
 	objBelt = HUDObjectBelt(NewChild(Class'HUDObjectBelt'));
-	objBelt.SetPos(90, 0);
+	objBelt.SetPos(90 * dxEnhancedGUIScaleMultiplier, 0);
 	objBelt.SetVisibility(True);
 	objBelt.SetInteractive(True);
 

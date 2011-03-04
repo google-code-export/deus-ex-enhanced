@@ -45,9 +45,10 @@ event InitWindow()
 function CreateControls()
 {
 	// Create the icon in the upper left corner
+	// DJ: The icon just barely fits
 	winIcon = NewChild(Class'Window');
-	winIcon.SetSize(32, 32);
-	winIcon.SetPos(logMargin * 2, topMargin + 5);
+	winIcon.SetSize(32 * dxEnhancedGUIScaleMultiplier, 32 * dxEnhancedGUIScaleMultiplier);
+	winIcon.SetPos(logMargin * 2, topMargin + 5 - dxEnhancedGUIScaleBeltIconPosY);
 	winIcon.SetBackgroundStyle(DSTY_Masked);
 	winIcon.SetBackground(Texture'LogIcon');
 
@@ -280,13 +281,14 @@ event StyleChanged()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled logMargin
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      displayTime=3.000000
      fontLog=Font'DeusExUI.FontMenuSmall_DS'
-     logMargin=10.000000
+     logMargin=20.000000
      MinLogLines=4
      maxLogLines=10
 }

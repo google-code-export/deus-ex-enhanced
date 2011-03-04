@@ -4,6 +4,8 @@
 
 class HUDKeypadButton expands ButtonWindow;
 
+const dxEnhancedGUIScaleMultiplier = 2; 						// DJ: Added
+
 var DeusExPlayer player;
 
 // Border and Background Translucency
@@ -33,7 +35,7 @@ event InitWindow()
 {
 	Super.InitWindow();
 	
-	SetSize(25, 27);
+	SetSize(25 * dxEnhancedGUIScaleMultiplier, 27 * dxEnhancedGUIScaleMultiplier);
 
 	// Get a pointer to the player
 	player = DeusExPlayer(GetRootWindow().parentPawn);
@@ -77,9 +79,10 @@ event DrawWindow(GC gc)
 	gc.EnableTranslucentText(True);
 
 	if (bButtonPressed)
-		gc.DrawText(1, 3, width, height, parent.IndexToString(num));
+		gc.DrawText(1 * dxEnhancedGUIScaleMultiplier, 3 * dxEnhancedGUIScaleMultiplier, 
+					width, height, parent.IndexToString(num));
 	else
-		gc.DrawText(0, 2, width, height, parent.IndexToString(num));
+		gc.DrawText(0, 2 * dxEnhancedGUIScaleMultiplier, width, height, parent.IndexToString(num));
 }
 
 // ----------------------------------------------------------------------

@@ -31,7 +31,7 @@ event InitWindow()
 function CreateControls()
 {
 	winTitle = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
-	winTitle.SetTextMargins(2, 1);
+	winTitle.SetTextMargins(2 * dxEnhancedGUIScaleMultiplier, 1 * dxEnhancedGUIScaleMultiplier);
 
 	winScroll = PersonaScrollAreaWindow(NewChild(Class'PersonaScrollAreaWindow'));
 
@@ -40,7 +40,7 @@ function CreateControls()
 	winTile.SetChildAlignments(HALIGN_Full, VALIGN_Top);
 	winTile.MakeWidthsEqual(True);
 	winTile.MakeHeightsEqual(False);
-	winTile.SetMargins(4, 1);
+	winTile.SetMargins(4 * dxEnhancedGUIScaleMultiplier, 1 * dxEnhancedGUIScaleMultiplier);
 	winTile.SetMinorSpacing(0);
 	winTile.SetWindowAlignments(HALIGN_Full, VALIGN_Top);
 }
@@ -152,9 +152,10 @@ function bool ChildRequestedReconfiguration(window child)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled value
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     textVerticalOffset=20
+     textVerticalOffset=40
 }

@@ -78,7 +78,7 @@ function CreateControls()
 	CreateColorsList();
 
 	// Create Action Buttons
-	btnActionRed   = CreateColorActionButton(41, RedLabel);
+	btnActionRed   = CreateColorActionButton(41, RedLabel);		// DJ: Hmm...
 	btnActionGreen = CreateColorActionButton(68, GreenLabel);
 	btnActionBlue  = CreateColorActionButton(95, BlueLabel);
 
@@ -88,7 +88,7 @@ function CreateControls()
 	btnSliderBlue  = CreateColorSlider(95);
 
 	// Theme Label
-	txtTheme       = CreateMenuLabel(336, 12, ThemeLabel, winClient);
+	txtTheme       = CreateMenuLabel(336 * dxEnhancedGUIScaleMultiplier, 12 * dxEnhancedGUIScaleMultiplier, ThemeLabel, winClient);
 
 	// Create Examples
 	CreateHUDExample();
@@ -101,8 +101,8 @@ function CreateControls()
 
 function CreateTabs()
 {
-	btnTabHUD   = CreateMenuUITab(19, 10, TabHUDLabel);
-	btnTabMenus = CreateMenuUITab(90, 10, TabMenusLabel);
+	btnTabHUD   = CreateMenuUITab(19 * dxEnhancedGUIScaleMultiplier, 10 * dxEnhancedGUIScaleMultiplier, TabHUDLabel);
+	btnTabMenus = CreateMenuUITab(90 * dxEnhancedGUIScaleMultiplier, 10 * dxEnhancedGUIScaleMultiplier, TabMenusLabel);
 }
 
 // ----------------------------------------------------------------------
@@ -114,8 +114,8 @@ function MenuUIActionButtonwindow CreateColorActionButton(int posY, string textL
 	local MenuUIActionButtonwindow btnAction;
 
 	btnAction = MenuUIActionButtonWindow(winClient.NewChild(Class'MenuUIActionButtonWindow'));
-	btnAction.SetPos(19, posY + 1);
-	btnAction.SetSize(54, 19);
+	btnAction.SetPos(19 * dxEnhancedGUIScaleMultiplier, posY + 1);
+	btnAction.SetSize(54 * dxEnhancedGUIScaleMultiplier, 19 * dxEnhancedGUIScaleMultiplier);
 	btnAction.SetText(textLabel);
 	btnAction.EnableRightMouseClick();
 	btnAction.SetCenterText(True);
@@ -132,8 +132,8 @@ function MenuUIRGBSliderButtonWindow CreateColorSlider(int posY)
 	local MenuUIRGBSliderButtonWindow btnSlider;
 
 	btnSlider = MenuUIRGBSliderButtonWindow(winClient.NewChild(Class'MenuUIRGBSliderButtonWindow'));
-	btnSlider.SetPos(77, posY);
-	btnSlider.SetTicks(256, 0, 255);
+	btnSlider.SetPos(77 * dxEnhancedGUIScaleMultiplier, posY);
+	btnSlider.SetTicks(256 * dxEnhancedGUIScaleMultiplier, 0, 255 * dxEnhancedGUIScaleMultiplier);
 
 	SetEnumerators(btnSlider);
 
@@ -147,7 +147,7 @@ function MenuUIRGBSliderButtonWindow CreateColorSlider(int posY)
 function CreateHUDExample()
 {
 	winHUDExample = MenuScreenRGB_HUDExample(winClient.NewChild(Class'MenuScreenRGB_HUDExample'));
-	winHUDExample.SetPos(131, 240);
+	winHUDExample.SetPos(131 * dxEnhancedGUIScaleMultiplier, 240 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -157,7 +157,7 @@ function CreateHUDExample()
 function CreateMenuExample()
 {
 	winMenuExample = MenuScreenRGB_MenuExample(winClient.NewChild(Class'MenuScreenRGB_MenuExample', False));
-	winMenuExample.SetPos(85, 226);
+	winMenuExample.SetPos(85 * dxEnhancedGUIScaleMultiplier, 226 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -252,15 +252,15 @@ function CreateColorsList()
 	local MenuUIScrollAreaWindow winScroll;
 
 	winScroll = CreateScrollAreaWindow(winClient);
-	winScroll.SetSize(248, 171);
-	winScroll.SetPos(335, 37);	
+	winScroll.SetSize(248 * dxEnhancedGUIScaleMultiplier, 171 * dxEnhancedGUIScaleMultiplier);
+	winScroll.SetPos(335 * dxEnhancedGUIScaleMultiplier, 37 * dxEnhancedGUIScaleMultiplier);	
 
 	lstColors = MenuUIListWindow(winScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
 
-	lstColors.SetNumColumns(2);
-	lstColors.SetColumnWidth(0, 181);
+	lstColors.SetNumColumns(2);								// DJ: Hmm...
+	lstColors.SetColumnWidth(0, 181 * dxEnhancedGUIScaleMultiplier);
 	lstColors.SetColumnType(0, COLTYPE_String);
-	lstColors.SetColumnWidth(1, 67);
+	lstColors.SetColumnWidth(1, 67 * dxEnhancedGUIScaleMultiplier);
 	lstColors.SetColumnType(1, COLTYPE_String);
 }
 
@@ -272,17 +272,17 @@ function CreateCheckboxes()
 {
 	chkMenuTranslucent = MenuUICheckboxWindow(winClient.NewChild(Class'MenuUICheckboxWindow'));
 
-	chkMenuTranslucent.SetPos(77, 136);
+	chkMenuTranslucent.SetPos(77 * dxEnhancedGUIScaleMultiplier, 136 * dxEnhancedGUIScaleMultiplier);
 	chkMenuTranslucent.SetText(MenusBackgroundTranslucentLabel);
 
 	chkHUDBackgroundTranslucent = MenuUICheckboxWindow(winClient.NewChild(Class'MenuUICheckboxWindow'));
 
-	chkHUDBackgroundTranslucent.SetPos(77, 136);
+	chkHUDBackgroundTranslucent.SetPos(77 * dxEnhancedGUIScaleMultiplier, 136 * dxEnhancedGUIScaleMultiplier);
 	chkHUDBackgroundTranslucent.SetText(HUDBackgroundTranslucentLabel);
 
 	chkHUDBordersTranslucent = MenuUICheckboxWindow(winClient.NewChild(Class'MenuUICheckboxWindow'));
 
-	chkHUDBordersTranslucent.SetPos(77, 157);
+	chkHUDBordersTranslucent.SetPos(77 * dxEnhancedGUIScaleMultiplier, 157 * dxEnhancedGUIScaleMultiplier);
 	chkHUDBordersTranslucent.SetText(HUDBordersTranclucentLabel);
 }
 
@@ -678,6 +678,7 @@ function ResetToDefaults()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -691,16 +692,16 @@ defaultproperties
      TabHUDLabel="|&HUD"
      TabMenusLabel="|&Menus"
      ThemeLabel="Theme:"
-     choiceVerticalGap=27
-     choiceStartX=19
-     choiceStartY=20
+     choiceVerticalGap=54
+     choiceStartX=38
+     choiceStartY=40
      actionButtons(0)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Close",Key="CLOSE")
      actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Load",Key="LOAD")
      actionButtons(2)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Save",Key="SAVE")
      actionButtons(3)=(Action=AB_Reset)
      Title="Color Selection"
-     ClientWidth=603
-     ClientHeight=425
+     ClientWidth=1206
+     ClientHeight=850
      clientTextures(0)=Texture'DeusExUI.UserInterface.MenuRGBBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.MenuRGBBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.MenuRGBBackground_3'

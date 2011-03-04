@@ -51,6 +51,8 @@ simulated function PlayFiringSound()
    PlaySimSound( FireSound, SLOT_None, TransientSoundVolume, 2048 );
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      LowAmmoWaterMark=4
@@ -104,8 +106,8 @@ defaultproperties
      ThirdPersonMesh=LodMesh'DeusExItems.MiniCrossbow3rd'
      Icon=Texture'DeusExUI.Icons.BeltIconCrossbow'
      largeIcon=Texture'DeusExUI.Icons.LargeIconCrossbow'
-     largeIconWidth=47
-     largeIconHeight=46
+     largeIconWidth=94
+     largeIconHeight=92
      Description="The mini-crossbow was specifically developed for espionage work, and accepts a range of dart types (normal, tranquilizer, or flare) that can be changed depending upon the mission requirements."
      beltDescription="CROSSBOW"
      Mesh=LodMesh'DeusExItems.MiniCrossbowPickup'

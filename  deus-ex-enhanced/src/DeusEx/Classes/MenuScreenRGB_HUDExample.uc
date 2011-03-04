@@ -4,6 +4,8 @@
 
 class MenuScreenRGB_HUDExample expands Window;
 
+const dxEnhancedGUIScaleMultiplier = 2;
+
 var DeusExPlayer player;
 
 var PersonaTitleTextWindow  winTextTitle;
@@ -57,7 +59,7 @@ event InitWindow()
 {
 	Super.InitWindow();
 
-	SetSize(346, 153);
+	SetSize(346 * dxEnhancedGUIScaleMultiplier, 153 * dxEnhancedGUIScaleMultiplier);
 
 	// Get a pointer to the player
 	player = DeusExPlayer(GetRootWindow().parentPawn);
@@ -75,51 +77,51 @@ function CreateControls()
 	winButtonNormal = NewChild(Class'Window');
 	winButtonNormal.SetBackgroundStyle(DSTY_Translucent);
 	winButtonNormal.SetBackground(Texture'RGB_HUDButton_Normal');
-	winButtonNormal.SetSize(205, 16);
-	winButtonNormal.SetPos(23, 131);
+	winButtonNormal.SetSize(205 * dxEnhancedGUIScaleMultiplier, 16 * dxEnhancedGUIScaleMultiplier);
+	winButtonNormal.SetPos(23 * dxEnhancedGUIScaleMultiplier, 131 * dxEnhancedGUIScaleMultiplier);
 
 	winButtonPressed = NewChild(Class'Window');
 	winButtonPressed.SetBackgroundStyle(DSTY_Translucent);
 	winButtonPressed.SetBackground(Texture'RGB_HUDButton_Pressed');
-	winButtonPressed.SetSize(75, 16);
-	winButtonPressed.SetPos(228, 131);
+	winButtonPressed.SetSize(75 * dxEnhancedGUIScaleMultiplier, 16 * dxEnhancedGUIScaleMultiplier);
+	winButtonPressed.SetPos(228 * dxEnhancedGUIScaleMultiplier, 131 * dxEnhancedGUIScaleMultiplier);
 
 	winListHighlight = NewChild(Class'Window');
 	winListHighlight.SetBackgroundStyle(DSTY_Normal);
 	winListHighlight.SetBackground(Texture'Solid');
-	winListHighlight.SetSize(290, 11);
-	winListHighlight.SetPos(28, 87);
+	winListHighlight.SetSize(290 * dxEnhancedGUIScaleMultiplier, 11 * dxEnhancedGUIScaleMultiplier);
+	winListHighlight.SetPos(28 * dxEnhancedGUIScaleMultiplier, 87 * dxEnhancedGUIScaleMultiplier);
 
 	winListFocus = NewChild(Class'Window');
 	winListFocus.SetBackgroundStyle(DSTY_Normal);
 	winListFocus.SetBackground(Texture'Solid');
-	winListFocus.SetSize(290, 11);
-	winListFocus.SetPos(28, 99);
+	winListFocus.SetSize(290 * dxEnhancedGUIScaleMultiplier, 11 * dxEnhancedGUIScaleMultiplier);
+	winListFocus.SetPos(28 * dxEnhancedGUIScaleMultiplier, 99 * dxEnhancedGUIScaleMultiplier);
 
 	// Title
 	winTextTitle = PersonaTitleTextWindow(NewChild(Class'PersonaTitleTextWindow'));
-	winTextTitle.SetPos(23, 7);
+	winTextTitle.SetPos(23 * dxEnhancedGUIScaleMultiplier, 7 * dxEnhancedGUIScaleMultiplier);
 	winTextTitle.SetText(TitleLabel);
 
 	// Header
 	winTextHeader = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
-	winTextHeader.SetPos(32, 26);
+	winTextHeader.SetPos(32 * dxEnhancedGUIScaleMultiplier, 26 * dxEnhancedGUIScaleMultiplier);
 	winTextHeader.SetText(HeaderLabel);
 
 	// Normal Text
 	winTextNormal = PersonaNormalTextWindow(NewChild(Class'PersonaNormalTextWindow'));
-	winTextNormal.SetPos(38, 40);
+	winTextNormal.SetPos(38 * dxEnhancedGUIScaleMultiplier, 40 * dxEnhancedGUIScaleMultiplier);
 	winTextNormal.SetText(TextNormalLabel);
 
-	winTextGoal           = CreateTextWindow( 38,  52, GoalCompletedLabel, Font'FontMenuSmall');
-	winTextListNormal     = CreateTextWindow( 32,  75, ListLabel, Font'FontMenuSmall');
-	winTextListHighlight  = CreateTextWindow( 32,  88, ListHighlightLabel, Font'FontMenuSmall');
-	winTextListFocus      = CreateTextWindow( 32, 100, ListFocusLabel, Font'FontMenuSmall');
-	winTextEditSelected   = CreateTextWindow( 32, 113, EditSelectedLabel, Font'FontMenuSmall');
-	winTextButtonDisabled = CreateTextWindow( 29, 134, ButtonDisabledLabel, Font'FontMenuHeaders');
-	winTextButtonNormal   = CreateTextWindow(104, 134, ButtonNormalLabel, Font'FontMenuHeaders');
-	winTextButtonFocus    = CreateTextWindow(169, 134, ButtonFocusLabel, Font'FontMenuHeaders');
-	winTextButtonPressed  = CreateTextWindow(235, 134, ButtonPressedLabel, Font'FontMenuHeaders');
+	winTextGoal           = CreateTextWindow( 38 * dxEnhancedGUIScaleMultiplier,  52 * dxEnhancedGUIScaleMultiplier, GoalCompletedLabel, Font'FontMenuSmall');
+	winTextListNormal     = CreateTextWindow( 32 * dxEnhancedGUIScaleMultiplier,  75 * dxEnhancedGUIScaleMultiplier, ListLabel, Font'FontMenuSmall');
+	winTextListHighlight  = CreateTextWindow( 32 * dxEnhancedGUIScaleMultiplier,  88 * dxEnhancedGUIScaleMultiplier, ListHighlightLabel, Font'FontMenuSmall');
+	winTextListFocus      = CreateTextWindow( 32 * dxEnhancedGUIScaleMultiplier, 100 * dxEnhancedGUIScaleMultiplier, ListFocusLabel, Font'FontMenuSmall');
+	winTextEditSelected   = CreateTextWindow( 32 * dxEnhancedGUIScaleMultiplier, 113 * dxEnhancedGUIScaleMultiplier, EditSelectedLabel, Font'FontMenuSmall');
+	winTextButtonDisabled = CreateTextWindow( 29 * dxEnhancedGUIScaleMultiplier, 134 * dxEnhancedGUIScaleMultiplier, ButtonDisabledLabel, Font'FontMenuHeaders');
+	winTextButtonNormal   = CreateTextWindow(104 * dxEnhancedGUIScaleMultiplier, 134 * dxEnhancedGUIScaleMultiplier, ButtonNormalLabel, Font'FontMenuHeaders');
+	winTextButtonFocus    = CreateTextWindow(169 * dxEnhancedGUIScaleMultiplier, 134 * dxEnhancedGUIScaleMultiplier, ButtonFocusLabel, Font'FontMenuHeaders');
+	winTextButtonPressed  = CreateTextWindow(235 * dxEnhancedGUIScaleMultiplier, 134 * dxEnhancedGUIScaleMultiplier, ButtonPressedLabel, Font'FontMenuHeaders');
 }
 
 // ----------------------------------------------------------------------
@@ -135,8 +137,8 @@ event DrawWindow(GC gc)
 		gc.SetStyle(DSTY_Masked);
 
 	gc.SetTileColor(colBorders);
-	gc.DrawTexture(  0, 0, 256, 153, 0, 0, Texture'RGB_HUDSampleBorder_1');		
-	gc.DrawTexture(256, 0,  90, 153, 0, 0, Texture'RGB_HUDSampleBorder_2');		
+	gc.DrawTexture(  0, 0, 256 * dxEnhancedGUIScaleMultiplier, 153 * dxEnhancedGUIScaleMultiplier, 0, 0, Texture'RGB_HUDSampleBorder_1');		
+	gc.DrawTexture(256 * dxEnhancedGUIScaleMultiplier, 0,  90 * dxEnhancedGUIScaleMultiplier, 153 * dxEnhancedGUIScaleMultiplier, 0, 0, Texture'RGB_HUDSampleBorder_2');		
 
 	// Background
 	if (bBackgroundTranslucent)
@@ -145,8 +147,8 @@ event DrawWindow(GC gc)
 		gc.SetStyle(DSTY_Masked);
 
 	gc.SetTileColor(colBackground);
-	gc.DrawTexture( 13, 2, 256, 146, 0, 0, Texture'RGB_HUDSampleBackground_1');		
-	gc.DrawTexture(269, 2,  62, 146, 0, 0, Texture'RGB_HUDSampleBackground_2');		
+	gc.DrawTexture( 13 * dxEnhancedGUIScaleMultiplier, 2 * dxEnhancedGUIScaleMultiplier, 256 * dxEnhancedGUIScaleMultiplier, 146 * dxEnhancedGUIScaleMultiplier, 0, 0, Texture'RGB_HUDSampleBackground_1');		
+	gc.DrawTexture(269 * dxEnhancedGUIScaleMultiplier, 2 * dxEnhancedGUIScaleMultiplier,  62 * dxEnhancedGUIScaleMultiplier, 146 * dxEnhancedGUIScaleMultiplier, 0, 0, Texture'RGB_HUDSampleBackground_2');		
 }
 
 // ----------------------------------------------------------------------
@@ -158,7 +160,7 @@ event PostDrawWindow(GC gc)
 	// List focus border
 	gc.SetTileColor(colListFocus);
 	gc.SetStyle(DSTY_Normal);
-	gc.DrawBorders(28, 99, 290, 12, 0, 0, 0, 0, texListFocusBorders);
+	gc.DrawBorders(28 * dxEnhancedGUIScaleMultiplier, 99 * dxEnhancedGUIScaleMultiplier, 290 * dxEnhancedGUIScaleMultiplier, 12 * dxEnhancedGUIScaleMultiplier, 0, 0, 0, 0, texListFocusBorders);
 }
 
 // ----------------------------------------------------------------------
@@ -219,7 +221,7 @@ event StyleChanged()
 
 	// Cursor!
 	colCursor = theme.GetColorFromName('HUDColor_Cursor');
-	SetDefaultCursor(Texture'DeusExCursor2', Texture'DeusExCursor2_Shadow', 32, 32, colCursor);
+	SetDefaultCursor(Texture'DeusExCursor2', Texture'DeusExCursor2_Shadow', 32 * dxEnhancedGUIScaleMultiplier, 32 * dxEnhancedGUIScaleMultiplier, colCursor);
 
 	bBorderTranslucent     = player.GetHUDBorderTranslucency();
 	bBackgroundTranslucent = player.GetHUDBackgroundTranslucency();

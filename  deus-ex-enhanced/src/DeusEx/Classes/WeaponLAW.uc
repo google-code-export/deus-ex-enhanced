@@ -35,6 +35,8 @@ function BecomePickup()
          Lifespan = 0.0;
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      LowAmmoWaterMark=0
@@ -69,8 +71,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.DropLargeWeapon'
      Icon=Texture'DeusExUI.Icons.BeltIconLAW'
      largeIcon=Texture'DeusExUI.Icons.LargeIconLAW'
-     largeIconWidth=166
-     largeIconHeight=47
+     largeIconWidth=332
+     largeIconHeight=94
      invSlotsX=4
      Description="The LAW provides cheap, dependable anti-armor capability in the form of an integrated one-shot rocket and delivery system, though at the expense of any laser guidance. Like other heavy weapons, the LAW can slow agents who have not trained with it extensively."
      beltDescription="LAW"

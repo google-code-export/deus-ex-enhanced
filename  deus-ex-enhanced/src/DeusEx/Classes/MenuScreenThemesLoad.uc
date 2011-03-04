@@ -115,8 +115,8 @@ function CreateThemesList()
 {
 	winScroll = CreateScrollAreaWindow(winClient);
 
-	winScroll.SetPos(11, 22);
-	winScroll.SetSize(285, 210);
+	winScroll.SetPos(11 * dxEnhancedGUIScaleMultiplier, 22 * dxEnhancedGUIScaleMultiplier);
+	winScroll.SetSize(285 * dxEnhancedGUIScaleMultiplier, 210 * dxEnhancedGUIScaleMultiplier);
 
 	lstThemes = MenuUIListWindow(winScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
 	lstThemes.EnableMultiSelect(False);
@@ -155,6 +155,7 @@ function EnableButtons()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values, except textureCols
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -163,8 +164,8 @@ defaultproperties
      actionButtons(0)=(Align=HALIGN_Right,Action=AB_Cancel)
      actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Load Theme",Key="LOAD")
      Title="Load Theme"
-     ClientWidth=299
-     ClientHeight=306
+     ClientWidth=598
+     ClientHeight=612
      clientTextures(0)=Texture'DeusExUI.UserInterface.MenuThemesBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.MenuThemesBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.MenuThemesBackground_3'
@@ -172,5 +173,5 @@ defaultproperties
      textureCols=2
      bLeftEdgeActive=False
      bHelpAlwaysOn=True
-     helpPosY=252
+     helpPosY=504
 }

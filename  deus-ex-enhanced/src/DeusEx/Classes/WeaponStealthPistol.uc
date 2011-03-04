@@ -22,6 +22,8 @@ simulated function PreBeginPlay()
 	}
 }
 
+// DJ: Doubled icon size values
+
 //Reload time is down considerably
 
 defaultproperties
@@ -67,8 +69,8 @@ defaultproperties
      ThirdPersonMesh=LodMesh'DeusExItems.StealthPistol3rd'
      Icon=Texture'DeusExUI.Icons.BeltIconStealthPistol'
      largeIcon=Texture'DeusExUI.Icons.LargeIconStealthPistol'
-     largeIconWidth=47
-     largeIconHeight=37
+     largeIconWidth=94
+     largeIconHeight=74
      Description="The stealth pistol is a variant of the standard 10mm pistol with a larger clip and integrated silencer designed for wet work at very close ranges."
      beltDescription="STEALTH"
      Mesh=LodMesh'DeusExItems.StealthPistolPickup'

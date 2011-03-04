@@ -23,7 +23,7 @@ event InitWindow()
 	Super.InitWindow();
 
 	// Hardcoded size, baby!
-	SetSize(541, 69);
+	SetSize(541 * dxEnhancedGUIScaleMultiplier, 69 * dxEnhancedGUIScaleMultiplier);
 	
 	CreateSlots();
 	CreateNanoKeySlot();
@@ -46,8 +46,10 @@ function CreateSlots()
 	// with the mouse on the inventory screen.
 
 	winRadio = RadioBoxWindow(NewChild(Class'RadioBoxWindow'));
-	winRadio.SetSize(504, 54);
-	winRadio.SetPos(10, 6);
+	winRadio.SetSize(504 * dxEnhancedGUIScaleMultiplier, 
+					( 54 * dxEnhancedGUIScaleMultiplier) + 
+					(dxEnhancedGUIScaleMultiplier / 2) * 3);
+	winRadio.SetPos(10 * dxEnhancedGUIScaleMultiplier, (6 * dxEnhancedGUIScaleMultiplier));
 	winRadio.bOneCheck = False;
 
 	winSlots = TileWindow(winRadio.NewChild(Class'TileWindow'));
@@ -55,15 +57,24 @@ function CreateSlots()
 	winSlots.SetMinorSpacing(0);
 	winSlots.SetOrder(ORDER_LeftThenUp);
 
-	for (i=0; i<10; i++)
+	for (i = 0; i < 10; i++)
 	{
 		objects[i] = HUDObjectSlot(winSlots.NewChild(Class'HUDObjectSlot'));
 		objects[i].SetObjectNumber(i);
 		objects[i].Lower();
 
-		// Last item is a little shorter
-		if ( i == 0 )
-			objects[i].SetWidth(44);
+		// Last item is a little shorter 	// DJ:  they mean "do this to make it shorter" 
+		if (i == 0)
+		{
+			objects[0].SetWidth(44 * dxEnhancedGUIScaleMultiplier);
+			objects[0].SetHeight(111); 		// DJ: added
+		}
+		else 								// DJ: added this else block to set the height and width of the belt icons, because it's the only way that worked!
+		{
+			objects[i].SetWidth(102);
+			objects[i].SetHeight(111);
+		}
+		
 	}
 	objects[0].Lower();
 
@@ -108,8 +119,8 @@ function DrawBackground(GC gc)
 	else
 		gc.SetTileColor(colBackground);
 
-	gc.DrawTexture(  2, 6, 9, 54, 0, 0, texBackgroundLeft);
-	gc.DrawTexture(514, 6, 8, 54, 0, 0, texBackgroundRight);
+	gc.DrawTexture(  2 * dxEnhancedGUIScaleMultiplier, 6 * dxEnhancedGUIScaleMultiplier, 9 * dxEnhancedGUIScaleMultiplier, 54 * dxEnhancedGUIScaleMultiplier, 0, 0, texBackgroundLeft);
+	gc.DrawTexture(514 * dxEnhancedGUIScaleMultiplier, 6 * dxEnhancedGUIScaleMultiplier, 8 * dxEnhancedGUIScaleMultiplier, 54 * dxEnhancedGUIScaleMultiplier, 0, 0, texBackgroundRight);
 }
 
 // ----------------------------------------------------------------------
@@ -133,9 +144,9 @@ function DrawBorder(GC gc)
 		else
 			gc.SetTileColor(colBorder);
 
-		gc.DrawTexture(  0, 0, 256, 69, 0, 0, texBorder[0]);
-		gc.DrawTexture(256, 0, 256, 69, 0, 0, texBorder[1]);
-		gc.DrawTexture(512, 0,  29, 69, 0, 0, texBorder[2]);
+		gc.DrawTexture(  0, 0, 256 * dxEnhancedGUIScaleMultiplier, 69 * dxEnhancedGUIScaleMultiplier, 0, 0, texBorder[0]);
+		gc.DrawTexture(256 * dxEnhancedGUIScaleMultiplier, 0, 256 * dxEnhancedGUIScaleMultiplier, 69 * dxEnhancedGUIScaleMultiplier, 0, 0, texBorder[1]);
+		gc.DrawTexture(512 * dxEnhancedGUIScaleMultiplier, 0,  29 * dxEnhancedGUIScaleMultiplier, 69 * dxEnhancedGUIScaleMultiplier, 0, 0, texBorder[2]);
 	}
 }
 

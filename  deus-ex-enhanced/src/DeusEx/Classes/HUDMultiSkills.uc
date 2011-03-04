@@ -4,12 +4,12 @@
 
 class HUDMultiSkills extends HUDBaseWindow;
 
-const	skillListX	= 0.01;				// Screen multiplier
-const skillListY	= 0.38;
-const skillMsgY	= 0.7;
-const	skillCostX	= 0.25;
-const skillLevelX	= 0.19;
-const levelBoxSize = 5;
+const	skillListX	 =  0.02;				// Screen multiplier
+const   skillListY	 =  0.76;               // DJ: Doubled these const values
+const   skillMsgY	 =  1.4;
+const	skillCostX	 =  0.5;
+const   skillLevelX	 =  0.38;
+const   levelBoxSize = 10;
 
 var localized String		ToExitString;
 var localized String		SkillsAvailableString;
@@ -26,10 +26,11 @@ var Color	colGreen, colLtGreen;
 var Color	colRed, colLtRed;
 
 const TimeDelay	= 10;
-var bool				bNotifySkills;
-var int				timeToNotify;
-var int				curSkillPoints;
-var String			curKeyName;
+
+var bool					bNotifySkills;
+var int 					timeToNotify;
+var int						curSkillPoints;
+var String					curKeyName;
 
 // ----------------------------------------------------------------------
 // InitWindow()
@@ -136,7 +137,7 @@ function SkillMessage( GC gc )
 				RefreshKey();
 				timeToNotify = Player.Level.Timeseconds + TimeDelay;
 				curSkillPoints = Player.SkillPointsAvail;
-				Player.BuySkillSound( 3 );
+				Player.BuySkillSound(3);
 				bNotifySkills = True;
 			}
 			if ( timeToNotify > Player.Level.Timeseconds )

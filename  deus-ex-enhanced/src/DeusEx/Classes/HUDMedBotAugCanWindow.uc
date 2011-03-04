@@ -26,7 +26,7 @@ event InitWindow()
 {
 	Super.InitWindow();
 
-	SetSize(226, 38);
+	SetSize(226 * dxEnhancedGUIScaleMultiplier, 38 * dxEnhancedGUIScaleMultiplier);
 
 	CreateControls();
 }
@@ -39,20 +39,20 @@ function CreateControls()
 {
 	winCanIcon = NewChild(Class'Window');
 	winCanIcon.SetBackgroundStyle(DSTY_Masked);
-	winCanIcon.SetPos(-7, 1);
-	winCanIcon.SetSize(42, 37);
+	winCanIcon.SetPos(-7 * dxEnhancedGUIScaleMultiplier, 1 * dxEnhancedGUIScaleMultiplier);
+	winCanIcon.SetSize(42 * dxEnhancedGUIScaleMultiplier, 37 * dxEnhancedGUIScaleMultiplier);
 
 	txtAugDesc = PersonaNormalTextWindow(NewChild(Class'PersonaNormalTextWindow'));
-	txtAugDesc.SetPos(29, 2);
-	txtAugDesc.SetSize(133, 34);
+	txtAugDesc.SetPos(29 * dxEnhancedGUIScaleMultiplier, 2 * dxEnhancedGUIScaleMultiplier);
+	txtAugDesc.SetSize(133 * dxEnhancedGUIScaleMultiplier, 34 * dxEnhancedGUIScaleMultiplier);
 	txtAugDesc.SetTextMargins(0, 0);
 	txtAugDesc.SetWordWrap(False);
 
 	btnAug1 = HUDMedBotAugItemButton(NewChild(Class'HUDMedBotAugItemButton'));
-	btnAug1.SetPos(155, 2);
+	btnAug1.SetPos(155 * dxEnhancedGUIScaleMultiplier, 2 * dxEnhancedGUIScaleMultiplier);
 
 	btnAug2 = HUDMedBotAugItemButton(NewChild(Class'HUDMedBotAugItemButton'));
-	btnAug2.SetPos(190, 2);
+	btnAug2.SetPos(190 * dxEnhancedGUIScaleMultiplier, 2 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------

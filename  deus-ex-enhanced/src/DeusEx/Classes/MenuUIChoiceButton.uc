@@ -16,7 +16,7 @@ event InitWindow()
 {
 	Super.InitWindow();
 
-	SetWidth(243);
+	SetWidth(243 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------

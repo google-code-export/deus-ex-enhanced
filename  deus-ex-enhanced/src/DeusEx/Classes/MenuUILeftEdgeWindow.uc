@@ -74,6 +74,7 @@ event StyleChanged()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -81,8 +82,8 @@ defaultproperties
      texture_Top=Texture'DeusExUI.UserInterface.MenuLeftBorder_Top'
      texture_Center=Texture'DeusExUI.UserInterface.MenuLeftBorder_Center'
      texture_Bottom=Texture'DeusExUI.UserInterface.MenuLeftBorder_Bottom'
-     topHeight=2
-     bottomHeight=16
-     edgeWidth=4
+     topHeight=4
+     bottomHeight=32
+     edgeWidth=8
      colBackground=(R=255,G=255,B=255)
 }

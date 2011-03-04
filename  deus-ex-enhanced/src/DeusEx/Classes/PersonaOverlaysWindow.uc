@@ -32,8 +32,9 @@ event DrawBackground(GC gc)
 	// Draw window background
 	gc.SetStyle(backgroundDrawStyle);
 	gc.SetTileColor(colBackground);
-	gc.DrawTexture(0,   0, defaultSizeX, 256, 0, 0, overlayTextures[0]);
-	gc.DrawTexture(0, 256, defaultSizeX, (defaultSizeY - 256), 0, 0, overlayTextures[1]);
+	gc.DrawTexture(0,   0, defaultSizeX, 256 * dxEnhancedGUIScaleMultiplier, 0, 0, overlayTextures[0]);
+	gc.DrawTexture(0, 256 * dxEnhancedGUIScaleMultiplier, defaultSizeX, defaultSizeY - (256 * dxEnhancedGUIScaleMultiplier), 0, 0, overlayTextures[1]);
+	
 }
 
 // ----------------------------------------------------------------------

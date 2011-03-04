@@ -50,7 +50,7 @@ function CreateControls()
 {
 	Super.CreateControls();
 
-	CreateTitleWindow(9, 5, HealthTitleText);
+	CreateTitleWindow(9 * dxEnhancedGUIScaleMultiplier, 5 * dxEnhancedGUIScaleMultiplier, HealthTitleText);
 	CreateInfoWindow();
 	CreateOverlaysWindow();
 	CreateBodyWindow();
@@ -70,7 +70,7 @@ function CreateControls()
 function CreateStatusWindow()
 {
 	winStatus = PersonaStatusLineWindow(winClient.NewChild(Class'PersonaStatusLineWindow'));
-	winStatus.SetPos(348, 269);
+	winStatus.SetPos(348 * dxEnhancedGUIScaleMultiplier, 269 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -80,8 +80,8 @@ function CreateStatusWindow()
 function CreateInfoWindow()
 {
 	winInfo = PersonaInfoWindow(winClient.NewChild(Class'PersonaInfoWindow'));
-	winInfo.SetPos(348, 22);
-	winInfo.SetSize(238, 239);
+	winInfo.SetPos(348 * dxEnhancedGUIScaleMultiplier, 22 * dxEnhancedGUIScaleMultiplier);
+	winInfo.SetSize(238 * dxEnhancedGUIScaleMultiplier, 239 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -93,8 +93,8 @@ function CreateButtons()
 	local PersonaButtonBarWindow winActionButtons;
 
 	winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(13, 407);
-	winActionButtons.SetWidth(92);
+	winActionButtons.SetPos(13 * dxEnhancedGUIScaleMultiplier, 407 * dxEnhancedGUIScaleMultiplier);
+	winActionButtons.SetWidth(92 * dxEnhancedGUIScaleMultiplier);
 	winActionButtons.FillAllSpace(False);
 
 	btnHealAll = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
@@ -103,13 +103,19 @@ function CreateButtons()
 
 // ----------------------------------------------------------------------
 // CreateMedKitWindow()
+// DJ: Displays the medkit healing window and icon in the health persona screen.
 // ----------------------------------------------------------------------
 
 function CreateMedKitWindow()
 {
+	local int iconWindowHeight;
+	
+	iconWindowHeight = 60;																// DJ: Added
+	
 	winMedKits = PersonaItemDetailWindow(winClient.NewChild(Class'PersonaItemDetailWindow'));
-	winMedKits.SetPos(346, 307);
-	winMedKits.SetWidth(242);
+	winMedKits.SetPos(346 * dxEnhancedGUIScaleMultiplier, 307 * dxEnhancedGUIScaleMultiplier);
+	winMedKits.SetWidth(242 * dxEnhancedGUIScaleMultiplier);
+	winMedKits.SetHeight(iconWindowHeight * dxEnhancedGUIScaleMultiplier);               // DJ: Added
 	winMedKits.SetIcon(Class'MedKit'.Default.LargeIcon);
 	winMedKits.SetIconSize(
 		Class'MedKit'.Default.largeIconWidth,
@@ -145,9 +151,9 @@ function PersonaHealthItemButton CreatePartButton(
 	local PersonaHealthItemButton newPart;
 
 	newPart = PersonaHealthItemButton(winClient.NewChild(Class'PersonaHealthItemButton'));
-	newPart.SetPos(posX, posY);
-	newPart.SetSize(sizeX, sizeY);
-	newPart.SetBorderSize(sizeX, sizeY);
+	newPart.SetPos(posX * dxEnhancedGUIScaleMultiplier, posY * dxEnhancedGUIScaleMultiplier);
+	newPart.SetSize(sizeX * dxEnhancedGUIScaleMultiplier, sizeY * dxEnhancedGUIScaleMultiplier);
+	newPart.SetBorderSize(sizeX * dxEnhancedGUIScaleMultiplier, sizeY * dxEnhancedGUIScaleMultiplier);
 	newPart.SetDesc(partDesc);
 	newPart.SetTitle(partTitle);
 
@@ -181,7 +187,7 @@ function PersonaHealthRegionWindow CreateRegionWindow(
 	local PersonaHealthRegionWindow newRegion;
 
 	newRegion = PersonaHealthRegionWindow(winClient.NewChild(Class'PersonaHealthRegionWindow'));
-	newRegion.SetPos(posX, posY);
+	newRegion.SetPos(posX * dxEnhancedGUIScaleMultiplier, posY * dxEnhancedGUIScaleMultiplier);
 	newRegion.SetMaxHealth(maxHealthValue);
 	newRegion.SetHealth(healthValue);
 	newRegion.SetPartIndex(partIndex);
@@ -213,7 +219,7 @@ function UpdateRegionWindows()
 function CreateBodyWindow()
 {
 	winBody = PersonaHealthBodyWindow(winClient.NewChild(Class'PersonaHealthBodyWindow'));
-	winBody.SetPos(24, 36);
+	winBody.SetPos(24 * dxEnhancedGUIScaleMultiplier, 36 * dxEnhancedGUIScaleMultiplier);
 	winBody.Lower();
 }
 
@@ -224,7 +230,7 @@ function CreateBodyWindow()
 function CreateOverlaysWindow()
 {
 	winOverlays = PersonaOverlaysWindow(winClient.NewChild(Class'PersonaHealthOverlaysWindow'));
-	winOverlays.SetPos(24, 36);
+	winOverlays.SetPos(24 * dxEnhancedGUIScaleMultiplier, 36 * dxEnhancedGUIScaleMultiplier);
 	winOverlays.Lower();
 }
 
@@ -624,6 +630,7 @@ function bool IsPlayerDamaged()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values, except the last 4
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -643,11 +650,11 @@ defaultproperties
      HealthLocationRightLeg="Right Leg"
      HealthLocationLeftLeg="Left Leg"
      PointsHealedLabel="%d points healed"
-     clientBorderOffsetY=32
-     ClientWidth=596
-     ClientHeight=427
-     clientOffsetX=25
-     clientOffsetY=5
+     clientBorderOffsetY=64
+     ClientWidth=1192
+     ClientHeight=854
+     clientOffsetX=50
+     clientOffsetY=10
      clientTextures(0)=Texture'DeusExUI.UserInterface.HealthBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.HealthBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.HealthBackground_3'

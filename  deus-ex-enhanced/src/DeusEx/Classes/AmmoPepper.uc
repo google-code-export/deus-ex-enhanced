@@ -3,6 +3,8 @@
 //=============================================================================
 class AmmoPepper extends DeusExAmmo;
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      bShowInfo=True
@@ -13,8 +15,8 @@ defaultproperties
      PickupViewMesh=LodMesh'DeusExItems.AmmoPepper'
      LandSound=Sound'DeusExSounds.Generic.GlassHit1'
      Icon=Texture'DeusExUI.Icons.BeltIconAmmoPepper'
-     largeIconWidth=19
-     largeIconHeight=45
+     largeIconWidth=38
+     largeIconHeight=90
      Description="'ANTIGONE pepper spray will incapacitate your attacker in UNDER TWO SECONDS. ANTIGONE -- better BLIND than DEAD. NOTE: Keep away from children under the age of five. Contents under pressure.'"
      beltDescription="PPR CART"
      Mesh=LodMesh'DeusExItems.AmmoPepper'

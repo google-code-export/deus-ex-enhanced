@@ -6,7 +6,7 @@ class HUDObjectSlot expands ToggleWindow;
 var DeusExPlayer player;
 
 var int			objectNum;
-var Inventory		item;
+var Inventory	item;
 var Color		colObjectNum;
 var Color		colObjectDesc;
 var Color		colOutline;
@@ -15,11 +15,12 @@ var Color		colDropGood;
 var Color		colDropBad;
 var Color		colNone;
 var Color		colSelected;
-var Color       	colSelectionBorder;
+var Color       colSelectionBorder;
 var int			slotFillWidth;
 var int			slotFillHeight;
-var int         	borderWidth;
-var int         	borderHeight;
+var int         borderWidth;
+var int         borderHeight;
+var int         dxEnhancedGUIScaleMultiplier;
 
 // Stuff to optimize DrawWindow()
 var String      itemText;
@@ -80,20 +81,22 @@ replication
 event InitWindow()
 {
 	Super.InitWindow();
-
+	
+	dxEnhancedGUIScaleMultiplier = 2;
+	
 	objectNum	= -1;
 	item        = None;
 
 	SetSelectability(false);
 
-	SetSize(51, 54);
+	SetSize(51 * dxEnhancedGUIScaleMultiplier, 54 * dxEnhancedGUIScaleMultiplier);
 	SetFont(Font'FontTiny');
 
 	// Get a pointer to the player
 	player = DeusExPlayer(GetRootWindow().parentPawn);
 
 	// Position where we'll be drawing the item-dependent text
-	itemTextPosY = slotFillHeight - 8 + slotIconY;
+	itemTextPosY = slotFillHeight - 18 + slotIconY; // DJ: original value was 8, although it should have been 9.
 
 	StyleChanged();
 }
@@ -233,11 +236,12 @@ event DrawWindow(GC gc)
 		gc.SetTextColor(colObjectNum);
 
 		// Draw the item description at the bottom
-		gc.DrawText(1, 42, 42, 7, item.BeltDescription);
+		gc.DrawText( 1 * dxEnhancedGUIScaleMultiplier, 42 * dxEnhancedGUIScaleMultiplier, 
+					42 * dxEnhancedGUIScaleMultiplier,  7 * dxEnhancedGUIScaleMultiplier, item.BeltDescription);
 
 		// If there's any additional text (say, for an ammo or weapon), draw it
 		if (itemText != "")
-			gc.DrawText(slotIconX, itemTextPosY, slotFillWidth, 8, itemText);
+			gc.DrawText(slotIconX, itemTextPosY, slotFillWidth, 18, itemText);
 
 		// Draw selection border
 		if (bButtonPressed)
@@ -257,26 +261,26 @@ event DrawWindow(GC gc)
       //This bit modified for new MP stuff -- Y|yukichigai
       if ((objectNum >=1) && (objectNum <=6)) //((objectNum >=1) && (objectNum <=3))
       {
-         gc.DrawText(1, 42, 42, 7, "WEAPONS");
+         gc.DrawText(1 * dxEnhancedGUIScaleMultiplier, 42 * dxEnhancedGUIScaleMultiplier, 42 * dxEnhancedGUIScaleMultiplier, 7 * dxEnhancedGUIScaleMultiplier, "WEAPONS");
       }
       else if (objectNum == 7) //((objectNum >=4) && (objectNum <=6))
       {
-         gc.DrawText(1, 42, 42, 7, "GRENADES");
+         gc.DrawText(1 * dxEnhancedGUIScaleMultiplier, 42 * dxEnhancedGUIScaleMultiplier, 42 * dxEnhancedGUIScaleMultiplier, 7 * dxEnhancedGUIScaleMultiplier, "GRENADES");
       }
       else if (objectNum == 8) //Added
       {
-         gc.DrawText(1, 42, 42, 7, "MEDICAL");
+         gc.DrawText(1 * dxEnhancedGUIScaleMultiplier, 42 * dxEnhancedGUIScaleMultiplier, 42 * dxEnhancedGUIScaleMultiplier, 7 * dxEnhancedGUIScaleMultiplier, "MEDICAL");
       }
       else if (objectNum == 9 || objectNum == 0) //( ((objectNum >=7) && (objectNum <=9)) || (objectNum == 0) )
       {
-         gc.DrawText(1, 42, 42, 7, "TOOLS");
+         gc.DrawText(1 * dxEnhancedGUIScaleMultiplier, 42 * dxEnhancedGUIScaleMultiplier, 42 * dxEnhancedGUIScaleMultiplier, 7 * dxEnhancedGUIScaleMultiplier, "TOOLS");
       }
    }
 	
 	// Draw the Object Slot Number in upper-right corner
 	gc.SetAlignments(HALIGN_Right, VALIGN_Center);
 	gc.SetTextColor(colObjectNum);
-	gc.DrawText(slotNumberX - 1, slotNumberY, 6, 7, objectNum);
+	gc.DrawText(slotNumberX - 1, slotNumberY, 6 * dxEnhancedGUIScaleMultiplier, 7 * dxEnhancedGUIScaleMultiplier, objectNum);
 }
 
 function DrawHUDIcon(GC gc)
@@ -309,7 +313,7 @@ function DrawHUDBackground(GC gc)
       gc.DrawTexture(0, 0, width, height, 0, 0, mpBorderTex);
    }
    else	
-      gc.DrawTexture(0, 0, width, height, 0, 0, texBackground);
+      gc.DrawTexture(0, 0, width, height, 0, 0, texBackground); // DJ: I don't know what effect doubling these values would do
 }
 
 // ----------------------------------------------------------------------
@@ -562,6 +566,15 @@ event StyleChanged()
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
+// DJ: Doubled values below
+// slotFillWidth=84
+// slotFillHeight=74
+// borderWidth=84
+// borderHeight=100
+// 2
+// 6
+// 76
+// 8
 
 defaultproperties
 {
@@ -570,16 +583,16 @@ defaultproperties
      colDropBad=(R=128,G=32,B=32)
      colSelected=(R=60,G=60,B=60)
      colSelectionBorder=(R=255,G=255,B=255)
-     slotFillWidth=42
-     slotFillHeight=37
-     borderWidth=44
-     borderHeight=50
+     slotFillWidth=84
+     slotFillHeight=74
+     borderWidth=84
+     borderHeight=100
      bAllowDragging=True
      fillMode=FM_None
-     slotIconX=1
-     slotIconY=3
-     slotNumberX=38
-     slotNumberY=3
+     slotIconX=2
+     slotIconY=6
+     slotNumberX=73
+     slotNumberY=8
      texBackground=Texture'DeusExUI.UserInterface.HUDObjectBeltBackground_Cell'
      mpBorderTex=Texture'DeusExUI.UserInterface.HUDObjectBeltBackground_Divider'
      texBorders(0)=Texture'DeusExUI.UserInterface.PersonaItemHighlight_TL'

@@ -24,6 +24,8 @@ simulated function PreBeginPlay()
 	}
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      mpNoScopeMult=0.350000
@@ -73,8 +75,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.DropMediumWeapon'
      Icon=Texture'DeusExUI.Icons.BeltIconRifle'
      largeIcon=Texture'DeusExUI.Icons.LargeIconRifle'
-     largeIconWidth=159
-     largeIconHeight=47
+     largeIconWidth=318
+     largeIconHeight=94
      invSlotsX=4
      Description="The military sniper rifle is the superior tool for the interdiction of long-range targets. When coupled with the proven 30.06 round, a marksman can achieve tight groupings at better than 1 MOA (minute of angle) depending on environmental conditions."
      beltDescription="SNIPER"

@@ -44,7 +44,7 @@ function CreateControls()
 {
 	Super.CreateControls();
 
-	CreateTitleWindow(9, 5, SkillsTitleText);
+	CreateTitleWindow(9 * dxEnhancedGUIScaleMultiplier, 5 * dxEnhancedGUIScaleMultiplier, SkillsTitleText);
 	CreateInfoWindow();
 	CreateButtons();
 	CreateSkillsHeaders();
@@ -61,7 +61,7 @@ function CreateControls()
 function CreateStatusWindow()
 {
 	winStatus = PersonaStatusLineWindow(winClient.NewChild(Class'PersonaStatusLineWindow'));
-	winStatus.SetPos(356, 329);
+	winStatus.SetPos(356 * dxEnhancedGUIScaleMultiplier, 329 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -72,8 +72,8 @@ function CreateSkillsTileWindow()
 {
 	winTile = TileWindow(winClient.NewChild(Class'TileWindow'));
 
-	winTile.SetPos(12, 39);
-	winTile.SetSize(302, 297);
+	winTile.SetPos(12 * dxEnhancedGUIScaleMultiplier, 39 * dxEnhancedGUIScaleMultiplier);
+	winTile.SetSize(302 * dxEnhancedGUIScaleMultiplier, 297 * dxEnhancedGUIScaleMultiplier);
 	winTile.SetMinorSpacing(0);
 	winTile.SetMargins(0, 0);
 	winTile.SetOrder(ORDER_Down);
@@ -86,8 +86,8 @@ function CreateSkillsTileWindow()
 function CreateInfoWindow()
 {
 	winInfo = PersonaInfoWindow(winClient.NewChild(Class'PersonaInfoWindow'));
-	winInfo.SetPos(356, 22);
-	winInfo.SetSize(238, 299);
+	winInfo.SetPos(356 * dxEnhancedGUIScaleMultiplier, 22 * dxEnhancedGUIScaleMultiplier);
+	winInfo.SetSize(238 * dxEnhancedGUIScaleMultiplier, 299 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -99,8 +99,8 @@ function CreateButtons()
 	local PersonaButtonBarWindow winActionButtons;
 
 	winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(10, 338);
-	winActionButtons.SetWidth(149);
+	winActionButtons.SetPos(10 * dxEnhancedGUIScaleMultiplier, 338 * dxEnhancedGUIScaleMultiplier);
+	winActionButtons.SetWidth(149 * dxEnhancedGUIScaleMultiplier);
 	winActionButtons.FillAllSpace(False);
 
 	btnUpgrade = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
@@ -116,11 +116,11 @@ function CreateSkillsHeaders()
 	local PersonaNormalTextWindow winText;
 
 	winText = PersonaNormalTextWindow(winClient.NewChild(Class'PersonaNormalTextWindow'));
-	winText.SetPos(177, 24);
+	winText.SetPos(177 * dxEnhancedGUIScaleMultiplier, 24 * dxEnhancedGUIScaleMultiplier);
 	winText.SetText(SkillLevelHeaderText);
 
 	winText = PersonaNormalTextWindow(winClient.NewChild(Class'PersonaNormalTextWindow'));
-	winText.SetPos(247, 24);
+	winText.SetPos(247 * dxEnhancedGUIScaleMultiplier, 24 * dxEnhancedGUIScaleMultiplier);
 	winText.SetText(PointsNeededHeaderText);
 }
 
@@ -165,13 +165,13 @@ function CreateSkillPointsWindow()
 	local PersonaHeaderTextWindow winText;
 
 	winText = PersonaHeaderTextWindow(winClient.NewChild(Class'PersonaHeaderTextWindow'));
-	winText.SetPos(180, 341);
-	winText.SetHeight(15);
+	winText.SetPos(180 * dxEnhancedGUIScaleMultiplier, 341 * dxEnhancedGUIScaleMultiplier);
+	winText.SetHeight(15 * dxEnhancedGUIScaleMultiplier);
 	winText.SetText(SkillPointsHeaderText);
 
 	winSkillPoints = PersonaHeaderTextWindow(winClient.NewChild(Class'PersonaHeaderTextWindow'));
-	winSkillPoints.SetPos(250, 341);
-	winSkillPoints.SetSize(54, 15);
+	winSkillPoints.SetPos(250 * dxEnhancedGUIScaleMultiplier, 341 * dxEnhancedGUIScaleMultiplier);
+	winSkillPoints.SetSize(54 * dxEnhancedGUIScaleMultiplier, 15 * dxEnhancedGUIScaleMultiplier);
 	winSkillPoints.SetTextAlignments(HALIGN_Right, VALIGN_Center);
 	winSkillPoints.SetText(player.SkillPointsAvail);
 }
@@ -393,6 +393,7 @@ function RefreshWindow(float DeltaTime)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values, except last 4
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -404,10 +405,10 @@ defaultproperties
      SkillPointsHeaderText="Skill Points"
      SkillUpgradedLevelLabel="%s upgraded"
      clientBorderOffsetY=33
-     ClientWidth=604
-     ClientHeight=361
-     clientOffsetX=19
-     clientOffsetY=12
+     ClientWidth=1208
+     ClientHeight=722
+     clientOffsetX=38
+     clientOffsetY=24
      clientTextures(0)=Texture'DeusExUI.UserInterface.SkillsBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.SkillsBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.SkillsBackground_3'

@@ -22,6 +22,8 @@ simulated function PreBeginPlay()
 	}
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      LowAmmoWaterMark=12
@@ -79,8 +81,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.DropLargeWeapon'
      Icon=Texture'DeusExUI.Icons.BeltIconPlasmaRifle'
      largeIcon=Texture'DeusExUI.Icons.LargeIconPlasmaRifle'
-     largeIconWidth=203
-     largeIconHeight=66
+     largeIconWidth=406
+     largeIconHeight=132
      invSlotsX=4
      invSlotsY=2
      Description="An experimental weapon that is currently being produced as a series of one-off prototypes, the plasma gun superheats slugs of magnetically-doped plastic and accelerates the resulting gas-liquid mix using an array of linear magnets. The resulting plasma stream is deadly when used against slow-moving targets."

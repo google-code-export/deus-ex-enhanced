@@ -27,6 +27,8 @@ state Activated
 Begin:
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      msgNoEffect="Strange... nothing happens..."
@@ -42,8 +44,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.GlassHit1'
      Icon=Texture'DeusExUI.Icons.BeltIconVialAmbrosia'
      largeIcon=Texture'DeusExUI.Icons.LargeIconVialAmbrosia'
-     largeIconWidth=18
-     largeIconHeight=44
+     largeIconWidth=36
+     largeIconHeight=88
      Description="The only known vaccine against the 'Gray Death.' Unfortunately, it is quickly metabolized by the body making its effects temporary at best."
      beltDescription="AMBROSIA"
      Mesh=LodMesh'DeusExItems.VialAmbrosia'

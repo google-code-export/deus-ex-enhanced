@@ -39,12 +39,13 @@ function SaveSetting()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled defaultInfoWidth
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      defaultValue=1
-     defaultInfoWidth=98
+     defaultInfoWidth=196
      HelpText="Disabling Detail Textures may improve performance on slower machines"
      actionText="Detail T|&extures"
      configSetting="ini:Engine.Engine.GameRenderDevice DetailTextures"

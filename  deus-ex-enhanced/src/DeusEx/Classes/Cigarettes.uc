@@ -104,6 +104,8 @@ state Activated
 Begin:
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      healthEffect=-5
@@ -118,8 +120,8 @@ defaultproperties
      ThirdPersonMesh=LodMesh'DeusExItems.Cigarettes'
      Icon=Texture'DeusExUI.Icons.BeltIconCigarettes'
      largeIcon=Texture'DeusExUI.Icons.LargeIconCigarettes'
-     largeIconWidth=29
-     largeIconHeight=43
+     largeIconWidth=58
+     largeIconHeight=86
      Description="'COUGHING NAILS -- when you've just got to have a cigarette.'"
      beltDescription="CIGS"
      Mesh=LodMesh'DeusExItems.Cigarettes'

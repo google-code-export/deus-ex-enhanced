@@ -85,6 +85,7 @@ function ResetToDefault()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -92,8 +93,8 @@ defaultproperties
      LevelNames(0)="Trained(1)"
      LevelNames(1)="Advanced(2)"
      LevelNames(2)="Master(3)"
-     defaultInfoWidth=243
-     defaultInfoPosX=203
+     defaultInfoWidth=486
+     defaultInfoPosX=406
      HelpText="Starting level for player skills, Trained, Advanced, or Master."
      actionText="Starting Skill Level"
      configSetting="DeusExMPGame MPSkillStartLevel"

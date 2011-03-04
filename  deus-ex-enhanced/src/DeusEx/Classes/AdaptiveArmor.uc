@@ -7,6 +7,8 @@ class AdaptiveArmor extends ChargedPickup;
 // Behaves just like the cloak augmentation
 //
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      skillNeeded=Class'DeusEx.SkillEnviro'
@@ -23,8 +25,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.PaperHit2'
      Icon=Texture'DeusExUI.Icons.BeltIconArmorAdaptive'
      largeIcon=Texture'DeusExUI.Icons.LargeIconArmorAdaptive'
-     largeIconWidth=35
-     largeIconHeight=49
+     largeIconWidth=70
+     largeIconHeight=98
      Description="Integrating woven fiber-optics and an advanced computing system, thermoptic camo can render an agent invisible to both humans and bots by dynamically refracting light and radar waves; however, the high power drain makes it impractial for more than short-term use, after which the circuitry is fused and it becomes useless."
      beltDescription="THRM CAMO"
      Mesh=LodMesh'DeusExItems.AdaptiveArmor'

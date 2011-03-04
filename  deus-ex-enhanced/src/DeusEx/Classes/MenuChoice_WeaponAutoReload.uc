@@ -35,11 +35,12 @@ function ResetToDefault()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled value
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     defaultInfoWidth=88
+     defaultInfoWidth=176
      HelpText="If enabled, weapons will automatically reload when their ammo is depleted."
      actionText="|&Weapon Auto-Reload"
 }

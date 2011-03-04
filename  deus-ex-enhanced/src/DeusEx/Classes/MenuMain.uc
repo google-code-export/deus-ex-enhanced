@@ -78,11 +78,11 @@ function ShowVersionInfo()
 	version.SetWindowAlignments(HALIGN_Right, VALIGN_Bottom);
 	version.SetTextColorRGB(255, 255, 255);
 	version.SetTextAlignments(HALIGN_Right, VALIGN_Bottom);
-//	version.SetText(player.GetDeusExVersion());
-	version.SetText("Shifter v1.8.4 (02/26/10)");
+	version.SetText(player.GetDeusExVersion() $ " - Shifter v1.8.4 - Deus Ex Enhanced v2.0.0");
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values, except texturecols
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -97,22 +97,22 @@ defaultproperties
      ButtonNames(7)="Back to Game"
      ButtonNames(8)="Multiplayer"
      ButtonNames(9)="Exit"
-     buttonXPos=7
-     buttonWidth=245
-     buttonDefaults(0)=(Y=13,Action=MA_NewGame)
-     buttonDefaults(1)=(Y=49,Action=MA_MenuScreen,Invoke=Class'DeusEx.MenuScreenSaveGame')
-     buttonDefaults(2)=(Y=85,Action=MA_MenuScreen,Invoke=Class'DeusEx.MenuScreenLoadGame')
-     buttonDefaults(3)=(Y=121,Invoke=Class'DeusEx.MenuSettings')
-     buttonDefaults(4)=(Y=157,Action=MA_Training)
-     buttonDefaults(5)=(Y=193,Action=MA_Intro)
-     buttonDefaults(6)=(Y=229,Action=MA_MenuScreen,Invoke=Class'DeusEx.CreditsWindow')
-     buttonDefaults(7)=(Y=265,Action=MA_Previous)
-     buttonDefaults(8)=(Y=301,Action=MA_MenuScreen,Invoke=Class'DeusEx.menumpmain')
-     buttonDefaults(9)=(Y=359,Action=MA_Quit)
+     buttonXPos=14
+     buttonWidth=490
+     buttonDefaults(0)=(Y=26,Action=MA_NewGame)
+     buttonDefaults(1)=(Y=98,Action=MA_MenuScreen,Invoke=Class'DeusEx.MenuScreenSaveGame')
+     buttonDefaults(2)=(Y=170,Action=MA_MenuScreen,Invoke=Class'DeusEx.MenuScreenLoadGame')
+     buttonDefaults(3)=(Y=242,Invoke=Class'DeusEx.MenuSettings')
+     buttonDefaults(4)=(Y=314,Action=MA_Training)
+     buttonDefaults(5)=(Y=386,Action=MA_Intro)
+     buttonDefaults(6)=(Y=458,Action=MA_MenuScreen,Invoke=Class'DeusEx.CreditsWindow')
+     buttonDefaults(7)=(Y=530,Action=MA_Previous)
+     buttonDefaults(8)=(Y=602,Action=MA_MenuScreen,Invoke=Class'DeusEx.menumpmain')
+     buttonDefaults(9)=(Y=718,Action=MA_Quit)
      Title="Welcome to DEUS EX"
-     ClientWidth=258
-     ClientHeight=400
-     verticalOffset=2
+     ClientWidth=516
+     ClientHeight=800
+     verticalOffset=4
      clientTextures(0)=Texture'DeusExUI.UserInterface.MenuMainBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.MenuMainBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.MenuMainBackground_3'

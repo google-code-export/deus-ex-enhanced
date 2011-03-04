@@ -12,16 +12,16 @@ var DeusExGSpyLink Link;
 
 function Query()
 {
-   Link = GetPlayerPawn().GetEntryLevel().Spawn(class'DeusExGSpyLink');
+	Link = GetPlayerPawn().GetEntryLevel().Spawn(class'DeusExGSpyLink');
 
 	Link.MasterServerAddress = MasterServerAddress;
 	Link.MasterServerTCPPort = MasterServerTCPPort;
 	Link.Region = Region;
 	Link.MasterServerTimeout = MasterServerTimeout;
 	Link.GameName = GameName;
-   Link.OwnerWindow = Self;
+	Link.OwnerWindow = Self;
 
-   Link.Start();
+	Link.Start();
 }
 
 // ---------------------------------------------------------------------

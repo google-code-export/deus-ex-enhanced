@@ -4,6 +4,8 @@
 
 class MenuUIScrollAreaWindow extends ScrollAreaWindow;
 
+const dxEnhancedGUIScaleMultiplier = 2;					// DJ: Added
+
 var DeusExPlayer player;
 
 var Color colButtonFace;
@@ -24,16 +26,19 @@ event InitWindow()
 	vScale.SetThumbCaps(
 		Texture'MenuVScrollThumb_Top', 
 		Texture'MenuVScrollThumb_Bottom', 
-		9, 6, 9, 6);
+		9 * dxEnhancedGUIScaleMultiplier, 6 * dxEnhancedGUIScaleMultiplier, 
+		9 * dxEnhancedGUIScaleMultiplier, 6 * dxEnhancedGUIScaleMultiplier);
 
-	vScale.SetThumbTexture(Texture'MenuVScrollThumb_Center', 9, 2);
-	vScale.SetScaleTexture(Texture'MenuVScrollScale', 15, 2, 0, 0);
+	vScale.SetThumbTexture(Texture'MenuVScrollThumb_Center', 
+						   9 * dxEnhancedGUIScaleMultiplier, 2 * dxEnhancedGUIScaleMultiplier);
+	vScale.SetScaleTexture(Texture'MenuVScrollScale', 15 * dxEnhancedGUIScaleMultiplier, 
+						   2 * dxEnhancedGUIScaleMultiplier, 0, 0);
 	vScale.SetScaleMargins(0, 0);
 	vScale.SetThumbStyle(DSTY_Masked);
 	vScale.SetScaleSounds(Sound'Menu_Press', Sound'Menu_Press', Sound'Menu_Slider');
 	vScale.SetSoundVolume(0.25);
 
-	upButton.SetSize(15, 15);
+	upButton.SetSize(15 * dxEnhancedGUIScaleMultiplier, 15 * dxEnhancedGUIScaleMultiplier);
 	upButton.SetBackgroundStyle(DSTY_Masked);
 	upButton.SetButtonTextures(
 		Texture'MenuVScrollUpButton_Normal', Texture'MenuVScrollUpButton_Pressed',
@@ -44,7 +49,7 @@ event InitWindow()
 	upButton.SetSoundVolume(0.25);
 
 
-	downButton.SetSize(15, 15);
+	downButton.SetSize(15 * dxEnhancedGUIScaleMultiplier, 15 * dxEnhancedGUIScaleMultiplier);
 	downButton.SetBackgroundStyle(DSTY_Masked);
 	downButton.SetButtonTextures(
 		Texture'MenuVScrollDownButton_Normal', Texture'MenuVScrollDownButton_Pressed',

@@ -1,7 +1,11 @@
 class AlignWindow extends Window;
 
+const dxEnhancedGUIScaleMultiplier = 2;					// DJ: Added
+
 var float   childSpacing;
 var EVAlign childVAlign;
+
+
 
 // ----------------------------------------------------------------------
 // ComputeChildSizes()
@@ -9,7 +13,7 @@ var EVAlign childVAlign;
 
 function ComputeChildSizes(bool bWidthSpecified, out float preferredWidth,
                            bool bHeightSpecified, out float preferredHeight)
-{
+{	
 	local float  totalWidth;
 	local float  maxHeight;
 	local Window child;

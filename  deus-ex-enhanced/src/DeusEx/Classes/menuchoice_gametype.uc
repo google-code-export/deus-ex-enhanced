@@ -25,7 +25,7 @@ event InitWindow()
 
    SetInitialGameType();
 
-   SetActionButtonWidth(179);
+   SetActionButtonWidth(179 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -136,6 +136,7 @@ function SetValue(int newValue)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values: defaultInfoWidth, defaultInfoPosX
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -149,8 +150,8 @@ defaultproperties
      gameNames(1)="Basic Team Deathmatch"
      gameNames(2)="Advanced Team Deathmatch"
      gameNames(3)="Custom Team Deathmatch"
-     defaultInfoWidth=243
-     defaultInfoPosX=203
+     defaultInfoWidth=486
+     defaultInfoPosX=406
      HelpText="Type of game to play"
      actionText="Game Type"
      configSetting="MenuScreenHostGame CurrentGameType"

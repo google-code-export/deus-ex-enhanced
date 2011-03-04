@@ -56,12 +56,13 @@ function CyclePreviousValue()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled defaultInfoWidth
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      defaultValue=1
-     defaultInfoWidth=97
+     defaultInfoWidth=194
      HelpText="Determines whether the HUD Borders are displayed"
      actionText="HUD Borders |&Visible"
 }

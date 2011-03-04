@@ -64,10 +64,10 @@ event DrawWindow(GC gc)
 	{
 		gc.SetStyle(DSTY_Normal);
 
-		gc.DrawTexture(  0,   0, 256, 256, 0, 0, image.imageTextures[0]);
-		gc.DrawTexture(256,   0, 144, 256, 0, 0, image.imageTextures[1]);
-		gc.DrawTexture(  0, 256, 256, 144, 0, 0, image.imageTextures[2]);
-		gc.DrawTexture(256, 256, 144, 144, 0, 0, image.imageTextures[3]);
+		gc.DrawTexture(  0,   0, 256 * dxEnhancedGUIScaleMultiplier, 256 * dxEnhancedGUIScaleMultiplier, 0, 0, image.imageTextures[0]);
+		gc.DrawTexture(256 * dxEnhancedGUIScaleMultiplier,   0, 144 * dxEnhancedGUIScaleMultiplier, 256 * dxEnhancedGUIScaleMultiplier, 0, 0, image.imageTextures[1]);
+		gc.DrawTexture(  0, 256 * dxEnhancedGUIScaleMultiplier, 256 * dxEnhancedGUIScaleMultiplier, 144 * dxEnhancedGUIScaleMultiplier, 0, 0, image.imageTextures[2]);
+		gc.DrawTexture(256 * dxEnhancedGUIScaleMultiplier, 256 * dxEnhancedGUIScaleMultiplier, 144 * dxEnhancedGUIScaleMultiplier, 144 * dxEnhancedGUIScaleMultiplier, 0, 0, image.imageTextures[3]);
 	}	
 }
 
@@ -364,14 +364,15 @@ function SetAddNoteMode(Bool bNewAddMode)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      fontNoImages=Font'DeusExUI.FontMenuHeaders'
      colTextNoImages=(R=255,G=255,B=255)
-     imageSizeX=400
-     imageSizeY=400
+     imageSizeX=800
+     imageSizeY=800
      bShowNotes=True
      strNoImages="No Images Available"
      PressSpace="Press [ESCAPE] when finished editing note"

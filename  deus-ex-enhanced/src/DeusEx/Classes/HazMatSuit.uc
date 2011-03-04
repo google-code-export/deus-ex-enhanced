@@ -7,6 +7,8 @@ class HazMatSuit extends ChargedPickup;
 // Reduces poison gas, tear gas, and radiation damage
 //
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      skillNeeded=Class'DeusEx.SkillEnviro'
@@ -21,8 +23,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.PaperHit2'
      Icon=Texture'DeusExUI.Icons.BeltIconHazMatSuit'
      largeIcon=Texture'DeusExUI.Icons.LargeIconHazMatSuit'
-     largeIconWidth=46
-     largeIconHeight=45
+     largeIconWidth=92
+     largeIconHeight=90
      Description="A standard hazardous materials suit that protects against a full range of environmental hazards including radiation, fire, biochemical toxins, electricity, and EMP. Hazmat suits contain an integrated bacterial oxygen scrubber that degrades over time and thus should not be reused."
      beltDescription="HAZMAT"
      Texture=Texture'DeusExItems.Skins.ReflectionMapTex1'

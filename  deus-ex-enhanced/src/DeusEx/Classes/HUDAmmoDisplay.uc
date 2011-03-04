@@ -41,7 +41,7 @@ event InitWindow()
 
 	player = DeusExPlayer(DeusExRootWindow(GetRootWindow()).parentPawn);
 
-	SetSize(95, 77);
+	SetSize(95 * dxEnhancedGUIScaleMultiplier, 77 * dxEnhancedGUIScaleMultiplier);
 }
  
 // ----------------------------------------------------------------------
@@ -75,7 +75,8 @@ event DrawWindow(GC gc)
 		// Draw the weapon icon
 		gc.SetStyle(DSTY_Masked);
 		gc.SetTileColorRGB(255, 255, 255);
-		gc.DrawTexture(22, 20, 40, 35, 0, 0, weapon.icon);
+		gc.DrawTexture(22 * dxEnhancedGUIScaleMultiplier, 20 * dxEnhancedGUIScaleMultiplier, 
+					   40 * dxEnhancedGUIScaleMultiplier, 35 * dxEnhancedGUIScaleMultiplier, 0, 0, weapon.icon);
 		
 		// Draw the ammo count
 		gc.SetFont(Font'FontTiny');
@@ -105,9 +106,11 @@ event DrawWindow(GC gc)
 			clipsRemaining = weapon.NumClips();
 
 			if (weapon.IsInState('Reload'))
-				gc.DrawText(infoX, 26, 20, 9, msgReloading);
+				gc.DrawText(infoX, 26 * dxEnhancedGUIScaleMultiplier, 20 * dxEnhancedGUIScaleMultiplier, 
+									9 * dxEnhancedGUIScaleMultiplier, msgReloading);
 			else
-				gc.DrawText(infoX, 26, 20, 9, ammoInClip);
+				gc.DrawText(infoX, 26 * dxEnhancedGUIScaleMultiplier, 20 * dxEnhancedGUIScaleMultiplier, 
+									9 * dxEnhancedGUIScaleMultiplier, ammoInClip);
 
 			// if there are no clips (or a partial clip) remaining, color me red
 			if (( clipsRemaining == 0 ) || (( clipsRemaining == 1 ) && ( ammoRemaining < 2 * weapon.ReloadCount )))
@@ -116,24 +119,29 @@ event DrawWindow(GC gc)
 				gc.SetTextColor(colAmmoText);
 
 			if (weapon.IsInState('Reload'))
-				gc.DrawText(infoX, 38, 20, 9, msgReloading);
+				gc.DrawText(infoX, 38 * dxEnhancedGUIScaleMultiplier, 20 * dxEnhancedGUIScaleMultiplier, 9 * dxEnhancedGUIScaleMultiplier, msgReloading);
 			else
-				gc.DrawText(infoX, 38, 20, 9, clipsRemaining);
+				gc.DrawText(infoX, 38 * dxEnhancedGUIScaleMultiplier, 20 * dxEnhancedGUIScaleMultiplier, 
+									9 * dxEnhancedGUIScaleMultiplier, clipsRemaining);
 		}
 		else
 		{
-			gc.DrawText(infoX, 38, 20, 9, NotAvailable);
+			gc.DrawText(infoX, 38 * dxEnhancedGUIScaleMultiplier, 20 * dxEnhancedGUIScaleMultiplier, 
+								9 * dxEnhancedGUIScaleMultiplier, NotAvailable);
 
 			if (weapon.ReloadCount == 0)
 			{
-				gc.DrawText(infoX, 26, 20, 9, NotAvailable);
+				gc.DrawText(infoX, 26 * dxEnhancedGUIScaleMultiplier, 20 * dxEnhancedGUIScaleMultiplier, 
+									9 * dxEnhancedGUIScaleMultiplier, NotAvailable);
 			}
 			else
 			{
 				if (weapon.IsInState('Reload'))
-					gc.DrawText(infoX, 26, 20, 9, msgReloading);
+					gc.DrawText(infoX, 26 * dxEnhancedGUIScaleMultiplier, 20 * dxEnhancedGUIScaleMultiplier, 
+										9 * dxEnhancedGUIScaleMultiplier, msgReloading);
 				else
-					gc.DrawText(infoX, 26, 20, 9, ammoRemaining);
+					gc.DrawText(infoX, 26 * dxEnhancedGUIScaleMultiplier, 20 * dxEnhancedGUIScaleMultiplier, 
+										9 * dxEnhancedGUIScaleMultiplier, ammoRemaining);
 			}
 		}
 
@@ -146,7 +154,8 @@ event DrawWindow(GC gc)
 				gc.SetTextColor(colTrackingText);
 			else
 				gc.SetTextColor(colNormalText);
-			gc.DrawText(25, 56, 65, 8, weapon.TargetMessage);
+			gc.DrawText(25 * dxEnhancedGUIScaleMultiplier, 56 * dxEnhancedGUIScaleMultiplier, 
+						65 * dxEnhancedGUIScaleMultiplier,  8 * dxEnhancedGUIScaleMultiplier, weapon.TargetMessage);
 		}
 	}
 }
@@ -159,15 +168,18 @@ function DrawBackground(GC gc)
 {
 	gc.SetStyle(backgroundDrawStyle);
 	gc.SetTileColor(colBackground);
-	gc.DrawTexture(13, 13, 80, 54, 0, 0, texBackground);
+	gc.DrawTexture(13 * dxEnhancedGUIScaleMultiplier, 13 * dxEnhancedGUIScaleMultiplier, 
+				   80 * dxEnhancedGUIScaleMultiplier, 54 * dxEnhancedGUIScaleMultiplier, 0, 0, texBackground);
 
 	// Draw the Ammo and Clips text labels
 	gc.SetFont(Font'FontTiny');
 	gc.SetTextColor(colText);
 	gc.SetAlignments(HALIGN_Center, VALIGN_Top);
 
-	gc.DrawText(66, 17, 21, 8, AmmoLabel);
-	gc.DrawText(66, 48, 21, 8, ClipsLabel);
+	gc.DrawText(66 * dxEnhancedGUIScaleMultiplier, 17 * dxEnhancedGUIScaleMultiplier, 
+				21 * dxEnhancedGUIScaleMultiplier,  8 * dxEnhancedGUIScaleMultiplier, AmmoLabel);
+	gc.DrawText(66 * dxEnhancedGUIScaleMultiplier, 48 * dxEnhancedGUIScaleMultiplier, 
+				21 * dxEnhancedGUIScaleMultiplier,  8 * dxEnhancedGUIScaleMultiplier, ClipsLabel);
 }
 
 // ----------------------------------------------------------------------
@@ -180,7 +192,7 @@ function DrawBorder(GC gc)
 	{
 		gc.SetStyle(borderDrawStyle);
 		gc.SetTileColor(colBorder);
-		gc.DrawTexture(0, 0, 95, 77, 0, 0, texBorder);
+		gc.DrawTexture(0, 0, 95 * dxEnhancedGUIScaleMultiplier, 77 * dxEnhancedGUIScaleMultiplier, 0, 0, texBorder);
 	}
 }
 
@@ -195,7 +207,7 @@ function SetVisibility( bool bNewVisibility )
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
-
+// DJ: infoX value doubled
 defaultproperties
 {
      colAmmoText=(G=255)
@@ -203,7 +215,7 @@ defaultproperties
      colNormalText=(G=255)
      colTrackingText=(R=255,G=255)
      colLockedText=(R=255)
-     infoX=66
+     infoX=132
      NotAvailable="N/A"
      msgReloading="---"
      AmmoLabel="AMMO"

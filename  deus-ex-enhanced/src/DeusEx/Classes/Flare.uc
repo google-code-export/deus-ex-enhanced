@@ -146,6 +146,8 @@ function Tick(float deltaTime)
 
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      maxCopies=50
@@ -159,8 +161,8 @@ defaultproperties
      ThirdPersonMesh=LodMesh'DeusExItems.Flare'
      Icon=Texture'DeusExUI.Icons.BeltIconFlare'
      largeIcon=Texture'DeusExUI.Icons.LargeIconFlare'
-     largeIconWidth=42
-     largeIconHeight=43
+     largeIconWidth=84
+     largeIconHeight=86
      Description="A flare."
      beltDescription="FLARE"
      Mesh=LodMesh'DeusExItems.Flare'

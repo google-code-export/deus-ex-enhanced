@@ -31,11 +31,12 @@ function ResetToDefault()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled defaultInfoWidth
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     defaultInfoWidth=88
+     defaultInfoWidth=196
      HelpText="Toggles Crosshairs visibility."
      actionText="Cross|&hairs"
 }

@@ -53,8 +53,8 @@ function CalculateTexturePositions()
 	{
 		for(colIndex=0; colIndex<textureCols; colIndex++)
 		{
-			texturePosX[textureCount] = colIndex * 256;
-			texturePosY[textureCount] = rowIndex * 256;
+			texturePosX[textureCount] = colIndex * (256  * dxEnhancedGUIScaleMultiplier);
+			texturePosY[textureCount] = rowIndex * (256  * dxEnhancedGUIScaleMultiplier);
 			textureCount++;
 		}
 	}

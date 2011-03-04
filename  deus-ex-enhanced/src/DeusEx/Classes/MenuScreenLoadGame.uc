@@ -242,7 +242,7 @@ function CreateConfirmCheckbox()
 {
 	chkConfirmDelete = MenuUICheckboxWindow(winClient.NewChild(Class'MenuUICheckboxWindow'));
 
-	chkConfirmDelete.SetPos(389, 256);
+	chkConfirmDelete.SetPos(389 * dxEnhancedGUIScaleMultiplier, 256 * dxEnhancedGUIScaleMultiplier);
 	chkConfirmDelete.SetText(ConfirmDeleteLabel);
 	chkConfirmDelete.SetFont(Font'FontMenuSmall');
 	chkConfirmDelete.SetToggle(player.bConfirmSaveDeletes);
@@ -257,8 +257,8 @@ function CreateSaveInfoWindow()
 	winSaveInfo = MenuUILabelWindow(winClient.NewChild(Class'MenuUILabelWindow'));
 
 	winSaveInfo.SetFont(Font'FontMenuSmall');
-	winSaveInfo.SetPos(390, 166);
-	winSaveInfo.SetSize(155, 60);
+	winSaveInfo.SetPos(390 * dxEnhancedGUIScaleMultiplier, 166 * dxEnhancedGUIScaleMultiplier);
+	winSaveInfo.SetSize(155 * dxEnhancedGUIScaleMultiplier, 60 * dxEnhancedGUIScaleMultiplier);
 	winSaveInfo.SetTextMargins(0, 0);
 	winSaveInfo.SetTextAlignments(HALIGN_Left, VALIGN_Center);
 }
@@ -271,8 +271,8 @@ function CreateFreeSpaceWindow()
 {
 	winFreeSpace = MenuUILabelWindow(winClient.NewChild(Class'MenuUILabelWindow'));
 	winFreeSpace.SetFont(Font'FontMenuSmall');
-	winFreeSpace.SetPos(390, 228);
-	winFreeSpace.SetSize(155, 12);
+	winFreeSpace.SetPos(390 * dxEnhancedGUIScaleMultiplier, 228 * dxEnhancedGUIScaleMultiplier);
+	winFreeSpace.SetSize(155 * dxEnhancedGUIScaleMultiplier, 12 * dxEnhancedGUIScaleMultiplier);
 	winFreeSpace.SetTextMargins(0, 0);
 }
 
@@ -292,8 +292,8 @@ function CreateGamesList()
 {
 	winScroll = CreateScrollAreaWindow(winClient);
 
-	winScroll.SetPos(11, 22);
-	winScroll.SetSize(371, 270);
+	winScroll.SetPos(11 * dxEnhancedGUIScaleMultiplier, 22 * dxEnhancedGUIScaleMultiplier);
+	winScroll.SetSize(371 * dxEnhancedGUIScaleMultiplier, 270 * dxEnhancedGUIScaleMultiplier);
 
 	lstGames = MenuUIListWindow(winScroll.clipWindow.NewChild(Class'MenuUIListWindow'));
 	lstGames.EnableMultiSelect(False);
@@ -301,9 +301,9 @@ function CreateGamesList()
 
 	lstGames.SetNumColumns(5);
 
-	lstGames.SetColumnWidth(0, 240);
+	lstGames.SetColumnWidth(0, 240 * dxEnhancedGUIScaleMultiplier);
 	lstGames.SetColumnType(0, COLTYPE_String);
-	lstGames.SetColumnWidth(1, 131);
+	lstGames.SetColumnWidth(1, 131 * dxEnhancedGUIScaleMultiplier);
 	lstGames.SetColumnType(1, COLTYPE_String);
 	lstGames.SetColumnFont(1, Font'FontFixedWidthSmall');
 
@@ -324,8 +324,10 @@ function CreateGamesList()
 
 function CreateHeaderButtons()
 {
-	btnHeaderName = CreateHeaderButton(10,  3, 238, strHeaderNameLabel, winClient);
-	btnHeaderDate = CreateHeaderButton(251, 3, 131, strHeaderDateLabel, winClient);
+	btnHeaderName = CreateHeaderButton( 10 * dxEnhancedGUIScaleMultiplier,  3 * dxEnhancedGUIScaleMultiplier, 
+									   238 * dxEnhancedGUIScaleMultiplier, strHeaderNameLabel, winClient);
+	btnHeaderDate = CreateHeaderButton(251 * dxEnhancedGUIScaleMultiplier, 3 * dxEnhancedGUIScaleMultiplier, 
+									   131 * dxEnhancedGUIScaleMultiplier, strHeaderDateLabel, winClient);
 }
 
 // ----------------------------------------------------------------------
@@ -338,12 +340,12 @@ function CreateHeaderButtons()
 function CreateSnapshotWindow()
 {
 	winSnapshot = winClient.NewChild(Class'Window');
-	winSnapshot.SetPos(387, 24);
+	winSnapshot.SetPos(387 * dxEnhancedGUIScaleMultiplier + 80, 24 * dxEnhancedGUIScaleMultiplier + 60); // DJ: + 80 and + 60 is to center the smaller image
+	//winSnapshot.SetSize(160 * dxEnhancedGUIScaleMultiplier, 120 * dxEnhancedGUIScaleMultiplier); // DJ: Doubling the size doesn't work!
 	winSnapshot.SetSize(160, 120);
-
 	winCheatsEnabled = MenuUILabelWindow(winSnapShot.NewChild(Class'MenuUILabelWindow'));
 	winCheatsEnabled.SetPos(0, 0);
-	winCheatsEnabled.SetSize(160, 120);
+	winCheatsEnabled.SetSize(160 * dxEnhancedGUIScaleMultiplier, 120 * dxEnhancedGUIScaleMultiplier);
 	winCheatsEnabled.SetTextMargins(0, 0);
 	winCheatsEnabled.SetText(CheatsEnabledLabel);
 	winCheatsEnabled.SetTextAlignments(HALIGN_Center, VALIGN_Center);
@@ -775,6 +777,7 @@ function UpdateFreeDiskSpace()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -806,8 +809,8 @@ defaultproperties
      actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Load Game",Key="LOAD")
      actionButtons(2)=(Action=AB_Other,Text="|&Delete Game",Key="DELETE")
      Title="Load Game"
-     ClientWidth=552
-     ClientHeight=296
+     ClientWidth=1104
+     ClientHeight=592
      clientTextures(0)=Texture'DeusExUI.UserInterface.MenuLoadSaveBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.MenuLoadSaveBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.MenuLoadSaveBackground_3'

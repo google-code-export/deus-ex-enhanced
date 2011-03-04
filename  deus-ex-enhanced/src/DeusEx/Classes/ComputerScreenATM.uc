@@ -43,11 +43,19 @@ function CreateControls()
 	btnCancel = winButtonBar.AddButton(ButtonLabelCancel, HALIGN_Right);
 	btnLogin  = winButtonBar.AddButton(ButtonLabelLogin,  HALIGN_Right);
 
-	CreateMenuLabel(10, 111, AccountLabel, winClient);
-	CreateMenuLabel(10, 141, PINLabel, winClient);
+	CreateMenuLabel( 10 * dxEnhancedGUIScaleMultiplier, 
+					111 * dxEnhancedGUIScaleMultiplier, AccountLabel, winClient);
+	CreateMenuLabel( 10 * dxEnhancedGUIScaleMultiplier, 
+					141 * dxEnhancedGUIScaleMultiplier, PINLabel, winClient);
 
-	editAccount = CreateMenuEditWindow(131, 109, 143, 24, winClient);
-	editPIN     = CreateMenuEditWindow(131, 139, 143, 24, winClient);
+	editAccount = CreateMenuEditWindow(131 * dxEnhancedGUIScaleMultiplier, 
+									   109 * dxEnhancedGUIScaleMultiplier, 
+									   143 * dxEnhancedGUIScaleMultiplier, 
+									    24 * dxEnhancedGUIScaleMultiplier, winClient);
+	editPIN     = CreateMenuEditWindow(131 * dxEnhancedGUIScaleMultiplier, 
+									   139 * dxEnhancedGUIScaleMultiplier, 
+									   143 * dxEnhancedGUIScaleMultiplier, 
+									    24 * dxEnhancedGUIScaleMultiplier, winClient);
 
 	CreateWarningWindow();
 	CreateLoginInfoWindow();
@@ -75,8 +83,8 @@ function CreateWarningWindow()
 {
 	winWarning = MenuUILabelWindow(winClient.NewChild(Class'MenuUILabelWindow'));
 
-	winWarning.SetPos(8, 10);
-	winWarning.SetSize(273, 50);
+	winWarning.SetPos(   8 * dxEnhancedGUIScaleMultiplier, 10 * dxEnhancedGUIScaleMultiplier);
+	winWarning.SetSize(273 * dxEnhancedGUIScaleMultiplier, 50 * dxEnhancedGUIScaleMultiplier);
 	winWarning.SetTextAlignments(HALIGN_Center, VALIGN_Center);
 	winWarning.SetTextMargins(0, 0);
 	winWarning.SetText(WarningText);
@@ -90,8 +98,8 @@ function CreateLoginInfoWindow()
 {
 	winLoginInfo = MenuUILabelWindow(winClient.NewChild(Class'MenuUILabelWindow'));
 
-	winLoginInfo.SetPos(8, 66);
-	winLoginInfo.SetSize(273, 31);
+	winLoginInfo.SetPos(   8 * dxEnhancedGUIScaleMultiplier, 66 * dxEnhancedGUIScaleMultiplier);
+	winLoginInfo.SetSize(273 * dxEnhancedGUIScaleMultiplier, 31 * dxEnhancedGUIScaleMultiplier);
 	winLoginInfo.SetTextAlignments(HALIGN_Center, VALIGN_Center);
 	winLoginInfo.SetTextMargins(0, 0);
 	winLoginInfo.SetText(LoginInfoText);
@@ -105,8 +113,8 @@ function CreateLoginErrorWindow()
 {
 	winLoginError = MenuUISmallLabelWindow(winClient.NewChild(Class'MenuUISmallLabelWindow'));
 
-	winLoginError.SetPos(80, 172);
-	winLoginError.SetSize(287, 25);
+	winLoginError.SetPos(  80 * dxEnhancedGUIScaleMultiplier, 172 * dxEnhancedGUIScaleMultiplier);
+	winLoginError.SetSize(287 * dxEnhancedGUIScaleMultiplier, 25 * dxEnhancedGUIScaleMultiplier);
 	winLoginError.SetTextAlignments(HALIGN_Left, VALIGN_Center);
 	winLoginError.SetTextMargins(0, 0);
 }
@@ -261,6 +269,7 @@ function EnableButtons()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values, except: textureRows, textureCols
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -272,13 +281,13 @@ defaultproperties
      StatusText="PNGBS//GLOBAL//PUB:3902.9571[login]"
      InvalidLoginMessage="LOGIN ERROR, ACCESS DENIED"
      Title="PageNet Global Banking System"
-     ClientWidth=303
-     ClientHeight=231
-     verticalOffset=30
+     ClientWidth=606
+     ClientHeight=462
+     verticalOffset=60
      clientTextures(0)=Texture'DeusExUI.UserInterface.ComputerGBSLogonBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.ComputerGBSLogonBackground_2'
      textureRows=1
      textureCols=2
      bAlwaysCenter=True
-     statusPosY=206
+     statusPosY=412
 }

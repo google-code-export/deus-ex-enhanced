@@ -35,7 +35,7 @@ event InitWindow()
 
 	player = DeusExPlayer(DeusExRootWindow(GetRootWindow()).parentPawn);
 
-	SetSize(73, 40);
+	SetSize(73 * dxEnhancedGUIScaleMultiplier, 40 * dxEnhancedGUIScaleMultiplier);
 
 	clipWidthHalf = clipWidth / 2;
 
@@ -69,7 +69,7 @@ event Tick(float deltaSeconds)
 		else if (drawPos - tickWidth < (clipWidthHalf))
 			wrapPos = drawPos + tickWidth;
 		else
-			wrapPos = 100;
+			wrapPos = 100 * dxEnhancedGUIScaleMultiplier; // DJ: I don't actually know what this line is for
 
 		winCompass1.SetPos(drawPos, 0);
 		winCompass2.SetPos(wrapPos, 0);
@@ -104,7 +104,8 @@ function DrawBackground(GC gc)
 {
 	gc.SetStyle(backgroundDrawStyle);
 	gc.SetTileColor(colBackground);
-	gc.DrawTexture(11, 6, 60, 19, 0, 0, texBackground);
+	gc.DrawTexture( 11 * dxEnhancedGUIScaleMultiplier, 6 * dxEnhancedGUIScaleMultiplier, 
+					60 * dxEnhancedGUIScaleMultiplier, 19 * dxEnhancedGUIScaleMultiplier, 0, 0, texBackground);
 }
 
 // ----------------------------------------------------------------------
@@ -116,7 +117,8 @@ function PostDrawBackground(GC gc)
 	// Draw the tick box
 	gc.SetTileColor(colBackground);
 	gc.SetStyle(DSTY_Masked);
-	gc.DrawTexture(11, 6, 60, 19, 0, 0, texTickBox);
+	gc.DrawTexture( 11 * dxEnhancedGUIScaleMultiplier, 6 * dxEnhancedGUIScaleMultiplier, 
+					60 * dxEnhancedGUIScaleMultiplier, 19 * dxEnhancedGUIScaleMultiplier, 0, 0, texTickBox);
 }
 
 // ----------------------------------------------------------------------
@@ -129,7 +131,8 @@ function DrawBorder(GC gc)
 	{
 		gc.SetStyle(borderDrawStyle);
 		gc.SetTileColor(colBorder);
-		gc.DrawTexture(0, 0, 73, 40, 0, 0, texBorder);
+		gc.DrawTexture(0, 0, 73 * dxEnhancedGUIScaleMultiplier, 
+							 40 * dxEnhancedGUIScaleMultiplier, 0, 0, texBorder);
 	}
 }
 
@@ -142,8 +145,8 @@ function CreateCompassWindow()
 	local Window winCompassClip;
 
 	winCompassClip = NewChild(Class'Window');
-	winCompassClip.SetSize(clipWidth, 22);
-	winCompassClip.SetPos(13, 7);
+	winCompassClip.SetSize(clipWidth, 22 * dxEnhancedGUIScaleMultiplier);
+	winCompassClip.SetPos(13 * dxEnhancedGUIScaleMultiplier, 7 * dxEnhancedGUIScaleMultiplier);
 
 	// Create the two windows that have the tick marks.  We need two 
 	// of these because of the "wrap" point.
@@ -164,7 +167,7 @@ function Window CreateTickWindow(Window winParent)
 
 	winCompass = winParent.NewChild(Class'Window');
 	winCompass.SetPos(0, 0);
-	winCompass.SetSize(tickWidth, 15);
+	winCompass.SetSize(tickWidth, 15 * dxEnhancedGUIScaleMultiplier);
 	winCompass.SetBackground(Texture'HUDCompassTicks');
 	winCompass.SetBackgroundStyle(DSTY_Masked);
 	winCompass.SetTileColor(colTickMarks);
@@ -205,12 +208,13 @@ function GetMapTrueNorth()
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
+// DJ: Doubled the two values below
 
 defaultproperties
 {
      colTickMarks=(R=200,G=200,B=200)
-     clipWidth=55
-     tickWidth=240
+     clipWidth=110
+     tickWidth=480
      texBackground=Texture'DeusExUI.UserInterface.HUDCompassBackground_1'
      texBorder=Texture'DeusExUI.UserInterface.HUDCompassBorder_1'
      texTickBox=Texture'DeusExUI.UserInterface.HUDCompassTickBox'

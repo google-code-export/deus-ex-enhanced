@@ -47,7 +47,7 @@ event InitWindow()
 	Super.InitWindow();
 
 	// Assign border textures
-	SetSize(431, 114);
+	SetSize(431 * dxEnhancedGUIScaleMultiplier, 114 * dxEnhancedGUIScaleMultiplier);
 
 	// Create Controls
 	CreateControls();
@@ -61,15 +61,15 @@ function CreateControls()
 {
 	// Create window for person speaking
 	winPortrait = NewChild(Class'Window');
-	winPortrait.SetSize(64, 64);
-	winPortrait.SetPos(20, 25);
+	winPortrait.SetSize(64 * dxEnhancedGUIScaleMultiplier, 64 * dxEnhancedGUIScaleMultiplier);
+	winPortrait.SetPos(20 * dxEnhancedGUIScaleMultiplier, 25 * dxEnhancedGUIScaleMultiplier);
 	winPortrait.SetBackgroundStyle(DSTY_Normal);
 
 	// Window used to display static
 	winStatic = StaticWindow(NewChild(Class'StaticWindow'));
-	winStatic.SetSize(64, 64);
+	winStatic.SetSize(64 * dxEnhancedGUIScaleMultiplier, 64 * dxEnhancedGUIScaleMultiplier);
 	winStatic.RandomizeStatic();
-	winStatic.SetPos(20, 25);
+	winStatic.SetPos(20 * dxEnhancedGUIScaleMultiplier, 25 * dxEnhancedGUIScaleMultiplier);
 	winStatic.SetBackgroundStyle(DSTY_Modulated);
 	winStatic.Raise();
 	winStatic.Hide();
@@ -77,8 +77,8 @@ function CreateControls()
 	// Create the name bar
 	winName = TextWindow(NewChild(Class'TextWindow'));
 	winName.SetTextAlignments(HALIGN_Left, VALIGN_Center);
-	winName.SetSize(293, 15);
-	winName.SetPos(94, 15);
+	winName.SetSize(293 * dxEnhancedGUIScaleMultiplier, 15 * dxEnhancedGUIScaleMultiplier);
+	winName.SetPos(94 * dxEnhancedGUIScaleMultiplier, 15 * dxEnhancedGUIScaleMultiplier);
 	winName.SetFont(fontName);
 	winName.SetTextColor(colName);
 	winName.SetTextMargins(0, 0);
@@ -87,15 +87,15 @@ function CreateControls()
 	// Create the queued bar
 	winQueued = TextWindow(NewChild(Class'TextWindow'));
 	winQueued.SetTextAlignments(HALIGN_Right, VALIGN_Center);
-	winQueued.SetSize(200, 15);
-	winQueued.SetPos(187, 15);
+	winQueued.SetSize(200 * dxEnhancedGUIScaleMultiplier, 15 * dxEnhancedGUIScaleMultiplier);
+	winQueued.SetPos(187 * dxEnhancedGUIScaleMultiplier, 15 * dxEnhancedGUIScaleMultiplier);
 	winQueued.SetFont(fontName);
 	winQueued.SetTextColor(colQueued);
 	winQueued.SetTextMargins(0, 0);
 
 	// Create the computer window
 	winText = ComputerWindow(NewChild(Class'ComputerWindow'));
-	winText.SetPos(94, 36);
+	winText.SetPos(94 * dxEnhancedGUIScaleMultiplier, 36 * dxEnhancedGUIScaleMultiplier);
 	winText.SetTextSize(42, 6);
 	winText.SetTextFont(fontText, fontTextX, fontTextY, colText);
 	winText.SetTextTiming(0.03);
@@ -105,8 +105,8 @@ function CreateControls()
 
 	// Create line between name and scrolling text
 	winLine = NewChild(Class'Window');
-	winLine.SetSize(293, 1);
-	winLine.SetPos(94, 32);
+	winLine.SetSize(293 * dxEnhancedGUIScaleMultiplier, 1 * dxEnhancedGUIScaleMultiplier);
+	winLine.SetPos(94 * dxEnhancedGUIScaleMultiplier, 32 * dxEnhancedGUIScaleMultiplier);
 	winLine.SetBackgroundStyle(DSTY_Normal);
 	winLine.SetBackground(Texture'Solid');
 	winLine.SetTileColor(colLine);
@@ -120,8 +120,8 @@ function DrawBackground(GC gc)
 {
 	gc.SetStyle(backgroundDrawStyle);
 	gc.SetTileColor(colBackground);
-	gc.DrawTexture(  0, 0, 256, height, 0, 0, texBackgrounds[0]);
-	gc.DrawTexture(256, 0, 175, height, 0, 0, texBackgrounds[1]);
+	gc.DrawTexture(  0, 0,  256 * dxEnhancedGUIScaleMultiplier, height, 0, 0, texBackgrounds[0]);
+	gc.DrawTexture( 256 * dxEnhancedGUIScaleMultiplier, 0, 175 * dxEnhancedGUIScaleMultiplier, height, 0, 0, texBackgrounds[1]);
 }
 
 // ----------------------------------------------------------------------
@@ -134,8 +134,8 @@ function DrawBorder(GC gc)
 	{
 		gc.SetStyle(borderDrawStyle);
 		gc.SetTileColor(colBorder);
-		gc.DrawTexture(  0, 0, 256, height, 0, 0, texBorders[0]);
-		gc.DrawTexture(256, 0, 175, height, 0, 0, texBorders[1]);
+		gc.DrawTexture(  0, 0,  256 * dxEnhancedGUIScaleMultiplier, height, 0, 0, texBorders[0]);
+		gc.DrawTexture( 256 * dxEnhancedGUIScaleMultiplier, 0, 175 * dxEnhancedGUIScaleMultiplier, height, 0, 0, texBorders[1]);
 	}
 }
 
@@ -276,14 +276,15 @@ event StyleChanged()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      FontName=Font'DeusExUI.FontMenuHeaders_DS'
      fontText=Font'DeusExUI.FontFixedWidthSmall_DS'
-     fontTextX=7
-     fontTextY=10
+     fontTextX=14
+     fontTextY=20
      texBackgrounds(0)=Texture'DeusExUI.UserInterface.HUDInfolinkBackground_1'
      texBackgrounds(1)=Texture'DeusExUI.UserInterface.HUDInfolinkBackground_2'
      texBorders(0)=Texture'DeusExUI.UserInterface.HUDInfolinkBorder_1'

@@ -74,6 +74,8 @@ function bool TestCycleable()
 
 //Increased damage from 7 to 8
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      LowAmmoWaterMark=0
@@ -110,8 +112,8 @@ defaultproperties
      ThirdPersonMesh=LodMesh'DeusExItems.Baton3rd'
      Icon=Texture'DeusExUI.Icons.BeltIconBaton'
      largeIcon=Texture'DeusExUI.Icons.LargeIconBaton'
-     largeIconWidth=46
-     largeIconHeight=47
+     largeIconWidth=92
+     largeIconHeight=94
      Description="A hefty looking baton, typically used by riot police and national security forces to discourage civilian resistance."
      beltDescription="BATON"
      Mesh=LodMesh'DeusExItems.BatonPickup'

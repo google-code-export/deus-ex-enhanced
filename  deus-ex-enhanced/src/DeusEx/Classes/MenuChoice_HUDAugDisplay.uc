@@ -33,6 +33,7 @@ function ResetToDefault()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled defaultInfoWidth
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -40,7 +41,7 @@ defaultproperties
      enumText(0)="Active"
      enumText(1)="All Augs"
      defaultValue=1
-     defaultInfoWidth=88
+     defaultInfoWidth=176
      HelpText="This setting determines which Augmentations are displayed in the HUD."
      actionText="HUD |&Augmentation Display"
 }

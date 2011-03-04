@@ -14,7 +14,7 @@ event InitWindow()
 {
 	Super.InitWindow();
 
-   SetActionButtonWidth(153);
+   SetActionButtonWidth(153 * dxEnhancedGUIScaleMultiplier);
 
    btnAction.SetHelpText(HelpText);
 }
@@ -54,13 +54,14 @@ function SaveSetting()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values, except first
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      defaultValue=1
-     defaultInfoWidth=153
-     defaultInfoPosX=170
+     defaultInfoWidth=306
+     defaultInfoPosX=340
      HelpText="Whether or not to display messages during multiplayer games to inform you about gameplay rules."
      actionText="Help Messages"
      configSetting="DeusExPlayer bHelpMessages"

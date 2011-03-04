@@ -23,6 +23,8 @@ function bool TestCycleable()
 	return True;
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      LowAmmoWaterMark=0
@@ -60,8 +62,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.DropLargeWeapon'
      Icon=Texture'DeusExUI.Icons.BeltIconSword'
      largeIcon=Texture'DeusExUI.Icons.LargeIconSword'
-     largeIconWidth=130
-     largeIconHeight=40
+     largeIconWidth=260
+     largeIconHeight=80
      invSlotsX=3
      Description="A rather nasty-looking sword."
      beltDescription="SWORD"

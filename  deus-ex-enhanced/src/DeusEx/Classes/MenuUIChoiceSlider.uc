@@ -180,12 +180,13 @@ function ResetToDefault()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled vertical offset
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      numTicks=11
      endValue=10.000000
-     buttonVerticalOffset=1
+     buttonVerticalOffset=2
      actionText="Slider Choice"
 }

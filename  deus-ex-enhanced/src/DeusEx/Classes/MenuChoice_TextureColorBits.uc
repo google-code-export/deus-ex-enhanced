@@ -96,6 +96,7 @@ function ResetToDefault()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled value
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -105,7 +106,7 @@ defaultproperties
      RestartMessage="This change will not take effect until you restart Deus Ex."
      enumText(0)="16-bit"
      enumText(1)="32-bit"
-     defaultInfoWidth=98
+     defaultInfoWidth=196
      HelpText="Determines the texture color depth.  32-bit textures look better if your hardware supports them."
      actionText="|&Texture Color Depth"
      configSetting="ini:Engine.Engine.ViewportManager FullscreenColorBits"

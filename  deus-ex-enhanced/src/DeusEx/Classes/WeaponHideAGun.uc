@@ -10,6 +10,8 @@ class WeaponHideAGun extends DeusExWeapon;
 //Changed ReloadCount and PickupAmmoCount from 0
 //Added in InventoryGroup=20
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      LowAmmoWaterMark=0
@@ -40,8 +42,8 @@ defaultproperties
      ThirdPersonMesh=LodMesh'DeusExItems.HideAGun3rd'
      Icon=Texture'DeusExUI.Icons.BeltIconHideAGun'
      largeIcon=Texture'DeusExUI.Icons.LargeIconHideAGun'
-     largeIconWidth=29
-     largeIconHeight=47
+     largeIconWidth=58
+     largeIconHeight=94
      Description="The PS20 is a disposable, plasma-based weapon developed by an unknown security organization as a next generation stealth pistol.  Unfortunately, the necessity of maintaining a small physical profile restricts the weapon to a single shot.  Despite its limited functionality, the PS20 is lethal under most circumstances."
      beltDescription="PS20"
      Mesh=LodMesh'DeusExItems.HideAGunPickup'

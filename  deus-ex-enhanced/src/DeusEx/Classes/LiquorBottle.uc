@@ -44,6 +44,8 @@ state Activated
 Begin:
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      drugEffect=10.000000
@@ -61,8 +63,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.GlassHit1'
      Icon=Texture'DeusExUI.Icons.BeltIconLiquorBottle'
      largeIcon=Texture'DeusExUI.Icons.LargeIconLiquorBottle'
-     largeIconWidth=20
-     largeIconHeight=48
+     largeIconWidth=40
+     largeIconHeight=96
      Description="The label is torn off, but it looks like some of the good stuff."
      beltDescription="LIQUOR"
      Mesh=LodMesh'DeusExItems.LiquorBottle'

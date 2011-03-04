@@ -161,6 +161,7 @@ function UpdateAugIconStatus(Augmentation aug)
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
+// DJ: Doubled values, except first 2
 
 defaultproperties
 {
@@ -169,13 +170,13 @@ defaultproperties
      texBorderTop=Texture'DeusExUI.UserInterface.HUDAugmentationsBorder_Top'
      texBorderCenter=Texture'DeusExUI.UserInterface.HUDAugmentationsBorder_Center'
      texBorderBottom=Texture'DeusExUI.UserInterface.HUDAugmentationsBorder_Bottom'
-     borderTopMargin=13
-     borderBottomMargin=9
-     borderWidth=62
-     topHeight=37
-     topOffset=26
-     bottomHeight=32
-     bottomOffset=28
-     tilePosX=20
-     tilePosY=13
+     borderTopMargin=26
+     borderBottomMargin=18
+     borderWidth=124
+     topHeight=74
+     topOffset=52
+     bottomHeight=64
+     bottomOffset=56
+     tilePosX=40
+     tilePosY=26
 }

@@ -176,12 +176,13 @@ function PrintNextCharacter()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled shadowDist
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      fontText=Font'DeusExUI.FontLocation'
-     shadowDist=2
+     shadowDist=4
      perCharDelay=0.100000
      displayTime=5.000000
      maxTextWidth=500

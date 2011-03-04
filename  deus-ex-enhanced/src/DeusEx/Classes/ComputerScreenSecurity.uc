@@ -129,12 +129,30 @@ function CreateControls()
 
 function CreateCameraButtons()
 {
-	btnPanUp    = CreateSpecialButton(335, 58, Texture'SecurityButtonPanUp_Normal',    Texture'SecurityButtonPanUp_Pressed');
-	btnPanDown  = CreateSpecialButton(335, 98, Texture'SecurityButtonPanDown_Normal',  Texture'SecurityButtonPanDown_Pressed');
-	btnPanLeft  = CreateSpecialButton(309, 78, Texture'SecurityButtonPanLeft_Normal',  Texture'SecurityButtonPanLeft_Pressed');
-	btnPanRight = CreateSpecialButton(361, 78, Texture'SecurityButtonPanRight_Normal', Texture'SecurityButtonPanRight_Pressed');
-	btnZoomIn   = CreateSpecialButton(323, 31, Texture'SecurityButtonZoomIn_Normal',   Texture'SecurityButtonZoomIn_Pressed');
-	btnZoomOut  = CreateSpecialButton(349, 31, Texture'SecurityButtonZoomOut_Normal',  Texture'SecurityButtonZoomOut_Pressed');
+	btnPanUp    = CreateSpecialButton(335 * dxEnhancedGUIScaleMultiplier, 
+									   58 * dxEnhancedGUIScaleMultiplier, 
+											Texture'SecurityButtonPanUp_Normal', 
+									        Texture'SecurityButtonPanUp_Pressed');
+	btnPanDown  = CreateSpecialButton(335 * dxEnhancedGUIScaleMultiplier, 
+									   98 * dxEnhancedGUIScaleMultiplier, 
+											Texture'SecurityButtonPanDown_Normal',  
+									        Texture'SecurityButtonPanDown_Pressed');
+	btnPanLeft  = CreateSpecialButton(309 * dxEnhancedGUIScaleMultiplier, 
+									   78 * dxEnhancedGUIScaleMultiplier, 
+											Texture'SecurityButtonPanLeft_Normal',  
+											Texture'SecurityButtonPanLeft_Pressed');
+	btnPanRight = CreateSpecialButton(361 * dxEnhancedGUIScaleMultiplier, 
+									   78 * dxEnhancedGUIScaleMultiplier, 
+											Texture'SecurityButtonPanRight_Normal', 
+											Texture'SecurityButtonPanRight_Pressed');
+	btnZoomIn   = CreateSpecialButton(323 * dxEnhancedGUIScaleMultiplier, 
+									   31 * dxEnhancedGUIScaleMultiplier, 
+											Texture'SecurityButtonZoomIn_Normal',   
+											Texture'SecurityButtonZoomIn_Pressed');
+	btnZoomOut  = CreateSpecialButton(349 * dxEnhancedGUIScaleMultiplier, 
+									   31 * dxEnhancedGUIScaleMultiplier, 
+											Texture'SecurityButtonZoomOut_Normal',  
+											Texture'SecurityButtonZoomOut_Pressed');
 }
 
 // ----------------------------------------------------------------------
@@ -146,14 +164,14 @@ function CreatePanSlider()
 	local MenuUIHeaderWindow winLabel;
 
 	winPanSlider = ComputerSecuritySliderWindow(winClient.NewChild(Class'ComputerSecuritySliderWindow'));
-	winPanSlider.SetPos(309, 146);
+	winPanSlider.SetPos(309 * dxEnhancedGUIScaleMultiplier, 146 * dxEnhancedGUIScaleMultiplier);
 	winPanSlider.SetTicks(numPanTicks, lowPanValue, highPanValue);
 
 	// Create a label as well
-
 	winLabel = MenuUIHeaderWindow(winClient.NewChild(Class'MenuUIHeaderWindow'));
-	winLabel.SetPos(302, 127);
-	winLabel.SetWidth(94);
+	
+	winLabel.SetPos( 302 * dxEnhancedGUIScaleMultiplier, 127 * dxEnhancedGUIScaleMultiplier);
+	winLabel.SetWidth(94 * dxEnhancedGUIScaleMultiplier);
 	winLabel.SetTextAlignments(HALIGN_Center, VALIGN_Top);
 	winLabel.SetText(PanZoomSpeedHeader);
 }
@@ -165,15 +183,15 @@ function CreatePanSlider()
 function CreateCameraViewWindows()
 {
 	winCameras[0] = ComputerSecurityCameraWindow(winClient.NewChild(Class'ComputerSecurityCameraWindow'));
-	winCameras[0].SetPos(1, 175);
+	winCameras[0].SetPos(1 * dxEnhancedGUIScaleMultiplier, 175 * dxEnhancedGUIScaleMultiplier);	
 	winCameras[0].SetViewIndex(0);
 
 	winCameras[1] = ComputerSecurityCameraWindow(winClient.NewChild(Class'ComputerSecurityCameraWindow'));
-	winCameras[1].SetPos(208, 175);
+	winCameras[1].SetPos(208 * dxEnhancedGUIScaleMultiplier, 175 * dxEnhancedGUIScaleMultiplier);
 	winCameras[1].SetViewIndex(1);
 
 	winCameras[2] = ComputerSecurityCameraWindow(winClient.NewChild(Class'ComputerSecurityCameraWindow'));
-	winCameras[2].SetPos(415, 175);
+	winCameras[2].SetPos(415 * dxEnhancedGUIScaleMultiplier, 175 * dxEnhancedGUIScaleMultiplier);
 	winCameras[2].SetViewIndex(2);
 }
 
@@ -203,12 +221,12 @@ function CreateHeaders()
 
 	winHeader = MenuUIHeaderWindow(winClient.NewChild(Class'MenuUIHeaderWindow'));
 	winHeader.SetFont(Font'FontMenuTitle');
-	winHeader.SetPos(12, 9);
+	winHeader.SetPos(12 * dxEnhancedGUIScaleMultiplier, 9 * dxEnhancedGUIScaleMultiplier);
 	winHeader.SetText(ActiveWindowOptionsHeader);
 
 	winHeader = MenuUIHeaderWindow(winClient.NewChild(Class'MenuUIHeaderWindow'));
 	winHeader.SetFont(Font'FontMenuTitle');
-	winHeader.SetPos(298, 9);
+	winHeader.SetPos(298 * dxEnhancedGUIScaleMultiplier, 9 * dxEnhancedGUIScaleMultiplier);
 	winHeader.SetTextAlignments(HALIGN_Center, VALIGN_Top);
 	winHeader.SetText(CameraOptionsHeader);
 }
@@ -250,8 +268,8 @@ function CreateInfoWindow()
 {
 	winInfo = MenuUISmallLabelWindow(winClient.NewChild(Class'MenuUISmallLabelWindow'));
 
-	winInfo.SetPos(9, 398);
-	winInfo.SetSize(600, 25);
+	winInfo.SetPos(   9 * dxEnhancedGUIScaleMultiplier, 398 * dxEnhancedGUIScaleMultiplier);
+	winInfo.SetSize(600 * dxEnhancedGUIScaleMultiplier,  25 * dxEnhancedGUIScaleMultiplier);
 	winInfo.SetTextAlignments(HALIGN_Center, VALIGN_Center);
 	winInfo.SetTextMargins(0, 0);
 	winInfo.SetText(ClickCameraWindowText);
@@ -740,6 +758,10 @@ function PanCamera(EInputKey key)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values except: panSize, zoomSize, numPanTicks, lowPanValue,
+//	   highPanValue, textureRows, textureCols
+//
+// DJ: May need to double panSize, etc...
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -748,10 +770,10 @@ defaultproperties
      choices(1)=Class'DeusEx.ComputerSecurityChoice_DoorAccess'
      choices(2)=Class'DeusEx.ComputerSecurityChoice_DoorOpen'
      choices(3)=Class'DeusEx.ComputerSecurityChoice_Turret'
-     choiceStartX=13
-     choiceStartY=30
-     choiceVerticalGap=34
-     choiceActionButtonWidth=143
+     choiceStartX=26
+     choiceStartY=60
+     choiceVerticalGap=68
+     choiceActionButtonWidth=286
      doorTimerID=-1
      networkTimerID=-1
      panSize=256
@@ -765,8 +787,8 @@ defaultproperties
      ClickCameraWindowText="Click on a camera view to select that camera."
      escapeAction="LOGOUT"
      Title="Surveillance"
-     ClientWidth=622
-     ClientHeight=435
+     ClientWidth=1244
+     ClientHeight=870
      clientTextures(0)=Texture'DeusExUI.UserInterface.ComputerSecurityBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.ComputerSecurityBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.ComputerSecurityBackground_3'

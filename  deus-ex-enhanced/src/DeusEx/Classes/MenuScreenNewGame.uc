@@ -116,8 +116,8 @@ function CreatePortraitButton()
 {
 	btnPortrait = ButtonWindow(winClient.NewChild(Class'ButtonWindow'));
 
-	btnPortrait.SetSize(114, 161);
-	btnPortrait.SetPos(18, 152);
+	btnPortrait.SetSize(114 * dxEnhancedGUIScaleMultiplier, 161 * dxEnhancedGUIScaleMultiplier);
+	btnPortrait.SetPos(18 * dxEnhancedGUIScaleMultiplier, 152 * dxEnhancedGUIScaleMultiplier);
 
 	btnPortrait.SetBackgroundStyle(DSTY_Masked);
 }
@@ -130,8 +130,8 @@ function CreateLeftArrowButton()
 {
 	btnLeftArrow = ButtonWindow(winClient.NewChild(Class'ButtonWindow'));
 
-	btnLeftArrow.SetPos(102, 316);
-	btnLeftArrow.SetSize(14, 15);
+	btnLeftArrow.SetPos(102 * dxEnhancedGUIScaleMultiplier, 316 * dxEnhancedGUIScaleMultiplier);
+	btnLeftArrow.SetSize(14 * dxEnhancedGUIScaleMultiplier, 15 * dxEnhancedGUIScaleMultiplier);
 
 	btnLeftArrow.SetButtonTextures(
 		Texture'MenuLeftArrow_Normal', 
@@ -146,8 +146,8 @@ function CreateRightArrowButton()
 {
 	btnRightArrow = ButtonWindow(winClient.NewChild(Class'ButtonWindow'));
 
-	btnRightArrow.SetPos(117, 316);
-	btnRightArrow.SetSize(14, 15);
+	btnRightArrow.SetPos(117 * dxEnhancedGUIScaleMultiplier, 316 * dxEnhancedGUIScaleMultiplier);
+	btnRightArrow.SetSize(14 * dxEnhancedGUIScaleMultiplier, 15 * dxEnhancedGUIScaleMultiplier);
 
 	btnRightArrow.SetButtonTextures(
 		Texture'MenuRightArrow_Normal', 
@@ -162,13 +162,13 @@ function CreateSkillButtons()
 {
 	btnUpgrade = MenuUIActionButtonWindow(winClient.NewChild(Class'MenuUIActionButtonWindow'));
 	btnUpgrade.SetButtonText(ButtonUpgradeLabel);
-	btnUpgrade.SetPos(164, 341);
-	btnUpgrade.SetWidth(74);
+	btnUpgrade.SetPos(164 * dxEnhancedGUIScaleMultiplier, 341 * dxEnhancedGUIScaleMultiplier);
+	btnUpgrade.SetWidth(74 * dxEnhancedGUIScaleMultiplier);
 
 	btnDowngrade = MenuUIActionButtonWindow(winClient.NewChild(Class'MenuUIActionButtonWindow'));
 	btnDowngrade.SetButtonText(ButtonDowngradeLabel);
-	btnDowngrade.SetPos(241, 341);
-	btnDowngrade.SetWidth(90);
+	btnDowngrade.SetPos(241 * dxEnhancedGUIScaleMultiplier, 341 * dxEnhancedGUIScaleMultiplier);
+	btnDowngrade.SetWidth(90 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -179,18 +179,18 @@ function CreateTextHeaders()
 {
 	local MenuUILabelWindow winLabel;
 
-	CreateMenuLabel( 21,  17, HeaderCodeNameLabel,     winClient);
-	CreateMenuLabel( 21,  73, HeaderNameLabel,         winClient);
-	CreateMenuLabel( 21, 133, HeaderAppearanceLabel,   winClient);
-	CreateMenuLabel(172,  17, HeaderSkillsLabel,       winClient);
+	CreateMenuLabel( 21 * dxEnhancedGUIScaleMultiplier,  17 * dxEnhancedGUIScaleMultiplier, HeaderCodeNameLabel,     winClient);
+	CreateMenuLabel( 21 * dxEnhancedGUIScaleMultiplier,  73 * dxEnhancedGUIScaleMultiplier, HeaderNameLabel,         winClient);
+	CreateMenuLabel( 21 * dxEnhancedGUIScaleMultiplier, 133 * dxEnhancedGUIScaleMultiplier, HeaderAppearanceLabel,   winClient);
+	CreateMenuLabel(172 * dxEnhancedGUIScaleMultiplier,  17 * dxEnhancedGUIScaleMultiplier, HeaderSkillsLabel,       winClient);
 	
-	winLabel = CreateMenuLabel(430,  18, HeaderSkillLevelLabel,   winClient);
+	winLabel = CreateMenuLabel(430 * dxEnhancedGUIScaleMultiplier,  18 * dxEnhancedGUIScaleMultiplier, HeaderSkillLevelLabel,   winClient);
 	winLabel.SetFont(Font'FontMenuSmall');
 
-	winLabel = CreateMenuLabel(505,  18, HeaderPointsNeededLabel, winClient);
+	winLabel = CreateMenuLabel(505 * dxEnhancedGUIScaleMultiplier,  18 * dxEnhancedGUIScaleMultiplier, HeaderPointsNeededLabel, winClient);
 	winLabel.SetFont(Font'FontMenuSmall');
 	
-	CreateMenuLabel(409, 344, HeaderSkillPointsLabel,  winClient); 
+	CreateMenuLabel(409 * dxEnhancedGUIScaleMultiplier, 344 * dxEnhancedGUIScaleMultiplier, HeaderSkillPointsLabel,  winClient); 
 }
 
 // ----------------------------------------------------------------------
@@ -199,7 +199,8 @@ function CreateTextHeaders()
 
 function CreateCodeNameEditWindow()
 {
-	editCodeName = CreateMenuEditWindow(18, 36, 113, 32, winClient);
+	editCodeName = CreateMenuEditWindow(18  * dxEnhancedGUIScaleMultiplier, 36 * dxEnhancedGUIScaleMultiplier, 
+										113 * dxEnhancedGUIScaleMultiplier, 32 * dxEnhancedGUIScaleMultiplier, winClient);
 
 	editCodeName.SetText(player.FamiliarName);
 	editCodeName.SetSensitivity(False);
@@ -211,7 +212,8 @@ function CreateCodeNameEditWindow()
 
 function CreateNameEditWindow()
 {
-	editName = CreateMenuEditWindow(18, 92, 113, 32, winClient);
+	editName = CreateMenuEditWindow( 18 * dxEnhancedGUIScaleMultiplier, 92 * dxEnhancedGUIScaleMultiplier, 
+									113 * dxEnhancedGUIScaleMultiplier, 32 * dxEnhancedGUIScaleMultiplier, winClient);
 
 	editName.SetText(player.TruePlayerName);
 	editName.MoveInsertionPoint(MOVEINSERT_End);
@@ -226,15 +228,15 @@ function CreateSkillsListWindow()
 {
 	lstSkills = MenuUIListWindow(winClient.NewChild(Class'MenuUIListWindow'));
 
-	lstSkills.SetSize(397, 150);
-	lstSkills.SetPos(172,41);
+	lstSkills.SetSize(397 * dxEnhancedGUIScaleMultiplier, 150 * dxEnhancedGUIScaleMultiplier);
+	lstSkills.SetPos( 172 * dxEnhancedGUIScaleMultiplier,  41 * dxEnhancedGUIScaleMultiplier);
 	lstSkills.EnableMultiSelect(False);
 	lstSkills.EnableAutoExpandColumns(False);
 	lstSkills.SetNumColumns(3);
 
-	lstSkills.SetColumnWidth(0, 262);
-	lstSkills.SetColumnWidth(1,  66);
-	lstSkills.SetColumnWidth(2,  60);
+	lstSkills.SetColumnWidth(0, 262 * dxEnhancedGUIScaleMultiplier);	// DJ: Hmm... the first value appears to be an identifier
+	lstSkills.SetColumnWidth(1,  66 * dxEnhancedGUIScaleMultiplier);
+	lstSkills.SetColumnWidth(2,  60 * dxEnhancedGUIScaleMultiplier);
 	lstSkills.SetColumnAlignment(2, HALIGN_Right);
 
 	lstSkills.SetColumnFont(0, Font'FontMenuHeaders');
@@ -249,7 +251,7 @@ function CreateSkillsListWindow()
 function CreateSkillInfoWindow()
 {
 	winSkillInfo = MenuUISkillInfoWindow(winClient.NewChild(Class'MenuUISkillInfoWindow'));
-	winSkillInfo.SetPos(165, 208);
+	winSkillInfo.SetPos(165 * dxEnhancedGUIScaleMultiplier, 208 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -260,8 +262,8 @@ function CreateSkillPointsButton()
 {
 	winSkillPoints = MenuUIStaticInfoWindow(winClient.NewChild(Class'MenuUIStaticInfoWindow'));
 
-	winSkillPoints.SetPos(487, 341);
-	winSkillPoints.SetWidth(83);
+	winSkillPoints.SetPos(487 * dxEnhancedGUIScaleMultiplier, 341 * dxEnhancedGUIScaleMultiplier);
+	winSkillPoints.SetWidth(83 * dxEnhancedGUIScaleMultiplier);
 	winSkillPoints.SetSensitivity(False);
 }
 
@@ -777,6 +779,7 @@ function SetDifficulty(float newDifficulty)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -802,8 +805,8 @@ defaultproperties
      actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Start Game",Key="START")
      actionButtons(2)=(Action=AB_Reset)
      Title="Start New Game"
-     ClientWidth=580
-     ClientHeight=389
+     ClientWidth=1160
+     ClientHeight=778
      clientTextures(0)=Texture'DeusExUI.UserInterface.MenuNewGameBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.MenuNewGameBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.MenuNewGameBackground_3'

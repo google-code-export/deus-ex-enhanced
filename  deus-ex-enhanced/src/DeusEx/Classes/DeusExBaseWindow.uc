@@ -22,6 +22,8 @@ enum EScreenType
 	ST_Other
 };
 
+const dxEnhancedGUIScaleMultiplier = 2;
+
 var EScreenType ScreenType;
 
 // Keep a pointer to the root window handy

@@ -50,6 +50,8 @@ function bool TestCycleable()
 	return true;
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      LowAmmoWaterMark=0
@@ -88,8 +90,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.DropLargeWeapon'
      Icon=Texture'DeusExUI.Icons.BeltIconDragonTooth'
      largeIcon=Texture'DeusExUI.Icons.LargeIconDragonTooth'
-     largeIconWidth=205
-     largeIconHeight=46
+     largeIconWidth=410
+     largeIconHeight=92
      invSlotsX=4
      Description="The true weapon of a modern warrior, the Dragon's Tooth is not a sword in the traditional sense, but a nanotechnologically constructed blade that is dynamically 'forged' on command into a non-eutactic solid. Nanoscale whetting devices insure that the blade is both unbreakable and lethally sharp."
      beltDescription="DRAGON"

@@ -45,7 +45,7 @@ event DrawWindow(GC gc)
 				   ((height) / 2) - (iconHeight / 2),
 				   iconWidth, iconHeight, 
 				   0, 0,
-				   icon);
+				   icon); // DJ: Hmmm...
 
 	// Don't draw count if we're ignoring
 	if (!bIgnoreCount)
@@ -61,7 +61,7 @@ event DrawWindow(GC gc)
 		gc.SetFont(Font'FontMenuSmall_DS');
 		gc.SetAlignments(HALIGN_Center, VALIGN_Top);
 		gc.SetTextColor(colHeaderText);
-		gc.DrawText(1, height - 10, width, 10, str);
+		gc.DrawText(1, height - 10, width, 10, str); // DJ: Hmmm...
 	}
 }
 
@@ -106,12 +106,13 @@ function SetIgnoreCount(bool bIgnore)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     IconWidth=42
-     IconHeight=37
+     IconWidth=84
+     IconHeight=74
      colIcon=(R=255,G=255,B=255)
      CountLabel="Count: %d"
 }

@@ -4,6 +4,8 @@
 
 class MenuScreenRGB_MenuExample expands Window;
 
+const dxEnhancedGUIScaleMultiplier = 2;
+
 var DeusExPlayer player;
 
 var Window winTitle;
@@ -68,7 +70,7 @@ event InitWindow()
 {
 	Super.InitWindow();
 
-	SetSize(423, 178);
+	SetSize(423 * dxEnhancedGUIScaleMultiplier, 178 * dxEnhancedGUIScaleMultiplier);
 
 	// Get a pointer to the player
 	player = DeusExPlayer(GetRootWindow().parentPawn);
@@ -91,77 +93,77 @@ function CreateControls()
 	// Title bar graphic
 	winTitle = NewChild(Class'Window');
 	winTitle.SetPos(0, 0);
-	winTitle.SetSize(195, 75);
+	winTitle.SetSize(195 * dxEnhancedGUIScaleMultiplier, 75 * dxEnhancedGUIScaleMultiplier);
 	winTitle.SetBackgroundStyle(DSTY_Masked);
 	winTitle.SetBackground(Texture'RGB_MenuTitleBarBackground');
 
 	// Title bar bubble
 	winTitleBubble = NewChild(Class'Window');
-	winTitleBubble.SetPos(3, 2);
-	winTitleBubble.SetSize(168, 18);
+	winTitleBubble.SetPos(3 * dxEnhancedGUIScaleMultiplier, 2 * dxEnhancedGUIScaleMultiplier);
+	winTitleBubble.SetSize(168 * dxEnhancedGUIScaleMultiplier, 18 * dxEnhancedGUIScaleMultiplier);
 	winTitleBubble.SetBackgroundStyle(DSTY_Masked);
 	winTitleBubble.SetBackground(Texture'RGB_MenuTitleBar');
 
 	// Title Text
-	winTextTitle = CreateActionText(32, 5, TitleLabel);
+	winTextTitle = CreateActionText(32 * dxEnhancedGUIScaleMultiplier, 5 * dxEnhancedGUIScaleMultiplier, TitleLabel);
 
 	// Title bar icon
 	winIcon = NewChild(Class'Window');
-	winIcon.SetPos(12, 3);
-	winIcon.SetSize(16, 16);
+	winIcon.SetPos(12 * dxEnhancedGUIScaleMultiplier, 3 * dxEnhancedGUIScaleMultiplier);
+	winIcon.SetSize(16 * dxEnhancedGUIScaleMultiplier, 16 * dxEnhancedGUIScaleMultiplier);
 	winIcon.SetBackground(Texture'MenuIcon_DeusEx');
 
 	// List focus
 	winListFocus = NewChild(Class'Window');
 	winListFocus.SetBackgroundStyle(DSTY_Normal);
 	winListFocus.SetBackground(Texture'Solid');
-	winListFocus.SetSize(148, 11);
-	winListFocus.SetPos(252, 64);
+	winListFocus.SetSize(148 * dxEnhancedGUIScaleMultiplier, 11 * dxEnhancedGUIScaleMultiplier);
+	winListFocus.SetPos(252 * dxEnhancedGUIScaleMultiplier, 64 * dxEnhancedGUIScaleMultiplier);
 
 	// List Text
-	winTextList      = CreateListText(255, 53, ListNormalLabel);
-	winTextListFocus = CreateListText(255, 65, ListFocusLabel);
-	winTextEdit      = CreateListText(255, 77, EditLabel);
+	winTextList      = CreateListText(255 * dxEnhancedGUIScaleMultiplier, 53 * dxEnhancedGUIScaleMultiplier, ListNormalLabel);
+	winTextListFocus = CreateListText(255 * dxEnhancedGUIScaleMultiplier, 65 * dxEnhancedGUIScaleMultiplier, ListFocusLabel);
+	winTextEdit      = CreateListText(255 * dxEnhancedGUIScaleMultiplier, 77 * dxEnhancedGUIScaleMultiplier, EditLabel);
 
 	// Scroll bar graphics
 	winScroll = NewChild(Class'Window');
-	winScroll.SetPos(401, 50);
-	winScroll.SetSize(15, 93);
+	winScroll.SetPos(401 * dxEnhancedGUIScaleMultiplier, 50 * dxEnhancedGUIScaleMultiplier);
+	winScroll.SetSize(15 * dxEnhancedGUIScaleMultiplier, 93 * dxEnhancedGUIScaleMultiplier);
 	winScroll.SetBackgroundStyle(DSTY_Masked);
 	winScroll.SetBackground(Texture'RGB_MenuScrollBar');
 
 	// Button Menu Backgrounds
-	winMenuButtonDisabled = CreateMenuButton(17,  31, Texture'RGB_MenuButtonLarge_Normal');
-	winMenuButtonNormal   = CreateMenuButton(17,  61, Texture'RGB_MenuButtonLarge_Normal');
-	winMenuButtonFocus    = CreateMenuButton(17,  91, Texture'RGB_MenuButtonLarge_Focus');
-	winMenuButtonPressed  = CreateMenuButton(17, 121, Texture'RGB_MenuButtonLarge_Pressed');
+	winMenuButtonDisabled = CreateMenuButton(17 * dxEnhancedGUIScaleMultiplier,  31 * dxEnhancedGUIScaleMultiplier, Texture'RGB_MenuButtonLarge_Normal');
+	winMenuButtonNormal   = CreateMenuButton(17 * dxEnhancedGUIScaleMultiplier,  61 * dxEnhancedGUIScaleMultiplier, Texture'RGB_MenuButtonLarge_Normal');
+	winMenuButtonFocus    = CreateMenuButton(17 * dxEnhancedGUIScaleMultiplier,  91 * dxEnhancedGUIScaleMultiplier, Texture'RGB_MenuButtonLarge_Focus');
+	winMenuButtonPressed  = CreateMenuButton(17 * dxEnhancedGUIScaleMultiplier, 121 * dxEnhancedGUIScaleMultiplier, Texture'RGB_MenuButtonLarge_Pressed');
 
 	// Button Menu Text
-	winTextButtonMenuDisabled = CreateMenuText(32,  32, ButtonMenuDisabledLabel);
-	winTextButtonMenuNormal   = CreateMenuText(32,  62, ButtonMenuNormalLabel);
-	winTextButtonMenuFocus    = CreateMenuText(32,  92, ButtonMenuFocusLabel);
-	winTextButtonMenuPressed  = CreateMenuText(32, 123, ButtonMenuPressedLabel);
+	winTextButtonMenuDisabled = CreateMenuText(32 * dxEnhancedGUIScaleMultiplier,  32 * dxEnhancedGUIScaleMultiplier, ButtonMenuDisabledLabel);
+	winTextButtonMenuNormal   = CreateMenuText(32 * dxEnhancedGUIScaleMultiplier,  62 * dxEnhancedGUIScaleMultiplier, ButtonMenuNormalLabel);
+	winTextButtonMenuFocus    = CreateMenuText(32 * dxEnhancedGUIScaleMultiplier,  92 * dxEnhancedGUIScaleMultiplier, ButtonMenuFocusLabel);
+	winTextButtonMenuPressed  = CreateMenuText(32 * dxEnhancedGUIScaleMultiplier, 123 * dxEnhancedGUIScaleMultiplier, ButtonMenuPressedLabel);
 
 	// Action Buttons
-	winActionButtonDisabled = CreateActionButton( 11, 158, Texture'RGB_MenuButtonSmall_Normal');
-	winActionButtonNormal   = CreateActionButton(172, 158, Texture'RGB_MenuButtonSmall_Normal');
-	winActionButtonFocus    = CreateActionButton(256, 158, Texture'RGB_MenuButtonSmall_Normal');
-	winActionButtonPressed  = CreateActionButton(340, 158, Texture'RGB_MenuButtonSmall_Pressed');
+	winActionButtonDisabled = CreateActionButton( 11 * dxEnhancedGUIScaleMultiplier, 158 * dxEnhancedGUIScaleMultiplier, Texture'RGB_MenuButtonSmall_Normal');
+	winActionButtonNormal   = CreateActionButton(172 * dxEnhancedGUIScaleMultiplier, 158 * dxEnhancedGUIScaleMultiplier, Texture'RGB_MenuButtonSmall_Normal');
+	winActionButtonFocus    = CreateActionButton(256 * dxEnhancedGUIScaleMultiplier, 158 * dxEnhancedGUIScaleMultiplier, Texture'RGB_MenuButtonSmall_Normal');
+	winActionButtonPressed  = CreateActionButton(340 * dxEnhancedGUIScaleMultiplier, 158 * dxEnhancedGUIScaleMultiplier, Texture'RGB_MenuButtonSmall_Pressed');
 
 	// Action Button Text
-	winTextButtonActionDisabled = CreateActionText( 19, 162, ButtonActionDisabledLabel);
-	winTextButtonActionNormal   = CreateActionText(181, 162, ButtonActionNormalLabel);
-	winTextButtonActionFocus    = CreateActionText(265, 162, ButtonActionFocusLabel);
-	winTextButtonActionPressed  = CreateActionText(349, 162, ButtonActionPressedLabel);
+	winTextButtonActionDisabled = CreateActionText( 19 * dxEnhancedGUIScaleMultiplier, 162 * dxEnhancedGUIScaleMultiplier, ButtonActionDisabledLabel);
+	winTextButtonActionNormal   = CreateActionText(181 * dxEnhancedGUIScaleMultiplier, 162 * dxEnhancedGUIScaleMultiplier, ButtonActionNormalLabel);
+	winTextButtonActionFocus    = CreateActionText(265 * dxEnhancedGUIScaleMultiplier, 162 * dxEnhancedGUIScaleMultiplier, ButtonActionFocusLabel);
+	winTextButtonActionPressed  = CreateActionText(349 * dxEnhancedGUIScaleMultiplier, 162 * dxEnhancedGUIScaleMultiplier, ButtonActionPressedLabel);
 
 	// Small Buttons
-	winSmallButtonNormal  = CreateSmallButton(252, 31, Texture'RGB_MenuButtonHeader_Normal');
-	winSmallButtonPressed = CreateSmallButton(312, 31, Texture'RGB_MenuButtonHeader_Pressed');
+	winSmallButtonNormal  = CreateSmallButton(252 * dxEnhancedGUIScaleMultiplier, 31 * dxEnhancedGUIScaleMultiplier, Texture'RGB_MenuButtonHeader_Normal');
+	winSmallButtonPressed = CreateSmallButton(312 * dxEnhancedGUIScaleMultiplier, 31 * dxEnhancedGUIScaleMultiplier, Texture'RGB_MenuButtonHeader_Pressed');
 	winSmallButtonPressed.SetWidth(74);
 
 	// Small Button Text
-	winTextButtonSmallNormal  = CreateSmallText(257, 34, ButtonSmallNormalLabel);
-	winTextButtonSmallPressed = CreateSmallText(319, 34, ButtonSmallPressedLabel);
+	winTextButtonSmallNormal  = CreateSmallText(257 * dxEnhancedGUIScaleMultiplier, 34 * dxEnhancedGUIScaleMultiplier, ButtonSmallNormalLabel);
+	winTextButtonSmallPressed = CreateSmallText(319 * dxEnhancedGUIScaleMultiplier, 34 * dxEnhancedGUIScaleMultiplier, ButtonSmallPressedLabel);
 }
 
 // ----------------------------------------------------------------------
@@ -177,8 +179,8 @@ event DrawWindow(GC gc)
 		gc.SetStyle(DSTY_Masked);
 
 	gc.SetTileColor(colBackground);
-	gc.DrawTexture( 10, 23, 256, 134, 0, 0, Texture'RGB_MenuSampleBackground_1');		
-	gc.DrawTexture(266, 23, 157, 134, 0, 0, Texture'RGB_MenuSampleBackground_2');		
+	gc.DrawTexture( 10 * dxEnhancedGUIScaleMultiplier, 23 * dxEnhancedGUIScaleMultiplier, 256 * dxEnhancedGUIScaleMultiplier, 134 * dxEnhancedGUIScaleMultiplier, 0, 0, Texture'RGB_MenuSampleBackground_1');		
+	gc.DrawTexture(266 * dxEnhancedGUIScaleMultiplier, 23 * dxEnhancedGUIScaleMultiplier, 157 * dxEnhancedGUIScaleMultiplier, 134 * dxEnhancedGUIScaleMultiplier, 0, 0, Texture'RGB_MenuSampleBackground_2');		
 }
 
 // ----------------------------------------------------------------------
@@ -190,7 +192,7 @@ event PostDrawWindow(GC gc)
 	// List focus border
 	gc.SetTileColor(colListFocus);
 	gc.SetStyle(DSTY_Normal);
-	gc.DrawBorders(252, 64, 148, 11, 0, 0, 0, 0, texListFocusBorders);
+	gc.DrawBorders(252 * dxEnhancedGUIScaleMultiplier, 64 * dxEnhancedGUIScaleMultiplier, 148 * dxEnhancedGUIScaleMultiplier, 11 * dxEnhancedGUIScaleMultiplier, 0, 0, 0, 0, texListFocusBorders);
 }
 
 // ----------------------------------------------------------------------
@@ -203,7 +205,7 @@ function Window CreateMenuButton(int posX, int posY, Texture buttonBackground)
 
 	winButton = NewChild(Class'Window');
 	winButton.SetPos(posX, posY);
-	winButton.SetSize(204, 27);
+	winButton.SetSize(204 * dxEnhancedGUIScaleMultiplier, 27 * dxEnhancedGUIScaleMultiplier);
 	winButton.SetBackgroundStyle(DSTY_Translucent);
 	winButton.SetBackground(buttonBackground);
 
@@ -239,7 +241,7 @@ function Window CreateActionButton(int posX, int posY, Texture buttonBackground)
 
 	winButton = NewChild(Class'Window');
 	winButton.SetPos(posX, posY);
-	winButton.SetSize(83, 19);
+	winButton.SetSize(83 * dxEnhancedGUIScaleMultiplier, 19 * dxEnhancedGUIScaleMultiplier);
 	winButton.SetBackgroundStyle(DSTY_Masked);
 	winButton.SetBackground(buttonBackground);
 
@@ -274,7 +276,7 @@ function Window CreateSmallButton(int posX, int posY, Texture buttonBackground)
 
 	winButton = NewChild(Class'Window');
 	winButton.SetPos(posX, posY);
-	winButton.SetSize(59, 15);
+	winButton.SetSize(59 * dxEnhancedGUIScaleMultiplier, 15 * dxEnhancedGUIScaleMultiplier);
 	winButton.SetBackgroundStyle(DSTY_Masked);
 	winButton.SetBackground(buttonBackground);
 

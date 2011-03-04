@@ -21,7 +21,7 @@ event InitWindow()
 
    SetInitialConnection();
 
-   SetActionButtonWidth(153);
+   SetActionButtonWidth(153 * dxEnhancedGUIScaleMultiplier);
 
    btnAction.SetHelpText(HelpText);
 }
@@ -107,6 +107,7 @@ function string GetModuleName(int ConnectionIndex)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values: defaultInfoWidth, defaultInfoPosX
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -115,8 +116,8 @@ defaultproperties
      ConnectionSpeeds(1)=20000
      ConnectionNames(0)="Modem"
      ConnectionNames(1)="DSL or better"
-     defaultInfoWidth=153
-     defaultInfoPosX=170
+     defaultInfoWidth=306
+     defaultInfoPosX=340
      HelpText="Type of Internet Connection"
      actionText="Connection Type"
      configSetting="Player ConfiguredInternetSpeed"

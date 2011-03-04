@@ -50,11 +50,12 @@ event StyleChanged()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled value
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     xMargin=10
+     xMargin=20
      colText=(R=255,G=255,B=255)
      fontText=Font'DeusExUI.FontMenuSmall'
 }

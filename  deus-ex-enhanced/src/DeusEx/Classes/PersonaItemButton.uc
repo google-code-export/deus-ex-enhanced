@@ -4,6 +4,8 @@
 class PersonaItemButton extends ButtonWindow
 	abstract;
 
+const dxEnhancedGUIScaleMultiplier = 2;
+	
 var DeusExPlayer player;
 
 var Texture	 icon;						// Icon to draw
@@ -41,7 +43,7 @@ var Color colFillSelected;
 event InitWindow()
 {
 	Super.InitWindow();
-
+	
 	SetSize(buttonWidth, buttonHeight);
 
 	CreateControls();
@@ -166,16 +168,17 @@ event StyleChanged()
 }
 
 // ----------------------------------------------------------------------
+//DJ: Values doubled
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     iconPosWidth=52
-     iconPosHeight=52
-     buttonWidth=54
-     buttonHeight=54
-     borderWidth=54
-     borderHeight=54
+     iconPosWidth=104
+     iconPosHeight=104
+     buttonWidth=108
+     buttonHeight=108
+     borderWidth=108
+     borderHeight=108
      bIconTranslucent=True
      texBorders(0)=Texture'DeusExUI.UserInterface.PersonaItemHighlight_TL'
      texBorders(1)=Texture'DeusExUI.UserInterface.PersonaItemHighlight_TR'

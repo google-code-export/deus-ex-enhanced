@@ -3,6 +3,8 @@
 //=============================================================================
 class PersonaInfoItemWindow expands AlignWindow;
 
+const dxEnhancedGUIScaleMultiplier = 2;
+
 var DeusExPlayer player;
 var TextWindow winLabel;
 var TextWindow winText;
@@ -22,13 +24,13 @@ event InitWindow()
 
 	// Defaults for tile window
 	SetChildVAlignment(VALIGN_Top);
-	SetChildSpacing(10);
+	SetChildSpacing(10 * dxEnhancedGUIScaleMultiplier);
 
 	winLabel = TextWindow(NewChild(Class'TextWindow'));
 	winLabel.SetFont(fontText);
 	winLabel.SetTextAlignments(HALIGN_Right, VALIGN_Top);
 	winLabel.SetTextMargins(0, 0);
-	winLabel.SetWidth(70);
+	winLabel.SetWidth(70 * dxEnhancedGUIScaleMultiplier);
 
 	winText = TextWindow(NewChild(Class'TextWindow'));
 	winText.SetTextAlignments(HALIGN_Left, VALIGN_Top);

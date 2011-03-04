@@ -5,6 +5,7 @@
 class MenuScreenDisplay expands MenuUIScreenWindow;
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values, except texturecols
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -22,12 +23,12 @@ defaultproperties
      actionButtons(1)=(Align=HALIGN_Right,Action=AB_OK)
      actionButtons(2)=(Action=AB_Reset)
      Title="Display Settings"
-     ClientWidth=391
-     ClientHeight=408
+     ClientWidth=782
+     ClientHeight=816
      clientTextures(0)=Texture'DeusExUI.UserInterface.MenuDisplayBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.MenuDisplayBackground_2'
      clientTextures(2)=Texture'DeusExUI.UserInterface.MenuDisplayBackground_3'
      clientTextures(3)=Texture'DeusExUI.UserInterface.MenuDisplayBackground_4'
      textureCols=2
-     helpPosY=354
+     helpPosY=708
 }

@@ -31,12 +31,13 @@ function ResetToDefault()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled value defaultInfoWidth
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      defaultValue=1
-     defaultInfoWidth=88
+     defaultInfoWidth=176
      HelpText="If subtitles are On, conversation dialogue will be displayed on-screen."
      actionText="|&Subtitles"
 }

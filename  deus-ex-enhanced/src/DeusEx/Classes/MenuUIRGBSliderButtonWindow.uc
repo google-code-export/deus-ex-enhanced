@@ -4,6 +4,8 @@
 
 class MenuUIRGBSliderButtonWindow extends Window;
 
+const dxEnhancedGUIScaleMultiplier = 2;
+
 var DeusExPlayer player;
 
 var ScaleWindow            winSlider;
@@ -31,26 +33,28 @@ event InitWindow()
 
 	// Create the Scale Manager Window
 	winScaleManager = ScaleManagerWindow(NewChild(Class'ScaleManagerWindow'));
-	winScaleManager.SetSize(177, 21);
-	winScaleManager.SetMarginSpacing(20);
+	winScaleManager.SetSize(177 * dxEnhancedGUIScaleMultiplier, 21 * dxEnhancedGUIScaleMultiplier);
+	winScaleManager.SetMarginSpacing(20 * dxEnhancedGUIScaleMultiplier);
 
 	// Create the slider window 
 	winSlider = ScaleWindow(winScaleManager.NewChild(Class'ScaleWindow'));
 	winSlider.SetScaleOrientation(ORIENT_Horizontal);
 	winSlider.SetThumbSpan(0);
-	winSlider.SetScaleTexture(defaultScaleTexture, 177, 21, 8, 8);
-	winSlider.SetThumbTexture(defaultThumbTexture, 9, 15);
+	winSlider.SetScaleTexture(defaultScaleTexture, 177 * dxEnhancedGUIScaleMultiplier, 21 * dxEnhancedGUIScaleMultiplier, 
+							  8 * dxEnhancedGUIScaleMultiplier, 8 * dxEnhancedGUIScaleMultiplier);
+	winSlider.SetThumbTexture(defaultThumbTexture, 9 * dxEnhancedGUIScaleMultiplier, 
+							  15 * dxEnhancedGUIScaleMultiplier);
 
 	winEditBorder = MenuUIInfoButtonWindow(NewChild(Class'MenuUIInfoButtonWindow'));
-	winEditBorder.SetWidth(43);
-	winEditBorder.SetPos(185, 1);
+	winEditBorder.SetWidth(43 * dxEnhancedGUIScaleMultiplier);
+	winEditBorder.SetPos(185 * dxEnhancedGUIScaleMultiplier, 1 * dxEnhancedGUIScaleMultiplier);
 	winEditBorder.SetSensitivity(False);
 
 	// Create the text window
 	editScaleText = MenuUIEditWindow(NewChild(Class'MenuUIEditWindow'));
-	editScaleText.SetSize(39, 10);
-	editScaleText.SetPos(187, 6);
-	editScaleText.SetMaxSize(3);
+	editScaleText.SetSize(39 * dxEnhancedGUIScaleMultiplier, 10 * dxEnhancedGUIScaleMultiplier);
+	editScaleText.SetPos(187 * dxEnhancedGUIScaleMultiplier, 6 * dxEnhancedGUIScaleMultiplier);
+	editScaleText.SetMaxSize(3 * dxEnhancedGUIScaleMultiplier);
 
 	// Tell the Scale Manager wazzup.
 	winScaleManager.SetScale(winSlider);
@@ -103,12 +107,13 @@ event StyleChanged()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      defaultScaleTexture=Texture'DeusExUI.UserInterface.MenuSliderBar'
      defaultThumbTexture=Texture'DeusExUI.UserInterface.MenuSlider'
-     DefaultWidth=230
-     defaultHeight=21
+     DefaultWidth=460
+     defaultHeight=42
 }

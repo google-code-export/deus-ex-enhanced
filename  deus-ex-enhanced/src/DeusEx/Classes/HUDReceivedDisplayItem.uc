@@ -3,6 +3,8 @@
 //=============================================================================
 class HUDReceivedDisplayItem extends TileWindow;
 
+const dxEnhancedGUIScaleMultiplier = 2;
+
 var DeusExPlayer player;
 
 var Window     winIcon;
@@ -27,7 +29,7 @@ event InitWindow()
 	SetOrder(ORDER_DownThenRight);
 	SetChildAlignments(HALIGN_Center, VALIGN_Top);
 	SetMargins(0, 0);
-	SetMinorSpacing(2);
+	SetMinorSpacing(2 * dxEnhancedGUIScaleMultiplier);
 	MakeWidthsEqual(False);
 	MakeHeightsEqual(False);
 
@@ -47,7 +49,7 @@ event SetItem(Inventory invItem, int count)
 	local Texture icontex;
 
 	winIcon = NewChild(Class'Window');
-	winIcon.SetSize(42, 37);
+	winIcon.SetSize(42 * dxEnhancedGUIScaleMultiplier, 37 * dxEnhancedGUIScaleMultiplier);
 	winIcon.SetBackgroundStyle(DSTY_Masked);
 
 	if(invItem.IsA('DeusExAmmo'))

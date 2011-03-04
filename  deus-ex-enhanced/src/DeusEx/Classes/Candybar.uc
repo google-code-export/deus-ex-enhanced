@@ -49,6 +49,8 @@ state Activated
 Begin:
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      healthEffect=3
@@ -62,8 +64,8 @@ defaultproperties
      ThirdPersonMesh=LodMesh'DeusExItems.Candybar'
      Icon=Texture'DeusExUI.Icons.BeltIconCandyBar'
      largeIcon=Texture'DeusExUI.Icons.LargeIconCandyBar'
-     largeIconWidth=46
-     largeIconHeight=36
+     largeIconWidth=92
+     largeIconHeight=72
      Description="'CHOC-O-LENT DREAM. IT'S CHOCOLATE! IT'S PEOPLE! IT'S BOTH!(tm) 85% Recycled Material.'"
      beltDescription="CANDY BAR"
      Mesh=LodMesh'DeusExItems.Candybar'

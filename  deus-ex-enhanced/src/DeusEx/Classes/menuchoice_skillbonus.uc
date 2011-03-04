@@ -20,6 +20,7 @@ event InitWindow()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled value
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -27,7 +28,7 @@ defaultproperties
      numTicks=21
      endValue=10000.000000
      defaultValue=2000.000000
-     choiceControlPosX=203
+     choiceControlPosX=406
      HelpText="Sets the number of additional skill points granted to a player for a kill."
      actionText="Skill Points Per Kill"
      configSetting="DeusExMPGame SkillsPerKill"

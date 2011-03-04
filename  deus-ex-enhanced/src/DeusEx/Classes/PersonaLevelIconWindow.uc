@@ -21,7 +21,7 @@ event InitWindow()
 {
 	Super.InitWindow();
 
-	SetSize(23, 5);
+	SetSize(23 * dxEnhancedGUIScaleMultiplier, 5 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -78,11 +78,12 @@ event StyleChanged()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      texLevel=Texture'DeusExUI.UserInterface.PersonaSkillsChicklet'
-     iconSizeX=5
-     iconSizeY=5
+     iconSizeX=10
+     iconSizeY=10
 }

@@ -4,6 +4,8 @@
 
 class PersonaInventoryCreditsWindow extends TileWindow;
 
+const dxEnhancedGUIScaleMultiplier = 2;
+
 var PersonaHeaderTextWindow winCredits;
 
 var localized String CreditsLabel;
@@ -17,11 +19,11 @@ var localized String CreditsLabel;
 event InitWindow()
 {
 	Super.InitWindow();
-
+	
 	SetOrder(ORDER_Right);
 	SetChildAlignments(HALIGN_Full, VALIGN_Top);
 	SetMargins(0, 0);
-	SetMinorSpacing(5);
+	SetMinorSpacing(5 * dxEnhancedGUIScaleMultiplier);
 	MakeWidthsEqual(False);
 	MakeHeightsEqual(True);
 
@@ -37,11 +39,11 @@ function CreateControls()
 	local PersonaHeaderTextWindow winLabel;
 
 	winLabel = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
-	winLabel.SetHeight(15);
+	winLabel.SetHeight(15 * dxEnhancedGUIScaleMultiplier);
 	winLabel.SetText(CreditsLabel);
 
 	winCredits = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
-	winCredits.SetSize(63, 15);
+	winCredits.SetSize(63 * dxEnhancedGUIScaleMultiplier, 15 * dxEnhancedGUIScaleMultiplier);
 	winCredits.SetTextAlignments(HALIGN_Right, VALIGN_Center);
 }
 

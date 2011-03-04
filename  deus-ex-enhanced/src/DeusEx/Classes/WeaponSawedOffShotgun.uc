@@ -179,6 +179,8 @@ function ReloadAmmo()
 	Super.ReloadAmmo();	
 }
 
+// DJ: Doubled icon size values
+
 defaultproperties
 {
      msgExtraShells="%d rounds loaded into firing chamber"
@@ -229,8 +231,8 @@ defaultproperties
      LandSound=Sound'DeusExSounds.Generic.DropMediumWeapon'
      Icon=Texture'DeusExUI.Icons.BeltIconShotgun'
      largeIcon=Texture'DeusExUI.Icons.LargeIconShotgun'
-     largeIconWidth=131
-     largeIconHeight=45
+     largeIconWidth=262
+     largeIconHeight=90
      invSlotsX=3
      Description="The sawed-off, pump-action shotgun features a truncated barrel resulting in a wide spread at close range and will accept either buckshot or sabot shells."
      beltDescription="SAWED-OFF"

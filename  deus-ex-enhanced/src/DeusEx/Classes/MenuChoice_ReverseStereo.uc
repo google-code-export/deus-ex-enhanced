@@ -23,11 +23,12 @@ function SaveSetting()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled value defaultInfoWidth
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     defaultInfoWidth=83
+     defaultInfoWidth=166
      HelpText="If enabled, the left and right stereo channels are reversed."
      actionText="|&Reverse Stereo"
      configSetting="ini:Engine.Engine.AudioDevice ReverseStereo"

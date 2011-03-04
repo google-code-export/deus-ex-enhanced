@@ -66,7 +66,7 @@ event InitWindow()
 	Super.InitWindow();
 
 	// Force the title bar to be a certain width;
-	winTitle.minTitleWidth = 250;
+	winTitle.minTitleWidth = 250 * dxEnhancedGUIScaleMultiplier;
 
 	CreateTextWindow();
 }
@@ -77,7 +77,7 @@ event InitWindow()
 
 function CreateTextWindow()
 {
-	winText = CreateMenuHeader(21, 13, "", winClient);
+	winText = CreateMenuHeader(21 * dxEnhancedGUIScaleMultiplier, 13 * dxEnhancedGUIScaleMultiplier, "", winClient);
 	winText.SetTextAlignments(HALIGN_Center, VALIGN_Center);
 	winText.SetFont(Font'FontMenuHeaders_DS');
 	winText.SetWindowAlignments(HALIGN_Full, VALIGN_Full, textBorderX, textBorderY);
@@ -302,18 +302,19 @@ function PostResult( int buttonNumber )
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values, except last 2
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-     textBorderX=20
-     textBorderY=14
+     textBorderX=40
+     textBorderY=28
      btnLabelYes="|&Yes"
      btnLabelNo="|&No"
      btnLabelOK="|&OK"
      btnLabelCancel="|&Cancel"
-     ClientWidth=280
-     ClientHeight=85
+     ClientWidth=560
+     ClientHeight=170
      clientTextures(0)=Texture'DeusExUI.UserInterface.MenuMessageBoxBackground_1'
      clientTextures(1)=Texture'DeusExUI.UserInterface.MenuMessageBoxBackground_2'
      textureRows=1

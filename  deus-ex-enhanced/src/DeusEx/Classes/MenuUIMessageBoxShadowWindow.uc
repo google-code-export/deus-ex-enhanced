@@ -30,8 +30,11 @@ function DestroyWindow()
 event DrawWindow(GC gc)
 {	
 	gc.SetStyle(DSTY_Modulated);
-	gc.DrawTexture(0,   0, 256, shadowHeight, 0, 0, texShadows[0 + (textureIndex * 2)]);
-	gc.DrawTexture(256, 0, shadowWidth - 256, shadowHeight, 0, 0, texShadows[1 + (textureIndex * 2)]);
+	gc.DrawTexture(0, 0, 256 * dxEnhancedGUIScaleMultiplier, 
+				   shadowHeight, 0, 0, texShadows[0 + (textureIndex * 2)]);
+	gc.DrawTexture(256 * dxEnhancedGUIScaleMultiplier, 0, 
+				   shadowWidth - (256 * dxEnhancedGUIScaleMultiplier), 
+				   shadowHeight, 0, 0, texShadows[1 + (textureIndex * 2)]);
 }
 
 // ----------------------------------------------------------------------
@@ -45,6 +48,7 @@ function SetButtonCount(int newButtonCount)
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -53,8 +57,8 @@ defaultproperties
      texShadows(1)=Texture'DeusExUI.UserInterface.MenuMessageBoxShadow1_2'
      texShadows(2)=Texture'DeusExUI.UserInterface.MenuMessageBoxShadow2_1'
      texShadows(3)=Texture'DeusExUI.UserInterface.MenuMessageBoxShadow2_2'
-     shadowWidth=316
-     shadowHeight=154
-     shadowOffsetX=13
-     shadowOffsetY=13
+     shadowWidth=632
+     shadowHeight=308
+     shadowOffsetX=26
+     shadowOffsetY=26
 }

@@ -31,10 +31,10 @@ event InitWindow()
 
    SetInitialClass();
 
-   SetActionButtonWidth(153);
+   SetActionButtonWidth(153 * dxEnhancedGUIScaleMultiplier);
 
    btnAction.SetHelpText(HelpText);
-   btnInfo.SetPos(0,195);
+   btnInfo.SetPos(0, 195 * dxEnhancedGUIScaleMultiplier);
 }
 
 // ----------------------------------------------------------------------
@@ -138,8 +138,8 @@ function CreatePortraitButton()
 {
 	btnPortrait = ButtonWindow(NewChild(Class'ButtonWindow'));
 
-	btnPortrait.SetSize(116, 163);
-	btnPortrait.SetPos(19, 27);
+	btnPortrait.SetSize(116 * dxEnhancedGUIScaleMultiplier, 163 * dxEnhancedGUIScaleMultiplier);
+	btnPortrait.SetPos(19 * dxEnhancedGUIScaleMultiplier, 27 * dxEnhancedGUIScaleMultiplier);
 
 	btnPortrait.SetBackgroundStyle(DSTY_Masked);
 }
@@ -164,6 +164,7 @@ function UpdatePortrait()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -452,8 +453,8 @@ defaultproperties
      texPortraits(91)="ShifterEX.Pictures.mptracertong"
      texPortraits(92)="ShifterEX.Pictures.mpmargaretwilliams"
      texPortraits(93)="ShifterEX.Pictures.mpwib"
-     defaultInfoWidth=153
-     defaultInfoPosX=170
+     defaultInfoWidth=306
+     defaultInfoPosX=340
      HelpText="Model for your character in non-team games."
      actionText="Non-Team Model"
 }

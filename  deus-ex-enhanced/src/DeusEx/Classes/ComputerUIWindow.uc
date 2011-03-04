@@ -6,6 +6,8 @@
 
 class ComputerUIWindow extends Window
 	abstract;
+	
+const dxEnhancedGUIScaleMultiplier = 2;
 
 var DeusExRootWindow root;							// Keep a pointer to the root window handy
 var DeusExPlayer player;							// Keep a pointer to the player for easy reference
@@ -213,34 +215,41 @@ function ConfigurationChanged()
 		{
 			winRightEdge.QueryPreferredSize(rightEdgeWidth, rightEdgeHeight);
 			rightEdgeWidth = winRightEdge.rightWidth;
-			rightEdgeGap   = 2;
+			rightEdgeGap   = (2 * dxEnhancedGUIScaleMultiplier);
 		}
 
 		if (winLeftEdge != None)
-			winLeftEdgeGap = 1;
+			winLeftEdgeGap = (1 * dxEnhancedGUIScaleMultiplier);
 
 		winButtonBar.QueryPreferredSize(buttonBarWidth, buttonBarHeight);
 		winButtonBar.ConfigureChild(
 			titleWidth + winLeftEdgeGap, titleTopHeight + clientHeight + verticalOffset, 
-			clientWidth - 1 - rightEdgeGap, buttonBarHeight);
+			clientWidth - (1 * dxEnhancedGUIScaleMultiplier) 
+					    - rightEdgeGap, buttonBarHeight);
 	}
 
 	// Left Edge
 	if (winLeftEdge != None)
 	{
 		winLeftEdge.QueryPreferredSize(LeftEdgeWidth, LeftEdgeHeight);
+		
 		winLeftEdge.ConfigureChild(
 			titleWidth - LeftEdgeWidth, titleHeight + verticalOffset, 
-			LeftEdgeWidth, clientHeight + buttonBarHeight - (titleHeight - titleTopHeight) - 1);
+			LeftEdgeWidth, 
+			clientHeight + buttonBarHeight 
+						 - (titleHeight - titleTopHeight) 
+						 - (1 * dxEnhancedGUIScaleMultiplier));
 	}
 
 	// Right Edge
 	if (winRightEdge != None)
 	{
 		winRightEdge.ConfigureChild(
-			titleBarWidth + 1, titleTopHeight - 4 + verticalOffset, 
-			clientWidth - (titleBarWidth - titleWidth) - 1 + winRightEdge.rightWidth, 
-			clientHeight + 4 + 14);
+			titleBarWidth + (1 * dxEnhancedGUIScaleMultiplier), 
+			titleTopHeight - (4 * dxEnhancedGUIScaleMultiplier) + verticalOffset, 
+			clientWidth - (titleBarWidth - titleWidth) - (1 * dxEnhancedGUIScaleMultiplier) 
+													   + winRightEdge.rightWidth, 
+			clientHeight + ((4 + 14) * dxEnhancedGUIScaleMultiplier));
 	}
 
 	// Configure Status Window
@@ -520,9 +529,9 @@ function MenuUIEditWindow CreateMenuEditWindow(int posX, int posY, int editWidth
 	btnInfo.SetSensitivity(False);
 
 	clipName = ClipWindow(winClient.newChild(Class'ClipWindow'));
-	clipName.SetWidth(editWidth - 8);
+	clipName.SetWidth(editWidth - (8 * dxEnhancedGUIScaleMultiplier));
 	clipName.ForceChildSize(False, True);
-	clipName.SetPos(posX + 4, posY + 4);
+	clipName.SetPos(posX + (4 * dxEnhancedGUIScaleMultiplier), posY + (4 * dxEnhancedGUIScaleMultiplier));
 
 	newEdit = MenuUIEditWindow(clipName.NewChild(Class'MenuUIEditWindow'));
 	newEdit.SetMaxSize(maxChars);
@@ -786,10 +795,13 @@ event StyleChanged()
 
 	colCursor = theme.GetColorFromName('MenuColor_Cursor');
 
-	SetDefaultCursor(Texture'DeusExCursor1', Texture'DeusExCursor1_Shadow', 32, 32, colCursor);
+	SetDefaultCursor(Texture'DeusExCursor1', Texture'DeusExCursor1_Shadow', 
+					 32 * dxEnhancedGUIScaleMultiplier, 
+					 32 * dxEnhancedGUIScaleMultiplier, colCursor);
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled values
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -798,9 +810,9 @@ defaultproperties
      escapeAction="EXIT"
      bActionButtonBarActive=True
      bUsesStatusWindow=True
-     defaultStatusLeftOffset=10
-     defaultStatusHeight=13
-     defaultStatusClientDiffY=21
+     defaultStatusLeftOffset=20
+     defaultStatusHeight=26
+     defaultStatusClientDiffY=42
      ButtonLabelLogin="|&Login"
      ButtonLabelLogout="|&Logout"
      ButtonLabelCancel="|&Cancel"

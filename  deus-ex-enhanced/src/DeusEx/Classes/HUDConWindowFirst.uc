@@ -38,7 +38,7 @@ event InitWindow()
 	lowerConWindow.SetChildAlignments(HALIGN_Full, VALIGN_Top);
 	lowerConWindow.MakeWidthsEqual(False);
 	lowerConWindow.MakeHeightsEqual(False);
-	lowerConWindow.SetMargins(20, 10);
+	lowerConWindow.SetMargins(20 * dxEnhancedGUIScaleMultiplier, 10 * dxEnhancedGUIScaleMultiplier);
 
 	CreateNameWindow();
 
@@ -56,13 +56,13 @@ function CreateNameWindow()
 	// Create the Name Window
 	nameWindow = TextWindow(lowerConWindow.NewChild(Class'TextWindow'));
 	nameWindow.SetTextAlignments( HALIGN_Left, VALIGN_Center);
-	nameWindow.SetTextMargins(0, 2);
+	nameWindow.SetTextMargins(0, 2 * dxEnhancedGUIScaleMultiplier);
 	nameWindow.SetFont(fontName);
 	nameWindow.SetTextColor(colConTextName);
 
 	// Create line between name and scrolling text
 	winLine = lowerConWindow.NewChild(Class'Window');
-	winLine.SetHeight(1);
+	winLine.SetHeight(1); 													// DJ: Hmmm...
 	winLine.SetBackgroundStyle(DSTY_Normal);
 	winLine.SetBackground(Texture'Solid');
 	winLine.SetTileColor(colLine);
@@ -133,7 +133,7 @@ function DisplayText(string text, Actor speakingActor)
 
 	newText = TextWindow(lowerConWindow.NewChild(Class'TextWindow'));
 	newText.SetTextAlignments( HALIGN_Left, VALIGN_Center);
-	newText.SetTextMargins(10, 5);
+	newText.SetTextMargins(10 * dxEnhancedGUIScaleMultiplier, 5 * dxEnhancedGUIScaleMultiplier);
 	newText.SetFont(Font'FontMenuSmall_DS');
 	newText.SetText(text);
 
@@ -228,10 +228,11 @@ event StyleChanged()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled value
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
      FontName=Font'DeusExUI.FontMenuHeaders_DS'
-     txtVertMargin=10
+     txtVertMargin=20
 }

@@ -41,6 +41,7 @@ function SaveSetting()
 }
 
 // ----------------------------------------------------------------------
+// DJ: Doubled value
 // ----------------------------------------------------------------------
 
 defaultproperties
@@ -49,7 +50,7 @@ defaultproperties
      englishEnumText(1)="High"
      enumText(0)="Low"
      enumText(1)="High"
-     defaultInfoWidth=98
+     defaultInfoWidth=196
      HelpText="Change the amount of texture detail on objects"
      actionText="|&Object Texture Detail"
      configSetting="ini:Engine.Engine.ViewportManager SkinDetail"
